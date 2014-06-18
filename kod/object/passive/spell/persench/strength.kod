@@ -63,13 +63,28 @@ messages:
       return;
    }
 
+   ModifyDamage(who = $,what = $,damage = $)
+   {
+      local iFactor, oWeapon;
+
+      iFactor = Send(who,@GetEnchantedState,#what=self);
+
+      oWeapon = Send(who,@LookupPlayerWeapon);
+
+      % Adds up to 2 points of damage to all melee attacks
+      if oWeapon = $
+         OR NOT IsClass(oWeapon,&RangedWeapon)
+      {
+         return damage + iFactor/10;
+      }
+
+      return damage;
+   }
 
    GetStateValue(who = $, iSpellPower = 0, Target = $)
    {
       local iMightChange;
       iMightChange = iSpellPower/5+1;
-
-      send(Target,@AddMight,#points=iMightChange);
 
       return iMightChange;
    }
@@ -81,13 +96,6 @@ messages:
       iDuration = iDuration * 1000;
       
       return iDuration;
-   }
-
-   EndEnchantment( who = $, state = 0, report = TRUE )
-   {
-      send(who,@AddMight,#points=-state);
-     
-      propagate;
    }
 
    GetPotionClass()
