@@ -2893,7 +2893,12 @@ messages:
       }
 
       plEnchantments = Cons(lNew_enchantment,plEnchantments);
-      Send(self,@ResetPlayerFlagList,#who=self);
+      
+      if NOT IsClass(what,&RadiusEnchantment)
+      {
+         Send(self,@ResetPlayerFlagList,#who=self);
+      }
+
       if addicon
       {
          Send(self,@ShowAddEnchantment,#what=what,#type=ENCHANTMENT_PLAYER);
