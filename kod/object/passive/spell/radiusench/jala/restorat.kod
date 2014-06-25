@@ -84,13 +84,19 @@ messages:
 
    PeriodicEffect(lEnchanted=$,iPower=0,iRange=0,source=$)
    {
-      local oUser;
+      local oUser, lState;
       
       for oUser in lEnchanted
       {
          if IsClass(oUser,&User)
          {
-            Send(oUser,@GainHealthNormal,#amount=1);
+            lState = Send(oUser,@GetMostPowerfulRadiusEnchantmentState,#byClass=&Restorate);
+            
+            if Nth(lState,3) = source
+               AND Nth(lState,2) = iPower
+            {
+               Send(oUser,@GainHealthNormal,#amount=1);
+            }
          }
       }
       
