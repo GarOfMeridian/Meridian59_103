@@ -8273,6 +8273,7 @@ messages:
                AND NOT group_member_kill
                AND killing_blow
                AND Send(self,@CheckPlayerFlag,#flag=PFLAG_TOOK_DAMAGE)
+               AND monster_level > piBase_Max_health
             {
                gain = gain + 1;
             }
