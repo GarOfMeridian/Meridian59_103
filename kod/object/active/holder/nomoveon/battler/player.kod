@@ -10808,7 +10808,16 @@ messages:
 
    BreakTrance(event = 0, what = $)
    {
-      local i, oEnch,state, bFound, oYellNum, oYellRoom;
+      local i, oEnch,state, bFound, oYellNum, oYellRoom, oHide, oSneak;
+
+      oHide = Send(SYS,@FindSkillByNum,#skill_num=SKID_HIDE);
+      oSneak = Send(SYS,@FindSkillByNum,#skill_num=SKID_SNEAK);
+      
+      if event <> EVENT_NEWOWNER
+      {
+         Send(oHide,@StopHiding,#who=self);
+         Send(oSneak,@StopSneaking,#who=self);
+      }
 
       bFound = FALSE;
       for i in plEnchantments

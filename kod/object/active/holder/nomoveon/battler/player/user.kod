@@ -7861,7 +7861,7 @@ messages:
 
    GetObjectFlags()
    {
-      local iFlags, oIllusion;
+      local iFlags, oIllusion, oHide;
 
       iFlags = MOVEON_NO | BATTLER_YES | USER_YES | OFFER_YES;
 
@@ -7935,12 +7935,21 @@ messages:
       {
          iFlags = iFlags | LOOK_NO;
          iFlags = (iFlags & ~MOVEON_NO & ~BATTLER_YES & ~OFFER_YES & ~USER_YES);
+         return iFlags;
       }
       
       % Angeled characters cannot block other players
       if NOT Send(self,@CheckPlayerFlag,#flag=PFLAG_PKILL_ENABLE)
       {
          iFlags = (iFlags & ~MOVEON_NO);
+         return iFlags;
+      }
+
+      oHide = Send(SYS,@FindSkillByNum,#skill_num=SKID_HIDE);
+      If Send(oHide,@IsHiding,#who=self)
+      {
+         iFlags = iFlags | LOOK_NO;
+         iFlags = (iFlags & ~MOVEON_NO & ~BATTLER_YES & ~OFFER_YES & ~USER_YES);
       }
 
       return iFlags;
@@ -8506,6 +8515,20 @@ messages:
    IsAutolooting()
    {
       return pbAutoloot;
+   }
+
+   SpellCast(who = $, oSpell = $, lItems = $)
+   "Notification sent when a spell is cast in the room."
+   {
+      local oPerception;
+
+      if Send(self,@GetSkillAbility,#skill_num=SKID_PERCEPTION) > 0
+      {
+         oPerception = Send(SYS,@FindSkillByNum,#num=SKID_PERCEPTION);
+         Send(oPerception,@DoSkill,#who=self,#caster=who,#oSpell=oSpell,#lItems=lItems);
+      }
+
+      propagate;
    }
 
 end

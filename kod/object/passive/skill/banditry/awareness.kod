@@ -26,11 +26,13 @@ resources:
 
    Awareness_skill_intro = "Banditry Lv. 1: The ability to sense when others enter and leave the area."
 
-   Awareness_success_enter = "You sense %s arriving from %s."
+   Awareness_success_enter = "You sense %s entering the area."
    Awareness_success_leave = "You sense %s leaving for %s."
-   Awareness_success_enter_alert = "~BYou sense %s arriving from %s!"
+   Awareness_success_enter_alert = "~BYou sense %s entering the area!"
    Awareness_success_leave_alert = "~BYou sense %s leaving for %s."
    Awareness_sound = wscndwnd.wav
+   
+   Awareness_unknown_name = "someone"
 
 classvars:
 
@@ -63,16 +65,76 @@ messages:
       return Send(who,@GetIntellect);
    }
 
-   SkillFailed(who=$)
+   DoSkill(who=$, oTarget=$)
    {
-      % Override base class behavior to do nothing.  Base class sends a
-      %  spammy message if we fail.
-      return;
-   }
+      local oSneak, iAdversarySneakiness, iAdversaryAgility, iAwareness, iIntellect, chance, sAdversaryName;
 
-   DoSkill(who=$)
-   {
+      if oTarget = $
+         OR NOT IsClass(oTarget,&Player)
+         OR Send(oTarget,@PlayerIsImmortal)
+      {
+         return FALSE;
+      }
       
+      oSneak = Send(SYS,@FindSkillByNum,#num=SKID_SNEAK);
+      if Send(oSneak,@IsSneaking,#who=oTarget)
+      {
+         iAdversarySneakiness = Send(oTarget,@GetSkillAbility,#skill_num=SKID_SNEAK);
+         iAdversaryAgility = Send(oSneak,@GetRequisiteStat,#who=who);
+      }
+      else
+      {
+         iAdversarySneakiness = 0;
+         iAdversaryAgility = 0;
+      }
+      
+      iAwareness = Send(who,@GetSkillAbility,#skill_num=viSkill_num);
+      iIntellect = Send(who,@GetRequisiteStat,#who=who);
+      
+      chance = (iAwareness + (iIntellect/2)) - (iAdversarySneakiness + (iAdversaryAgility/2));
+      chance = bound(chance,0,100);
+      
+      if chance > Random(1,100)
+      {
+         if (Send(oTarget,@IsInvisible)
+            AND NOT Send(who,@CheckPlayerFlag,#flag=PFLAG2_DETECT_INVIS,#flagset=2))
+            OR Send(oTarget,@CheckPlayerFlag,#flag=PFLAG_ANONYMOUS)
+            OR Send(oTarget,@IsMorphed)
+         {
+            sAdversaryName = Awareness_unknown_name;
+         }
+         else
+         {
+            sAdversaryName = Send(oTarget,@GetName);
+         }
+
+         if Send(oTarget,@GetOwner) <> $
+            AND Send(who,@GetOwner) <> $
+         {
+            if Send(oTarget,@GetOwner) = Send(who,@GetOwner)
+            {
+               if Send(who,@AllowPlayerAttack,#victim=oTarget,#report=FALSE,#actual=FALSE)
+               {
+                  Send(who,@MsgSendUser,#message_rsc=Awareness_success_enter_alert,#parm1=sAdversaryName);
+               }
+               else
+               {
+                  Send(who,@MsgSendUser,#message_rsc=Awareness_success_enter,#parm1=sAdversaryName);
+               }
+            }
+            else
+            {
+               if Send(who,@AllowPlayerAttack,#victim=oTarget,#report=FALSE,#actual=FALSE)
+               {
+                  Send(who,@MsgSendUser,#message_rsc=Awareness_success_leave_alert,#parm1=sAdversaryName,#parm2=Send(Send(oTarget,@GetOwner),@GetName));
+               }
+               else
+               {
+                  Send(who,@MsgSendUser,#message_rsc=Awareness_success_leave,#parm1=sAdversaryName,#parm2=Send(Send(oTarget,@GetOwner),@GetName));
+               }
+            }
+         }
+      }
 
       propagate;
    }
