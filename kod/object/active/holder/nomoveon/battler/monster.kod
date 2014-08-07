@@ -278,6 +278,9 @@ classvars:
 
    viFaction = FACTION_NEUTRAL
 
+   % Monsters can avoid attacks by tumbling
+   viTumbling = 0
+
 properties:
 
    piAnimation = ANIM_NONE
@@ -6042,6 +6045,11 @@ messages:
    GetBaseResistances()
    {
       return plResistances;
+   }
+
+   GetAgility()
+   {
+      return piAgility;
    }
 
 end

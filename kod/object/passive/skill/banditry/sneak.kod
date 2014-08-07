@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sneak is Skill
+Sneak is BanditrySkill
 
 constants:
 
@@ -42,7 +42,7 @@ classvars:
 
    viSkill_num = SKID_SNEAK
    viSchool = SKS_BANDITRY
-   viSkill_Level = 4
+   viSkill_Level = 3
    viChance_to_Increase = 10
    viMeditate_ratio = 30
 

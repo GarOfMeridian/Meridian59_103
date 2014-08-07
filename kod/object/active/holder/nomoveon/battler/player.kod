@@ -1038,6 +1038,9 @@ properties:
    ptPhaseVisualEffectTimer = $
    piRemainingPhaseTime = 60000 * 8
 
+   % Banditry stance object
+   poStance = $
+
 messages:
 
    Constructor()
@@ -1125,6 +1128,8 @@ messages:
       Send(Send(SYS,@GetAssassinGame),@RemoveFromGame,#who=self);
       Send(Send(SYS,@GetLore),@PlayerSuicides,#who=self);
       plSchools = $;
+      
+      poStance = $;
       
       propagate;
    }
@@ -4644,6 +4649,11 @@ messages:
          iOffense = iOffense / 2;
       }
 
+      if Send(self,@GetStance) <> $
+      {
+         iOffense = Send(Send(self,@GetStance),@LastPriorityModifyHitRoll,#who=self,#what=what,#hit_roll=iOffense);
+      }
+
       % The universal modifier.
       iOffense = iOffense + ((iOffense * piFlags3) / 100);
 
@@ -4691,6 +4701,11 @@ messages:
       }
 
       iDefense = iDefense + Send(Send(SYS,@GetParliament),@GetFactionDefenseBonus,#who=self);
+
+      if Send(self,@GetStance) <> $
+      {
+         iDefense = Send(Send(self,@GetStance),@LastPriorityModifyDefensePower,#who=self,#what=what,#defense_power=iDefense);
+      }
 
       % The universal modifier.
       iDefense = iDefense + ((iDefense * piFlags3) / 100);
@@ -4990,6 +5005,17 @@ messages:
 
          % Add attmods AFTER resistance/suscep mods.    
          damage = damage + bonus;               
+      }
+      
+      if IsClass(what,&Player)
+         AND Send(what,@GetStance) <> $
+      {
+         damage = Send(Send(what,@GetStance),@LastPriorityModifyDamage,#who=what,#what=self,#damage=damage);
+      }
+      
+      if Send(self,@GetStance) <> $
+      {
+         damage = Send(Send(what,@GetStance),@LastPriorityModifyDefenseDamage,#who=self,#what=what,#damage=damage);
       }
       
       iDuration = 800;
@@ -10962,6 +10988,8 @@ messages:
       Send(self,@RemoveAllEnchantments);
       Send(self,@RecalcBulkAndWeight);
       Send(self,@ResetPlayerFlagList);
+      
+      poStance = $;
 
       if ptSecondWind <> $
       {
@@ -13822,6 +13850,23 @@ messages:
    {
       piRemainingPhaseTime = amount;
       return;
+   }
+
+   ClearStance()
+   {
+      poStance = $;
+      return;
+   }
+   
+   BeginStance(stance=$)
+   {
+      poStance = stance;
+      return;
+   }
+   
+   GetStance()
+   {
+      return poStance;
    }
 
 end

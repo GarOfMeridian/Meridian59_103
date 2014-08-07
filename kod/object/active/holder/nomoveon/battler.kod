@@ -320,7 +320,7 @@ messages:
    % For a monster, the stroke_obj is itself.
    TryAttack(what = $,stroke_obj=$)
    {
-      local iChanceToHit, iDamage, iPreliminary, oWeapon;
+      local iChanceToHit, iDamage, iPreliminary, oWeapon, oTumble;
 
       oWeapon = Send(self,@GetWeapon);
 
@@ -334,6 +334,16 @@ messages:
                      / Send(what,@GetDefense,#what=self,
                             #stroke_obj=stroke_obj);
       iChanceToHit = bound(iChanceToHit,125,2000);
+      
+      If Send(what,@GetTumbling) > 0
+      {
+         oTumble = Send(SYS,@FindSkillByNum,#num=SKID_TUMBLE);
+         If Send(oTumble,@AttemptTumble,#who=what,#what=self)
+         {
+            return FALSE;
+         }
+      }
+      
       if iChanceToHit >= random(1,1000)
       {
          % We hit!
@@ -1094,6 +1104,16 @@ messages:
       }
       
       return 0;
+   }
+   
+   GetTumbling()
+   {
+      If IsClass(self,&Player)
+      {
+         return Send(self,@GetSkillAbility,#skill_num=SKID_TUMBLING);
+      }
+
+      return viTumbling;
    }
 
 end
