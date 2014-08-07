@@ -1110,10 +1110,10 @@ messages:
    {
       If IsClass(self,&Player)
       {
-         return Send(self,@GetSkillAbility,#skill_num=SKID_TUMBLING);
+         return Send(self,@GetSkillAbility,#skill_num=SKID_TUMBLE);
       }
 
-      return viTumbling;
+      return 0;
    }
 
 end

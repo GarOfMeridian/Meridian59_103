@@ -6052,5 +6052,11 @@ messages:
       return piAgility;
    }
 
+   
+   GetTumbling()
+   {
+      return viTumbling;
+   }
+   
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

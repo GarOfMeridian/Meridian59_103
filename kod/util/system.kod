@@ -3360,6 +3360,21 @@ messages:
 
        Send(self,@CreateOneSKillIfNew,#num=SKID_SECOND_WIND,#class=&SecondWind);
        Send(self,@CreateOneSKillIfNew,#num=SKID_DISARM,#class=&Disarm);
+       
+       Send(self,@CreateOneSKillIfNew,#num=SKID_AWARENESS,#class=&Awareness);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_LIGHT_FEET,#class=&LightFeet);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_STAB,#class=&Stab);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_PROFICIENCY_DAGGER,#class=&DaggerProficiency);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_PERCEPTION,#class=&Perception);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_THROW,#class=&Throw);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_TUMBLE,#class=&Tumble);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_PROFICIENCY_THROW,#class=&ThrowingProficiency);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_SNEAK,#class=&Sneak);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_HIDE,#class=&Hide);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_SWIFT_HANDS,#class=&SwiftHands);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_HEAVY_ARMS,#class=&HeavyArms);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_RECKLESS_HEART,#class=&RecklessHeart);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_FOCUSED_MIND,#class=&FocusedMind);
 
        return;
    }
@@ -5142,6 +5157,7 @@ messages:
       plItemTemplates = cons(create(&GemRemove),plItemTemplates);
       
       plItemTemplates = cons(create(&ReagentBag),plItemTemplates);
+      plItemTemplates = cons(create(&Dagger),plItemTemplates);
       
       return;
    }

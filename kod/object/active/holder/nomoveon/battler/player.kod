@@ -4504,6 +4504,13 @@ messages:
 
          if iDist > iSquareRange
          {
+            if use_weapon <> $
+               AND IsClass(use_weapon,&Dagger)
+            {
+               Post(self,@TryAttack,#what=oTarget,#use_weapon=$,#stroke_obj=Send(SYS,@FindSkillByNum,#num=SKID_THROW));
+               return FALSE;
+            }
+            
             Send(self,@SendAttackOutOfRangeMessage,#what=oFinalTarget,
                  #use_weapon=use_weapon,#stroke_obj=stroke_obj);
          
@@ -13858,9 +13865,9 @@ messages:
       return;
    }
    
-   BeginStance(stance=$)
+   BeginStance(what=$)
    {
-      poStance = stance;
+      poStance = what;
       return;
    }
    

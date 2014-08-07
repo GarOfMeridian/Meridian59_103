@@ -64,7 +64,7 @@ messages:
       }
       
       Send(who,@ClearStance);
-      Send(who,@BeginStance,#stance=self);
+      Send(who,@BeginStance,#what=self);
 
       return;
    }
