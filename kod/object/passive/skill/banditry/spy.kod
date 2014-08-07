@@ -1,0 +1,60 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Spy is BanditrySkill
+
+constants:
+
+   include blakston.khd
+   include protocol.khd   
+
+resources:
+
+   Spy_name_rsc = "spy"
+   Spy_icon_rsc = isecwind.bgf
+   Spy_desc_rsc = "Allows someone who is moving stealthily to peer into the next room."
+
+classvars:
+
+   vrName = Spy_name_rsc
+   vrIcon = Spy_icon_rsc
+   vrDesc = Spy_desc_rsc
+
+   viIndefinite = ARTICLE_NONE
+   viDefinite = ARTICLE_NONE
+
+   viSkill_num = SKID_SPY
+   viSchool = SKS_BANDITRY
+   viSkill_Level = 4
+   viChance_to_Increase = 20
+   viMeditate_ratio = 90
+
+   viSkillExertion = 0
+   vbCheck_exertion = FALSE
+
+   vbAutomatic = TRUE
+
+properties:
+
+messages:
+
+   GetRequisiteStat(who=$)
+   {
+      return Send(who,@GetAgility);
+   }
+
+   DoSkill(who=$, oTarget=$)
+   {
+
+      propagate;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
