@@ -2989,10 +2989,22 @@ messages:
             Send(self,@BreakTrance,#event=EVENT_RUN); 
          }
 
+         If Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
+         }
+
 		 % stop dance
          if Send(self,@CheckPlayerFlag,#flag=PFLAG2_DANCING,#flagset=2)
          { 
             Send(self,@StopDancing);
+         }
+      }
+      else
+      {
+         If Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@DoSkill,#who=self);
          }
       }
 	  
@@ -6116,7 +6128,7 @@ messages:
    NewOwner(what = $)
    "A user has a new owner when they enter a new room."
    {
-      local old;
+      local old, oAwareness, oObject, oPlayer;
 
       old = $;
       Send(self,@CancelIfOffer);
@@ -6172,6 +6184,16 @@ messages:
          {
             Send(self,@CheckLeavingNewbieOrGuest,#leaving=old);
             Send(self,@CheckTokenInNewRoom,#what=old);
+
+            for oObject in Send(old,@GetHolderActive)
+            {
+               oPlayer = Send(old,@HolderExtractObject,#data=oObject);
+               If IsClass(oPlayer,&User)
+                  AND Send(oPlayer,@GetSkillAbility,#skill_num=SKID_AWARENESS) > 0
+               {
+                  Send(Send(SYS,@FindSkillByNum,#num=SKID_AWARENESS),@DoSkill,#who=oPlayer,#oTarget=self);
+               }
+            }
          }
          
          % If room is no combat and safe logoff, record it as the player's last safe location
@@ -6189,6 +6211,16 @@ messages:
          {
             Send(self,@ToCliPlayer);
             Send(self,@ToCliRoomContents);
+         }
+         
+         for oObject in Send(poOwner,@GetHolderActive)
+         {
+            oPlayer = Send(poOwner,@HolderExtractObject,#data=oObject);
+            If IsClass(oPlayer,&User)
+               AND Send(oPlayer,@GetSkillAbility,#skill_num=SKID_AWARENESS) > 0
+            {
+               Send(Send(SYS,@FindSkillByNum,#num=SKID_AWARENESS),@DoSkill,#who=oPlayer,#oTarget=self);
+            }
          }
       }
       
@@ -7950,7 +7982,7 @@ messages:
          return iFlags;
       }
 
-      oHide = Send(SYS,@FindSkillByNum,#skill_num=SKID_HIDE);
+      oHide = Send(SYS,@FindSkillByNum,#num=SKID_HIDE);
       If Send(oHide,@IsHiding,#who=self)
       {
          iFlags = iFlags | LOOK_NO;

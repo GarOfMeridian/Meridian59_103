@@ -89,7 +89,7 @@ messages:
       }
       
       iAwareness = Send(who,@GetSkillAbility,#skill_num=viSkill_num);
-      iIntellect = Send(who,@GetRequisiteStat,#who=who);
+      iIntellect = Send(self,@GetRequisiteStat,#who=who);
       
       chance = (iAwareness + (iIntellect/2)) - (iAdversarySneakiness + (iAdversaryAgility/2));
       chance = bound(chance,0,100);

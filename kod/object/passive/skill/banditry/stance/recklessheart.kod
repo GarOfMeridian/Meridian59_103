@@ -73,7 +73,7 @@ messages:
 
       Send(self,@ImproveAbility,#who=who,#target=what);  
       
-      return damage * (iDamageBonus / 100);
+      return damage * iDamageBonus / 100;
    }
 
    LastPriorityModifyDefenseDamage(who=$,what=$,damage=$)
@@ -88,7 +88,7 @@ messages:
 
       Send(self,@ImproveAbility,#who=who,#target=what);  
       
-      return damage * (iDamageBonus / 100);
+      return damage * iDamageBonus / 100;
    }
 
 

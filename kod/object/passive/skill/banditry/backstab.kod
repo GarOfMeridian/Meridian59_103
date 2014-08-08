@@ -21,8 +21,6 @@ resources:
    Backstab_icon_rsc = isecwind.bgf
    Backstab_desc_rsc = "With the proper skill and timing, any attack can be made lethal."
 
-   Backstab_skill_intro = "Banditry Lv. 5: An advanced attack skill."
-   
    Backstab_success = "Seeing a weak point, you strike %s in the back!"
 
 classvars:
@@ -56,16 +54,33 @@ messages:
       return Send(who,@GetAgility);
    }
    
-   AttemptBackstab(who=$, what=$)
+   PriorityModifyDamage(who=$,what=$,damage=$)
    {
-      local chance, iAgility, iAbility;
-      
+      local chance, iAgility, iAbility, iTargetHealth, iTargetMaxHealth, iDamageBonus;
+
       % This skill can be used by both players and monsters.
       iAgility = Send(who,@GetAgility);
-      iAbility = Send(who,@GetTumbling);
+      iAbility = Send(who,@GetSkillAbility,#skill_num=SKID_BACKSTAB);
       
+      iTargetHealth = Send(what,@GetHealth);
+      if IsClass(what,&Player)
+      {
+         iTargetMaxHealth = Send(what,@GetMaxHealth);
+      }
+      if IsClass(what,&Monster)
+      {
+         iTargetMaxHealth = Send(what,@GetMaxHitPoints);
+      }
       
-      return FALSE;
+      if iTargetHealth >= iTargetMaxHealth * 9 / 10
+      {
+         iDamageBonus = 100 + ((iAbility+1) / 5) + (iAgility / 10);
+         iDamageBonus = Bound(iDamageBonus,100,127);
+         
+         return damage * iDamageBonus / 100;
+      }
+      
+      return damage;
    }
 
 end

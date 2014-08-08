@@ -10843,8 +10843,8 @@ messages:
    {
       local i, oEnch,state, bFound, oYellNum, oYellRoom, oHide, oSneak;
 
-      oHide = Send(SYS,@FindSkillByNum,#skill_num=SKID_HIDE);
-      oSneak = Send(SYS,@FindSkillByNum,#skill_num=SKID_SNEAK);
+      oHide = Send(SYS,@FindSkillByNum,#num=SKID_HIDE);
+      oSneak = Send(SYS,@FindSkillByNum,#num=SKID_SNEAK);
       
       if event <> EVENT_NEWOWNER
       {

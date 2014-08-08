@@ -73,7 +73,7 @@ messages:
 
       Send(self,@ImproveAbility,#who=who,#target=what);  
       
-      return hit_roll * (iHitRollBonus / 100);
+      return hit_roll * iHitRollBonus / 100;
    }
 
    LastPriorityModifyDefensePower(who=$,what=$,defense_power=0)
@@ -88,7 +88,7 @@ messages:
 
       Send(self,@ImproveAbility,#who=who,#target=what);  
       
-      return defense_power * ((100-iDefensePenalty) / 100);
+      return defense_power * (100-iDefensePenalty) / 100;
    }
 
 

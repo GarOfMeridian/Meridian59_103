@@ -67,7 +67,7 @@ messages:
 
       Send(self,@ImproveAbility,#who=who);  
 
-      return exertion * ((100-iExertionReduction) / 100);
+      return exertion * (100-iExertionReduction) / 100;
    }
 
 end

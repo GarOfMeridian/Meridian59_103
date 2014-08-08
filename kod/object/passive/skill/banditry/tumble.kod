@@ -17,7 +17,7 @@ constants:
 
 resources:
 
-   Tumble_name_rsc = "Tumble"
+   Tumble_name_rsc = "tumble"
    Tumble_icon_rsc = isecwind.bgf
    Tumble_desc_rsc = "Skilled fighters can entirely tumble out of the way of an attack."
 
