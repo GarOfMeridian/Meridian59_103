@@ -95,6 +95,10 @@ messages:
       {
          plHiding = Cons(who,plHiding);
          Send(who,@MsgSendUser,#message_rsc=begin_hiding_rsc);
+         If Send(who,@GetOwner) <> $
+         {
+            Post(Send(who,@GetOwner),@SomethingChanged,#what=who);
+         }
       }
 
       return;
@@ -107,6 +111,10 @@ messages:
       {
          plHiding = DelListElem(plHiding,who);
          Send(who,@MsgSendUser,#message_rsc=hide_stop);
+         If Send(who,@GetOwner) <> $
+         {
+            Post(Send(who,@GetOwner),@SomethingChanged,#what=who);
+         }
       }
 
       return;

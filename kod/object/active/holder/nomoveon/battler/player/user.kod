@@ -396,6 +396,11 @@ properties:
    piCheaterLogs = 0
 
    pbAutoloot = TRUE
+   
+   ptSneakTimer = $
+   piAccruedSneak = 0
+   ptHideTimer = $
+   piAccruedHide = 0
 
 messages:
 
@@ -2983,15 +2988,28 @@ messages:
 			return;
          }
 
-		 % break trance
-         if (piFlags & PFLAG_TRANCE)
-         { 
-            Send(self,@BreakTrance,#event=EVENT_RUN); 
-         }
+         Send(self,@BreakTrance,#event=EVENT_RUN);
 
          If Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
          {
-            Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
+    %        Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
+            piAccruedSneak = 0;
+            if ptSneakTimer <> $
+            {
+               DeleteTimer(ptSneakTimer);
+               ptSneakTimer = $;
+            }
+         }
+
+         If Send(self,@GetSkillAbility,#skill_num=SKID_HIDE) > 0
+         {
+        %    Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@StopHiding,#who=self);
+            piAccruedHide = 0;
+            if ptHideTimer <> $
+            {
+               DeleteTimer(ptHideTimer);
+               ptHideTimer = $;
+            }
          }
 
 		 % stop dance
@@ -3002,9 +3020,17 @@ messages:
       }
       else
       {
-         If Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
+         if ptSneakTimer = $
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
          {
-            Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@DoSkill,#who=self);
+            ptSneakTimer = CreateTimer(self,@AttemptSneak,1000);
+         }
+         
+         if ptHideTimer = $
+            AND Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking,#who=self)
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_HIDE) > 0
+         {
+            ptHideTimer = CreateTimer(self,@AttemptHide,1000);
          }
       }
 	  
@@ -3053,6 +3079,36 @@ messages:
            #fine_row=fine_row,#fine_col=fine_col,
            #cause=CAUSE_USER_INPUT,#speed=speed);
 		   
+      return;
+   }
+   
+   AttemptSneak()
+   {
+      ptSneakTimer = $;
+      
+      piAccruedSneak = piAccruedSneak + 1000;
+
+      if Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
+         AND piAccruedSneak > 4000
+      {
+         piAccruedSneak = 0;
+         Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@DoSkill,#who=self);
+      }
+      return;
+   }
+   
+   AttemptHide()
+   {
+      ptHideTimer = $;
+      
+      piAccruedHide = piAccruedHide + 1000;
+      
+      if Send(self,@GetSkillAbility,#skill_num=SKID_HIDE) > 0
+         AND piAccruedHide > 4000
+      {
+         piAccruedHide = 0;
+         Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@DoSkill,#who=self);
+      }
       return;
    }
 
@@ -4732,11 +4788,8 @@ messages:
       {
          Send(self,@NotifyMonstersOfPresence);
       }
-      
-      if piFlags & PFLAG_TRANCE
-      {
-         Send(self,@BreakTrance,#event=EVENT_ATTACK);
-      }
+
+      Send(self,@BreakTrance,#event=EVENT_ATTACK);
 
       if Send(self,@CheckPlayerFlag,#flag=PFLAG_NO_FIGHT)
       {  
@@ -7979,14 +8032,12 @@ messages:
       if NOT Send(self,@CheckPlayerFlag,#flag=PFLAG_PKILL_ENABLE)
       {
          iFlags = (iFlags & ~MOVEON_NO);
-         return iFlags;
       }
 
       oHide = Send(SYS,@FindSkillByNum,#num=SKID_HIDE);
       If Send(oHide,@IsHiding,#who=self)
       {
-         iFlags = iFlags | LOOK_NO;
-         iFlags = (iFlags & ~MOVEON_NO & ~BATTLER_YES & ~OFFER_YES & ~USER_YES);
+         iFlags = (iFlags & ~BATTLER_YES);
       }
 
       return iFlags;

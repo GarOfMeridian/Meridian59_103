@@ -22,10 +22,13 @@ resources:
    Dagger_desc_rsc = \
    "This elegant blade looks like it would fit snugly between a pair of shoulder blades."
 
+   dagger_ammo_name = "throwing dagger"
+
 classvars:
 
    vrName = Dagger_name_rsc
    vrIcon = Dagger_icon_rsc
+   vrDesc = Dagger_desc_rsc
 
    viWeaponType = WEAPON_TYPE_THRUST
    viWeaponQuality = WEAPON_QUALITY_LOW
@@ -54,6 +57,11 @@ messages:
    GetParryAbility(who=$)
    {
       return send(who,@GetSkillAbility,#skill_num=SKID_PARRY) * 2;
+   }
+
+   GetAttackName()
+   {
+      return dagger_ammo_name;      
    }
 
 

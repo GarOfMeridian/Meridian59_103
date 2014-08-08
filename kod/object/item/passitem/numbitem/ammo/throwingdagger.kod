@@ -19,7 +19,7 @@ resources:
    throwing_dagger_name_rsc = "throwing daggers"
    throwing_dagger_icon_rsc = bkswd.bgf
    throwing_dagger_desc_rsc = \
-      "These wicked blades are elegantly carved to throwable at range."
+      "These wicked blades are elegantly carved to be throwable at range."
 
 classvars:
 
@@ -27,6 +27,7 @@ classvars:
    vrIcon = throwing_dagger_icon_rsc
    vrDesc = throwing_dagger_desc_rsc
 
+   viUse_type = ITEM_USE_THROWING_DAGGERS
    viAmmo_type = AMMO_DAGGER
    viValue_average = 20
 
@@ -37,8 +38,8 @@ classvars:
    viBulk = 35
    viWeight = 25
 
-   viMinDamage = 2
-   viMaxDamage = 6
+   viMinDamage = 1
+   viMaxDamage = 4
 
 properties:
 

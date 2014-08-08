@@ -72,6 +72,7 @@ messages:
       if oTarget = $
          OR NOT IsClass(oTarget,&Player)
          OR Send(oTarget,@PlayerIsImmortal)
+         OR who = oTarget
       {
          return FALSE;
       }

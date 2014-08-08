@@ -1614,6 +1614,7 @@
    ITEM_USE_SHIRT = 0x0800
    % In theory, used for masks.
    ITEM_USE_FACE = 0x1000
+   ITEM_USE_THROWING_DAGGERS = 0x2000
 
    ITEMTYPE_MISC =     0
    ITEMTYPE_WEAPON =   0x000001
@@ -1726,6 +1727,7 @@
    % Missile weapons ammo-type, determined by each missile weapon.
    AMMO_ARROW = 1
    AMMO_BOLT  = 2
+   AMMO_DAGGER = 3
 
    %%% Attack types
 

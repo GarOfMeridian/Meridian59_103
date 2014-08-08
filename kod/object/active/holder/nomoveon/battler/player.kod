@@ -5022,7 +5022,7 @@ messages:
       
       if Send(self,@GetStance) <> $
       {
-         damage = Send(Send(what,@GetStance),@LastPriorityModifyDefenseDamage,#who=self,#what=what,#damage=damage);
+         damage = Send(Send(self,@GetStance),@LastPriorityModifyDefenseDamage,#who=self,#what=what,#damage=damage);
       }
       
       iDuration = 800;
@@ -10841,15 +10841,15 @@ messages:
 
    BreakTrance(event = 0, what = $)
    {
-      local i, oEnch,state, bFound, oYellNum, oYellRoom, oHide, oSneak;
-
-      oHide = Send(SYS,@FindSkillByNum,#num=SKID_HIDE);
-      oSneak = Send(SYS,@FindSkillByNum,#num=SKID_SNEAK);
+      local i, oEnch,state, bFound, oYellNum, oYellRoom;
       
-      if event <> EVENT_NEWOWNER
+      if event = EVENT_RUN
+         OR event = EVENT_ATTACK
+         OR event = EVENT_DAMAGE
+         OR event = EVENT_REST
       {
-         Send(oHide,@StopHiding,#who=self);
-         Send(oSneak,@StopSneaking,#who=self);
+         Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@StopHiding,#who=self);
+         Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
       }
 
       bFound = FALSE;
@@ -13862,12 +13862,19 @@ messages:
    ClearStance()
    {
       poStance = $;
+      Post(self,@DrawOffense);
+      Post(self,@DrawDefense);
+      
       return;
    }
    
    BeginStance(what=$)
    {
       poStance = what;
+      
+      Post(self,@DrawOffense);
+      Post(self,@DrawDefense);
+      
       return;
    }
    

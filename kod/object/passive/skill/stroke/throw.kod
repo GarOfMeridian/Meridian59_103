@@ -20,6 +20,9 @@ resources:
    throw_desc_rsc = "Allows a trained warrior to throw daggers."
 
    throw_skill_intro = "Banditry Lv. 3: Basic skill at throwing small blades."
+   
+   dagger_new_ammo = "You reach for your %s and fling one forward."
+   dagger_no_ammo = "You have no throwing daggers ready!"
 
 classvars:
 
@@ -71,7 +74,7 @@ messages:
 
       for i in Send(who,@GetPlayerUsing)
       {
-         if Send(i,@GetItemUseType) = ITEM_USE_QUIVER
+         if Send(i,@GetItemUseType) = ITEM_USE_THROWING_DAGGERS
          {
             oLikelyAmmo = i;
          }
@@ -86,7 +89,7 @@ messages:
 
          for i in Send(who,@GetHolderPassive)
          {
-            if (Send(i,@GetItemUseType) = ITEM_USE_QUIVER)
+            if (Send(i,@GetItemUseType) = ITEM_USE_THROWING_DAGGERS)
                AND (Send(i,@GetAmmoType) = cAmmoType)
                AND ((Send(i,@GetValue)/Send(i,@GetNumber)) < iAmmoValue)
             {
@@ -103,7 +106,7 @@ messages:
 
       if report AND (oLikelyAmmo = $)
       {
-         Send(who,@MsgSendUser,#message_rsc=fire_no_ammo);
+         Send(who,@MsgSendUser,#message_rsc=dagger_no_ammo);
       }
 
       return oLikelyAmmo;
@@ -135,11 +138,11 @@ messages:
       oAmmo = Send(self,@FindLikelyAmmo,#who=who);
       if oAmmo = $
       {
-         Send(who,@MsgSendUser,#message_rsc=fire_no_ammo);
+         Send(who,@MsgSendUser,#message_rsc=dagger_no_ammo);
          return;
       }
 
-      Send(who,@MsgSendUser,#message_rsc=fire_new_ammo,
+      Send(who,@MsgSendUser,#message_rsc=dagger_new_ammo,
         #parm1=Send(oAmmo,@GetName));
 
       Send(Send(who,@GetOwner),@SomethingShot,#who=who,
