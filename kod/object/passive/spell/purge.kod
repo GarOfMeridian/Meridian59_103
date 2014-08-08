@@ -157,7 +157,7 @@ messages:
          }
       }
 
-      Send(self,@DoPurge,#who=oTarget,#iChance=iSpellPower);
+      Send(self,@DoPurge,#who=oTarget,#what=who,#iChance=iSpellPower);
 
       propagate;
    }
@@ -177,7 +177,7 @@ messages:
       propagate;
    }
 
-   DoPurge(who=$,iChance=$)
+   DoPurge(who=$,what=$,iChance=$)
    "Remove positive enchantments on who with a given chance to remove each one."
    {
       local iNumEnchantments, lEnchantments, iModifiedChance, oEnchantment,
@@ -196,6 +196,13 @@ messages:
          Send(who,@RemoveAllPersonalEnchantments);
 
          return TRUE;
+      }
+
+      if IsClass(oTarget,&Player)
+         AND Send(oTarget,@GetResistanceAmulet) <> $
+         AND Send(Send(oTarget,@GetResistanceAmulet),@GetType) = SID_PURGE
+      {
+         iChance = Send(Send(oTarget,@GetResistanceAmulet),@DoResistance,#who=what,#what=oTarget,#oSpell=self,#chance=iChance);
       }
 
       bRemovedSomething = FALSE;

@@ -5170,6 +5170,10 @@ messages:
       
       plItemTemplates = cons(create(&ReagentBag),plItemTemplates);
       
+      plItemTemplates = cons(create(&ResistanceAmulet),plItemTemplates);
+      plItemTemplates = cons(create(&PurgeResistanceAmulet),plItemTemplates);
+      plItemTemplates = cons(create(&HoldResistanceAmulet),plItemTemplates);
+      
       return;
    }
 
