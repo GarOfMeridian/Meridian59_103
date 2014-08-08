@@ -24,7 +24,8 @@ resources:
 
    ResistanceAmulet_used_rsc = \
       "As you put the amulet on, light seems to radiate around your eyes."
-      
+
+   ResistanceAmulet_cannot_equip_here_rsc = "It doesn't seem safe to try to bond with the amulet out here."
    ResistanceAmulet_cannot_switch_here_rsc = "The amulet clings to your neck, and your soul. You must return to a place of safety to remove it."
    
    ResistanceAmulet_resisting_rsc = "The amulet worn by %s partially resists your spell!"
@@ -54,6 +55,21 @@ messages:
       send(poOwner,@MsgSendUser,#message_rsc=use_string);
 
       propagate;
+   }
+   
+   ReqUse()
+   {
+      if poOwner <> $
+         AND Send(poOwner,@GetOwner) <> $
+         AND IsClass(Send(poOwner,@GetOwner),&Room)
+         AND Send(Send(poOwner,@GetOwner),@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+      {
+         return TRUE;
+      }
+      
+      send(poOwner,@MsgSendUser,#message_rsc=ResistanceAmulet_cannot_equip_here_rsc);
+      
+      return FALSE;
    }
 
    ReqUnuse()
