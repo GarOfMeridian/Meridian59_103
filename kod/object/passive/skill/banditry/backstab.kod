@@ -29,8 +29,6 @@ classvars:
    vrIcon = Backstab_icon_rsc
    vrDesc = Backstab_desc_rsc
 
-   vrSkill_intro = Backstab_skill_intro
-
    viIndefinite = ARTICLE_NONE
    viDefinite = ARTICLE_NONE
 

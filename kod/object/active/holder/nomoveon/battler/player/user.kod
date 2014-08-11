@@ -2464,6 +2464,13 @@ messages:
             continue;
          }
 
+         if IsClass(oThing,&User)
+            AND Send(oThing,@IsSpying)
+            AND oThing <> self
+         {
+            continue;
+         }
+
          objs = objs + 1;
       }
 
@@ -2476,6 +2483,13 @@ messages:
          % Don't do stealthed DMs.
          if IsClass(oThing,&DM)
             AND Send(oThing,@IsDMStealthed)
+            AND oThing <> self
+         {
+            continue;
+         }
+
+         if IsClass(oThing,&User)
+            AND Send(oThing,@IsSpying)
             AND oThing <> self
          {
             continue;
@@ -6310,6 +6324,13 @@ messages:
          return;
       }
 
+      if IsClass(what,&User)
+         AND Send(what,@IsSpying)
+         AND what <> self
+      {
+         return;
+      }
+
       if pbLogged_on
       {
          AddPacket(1,BP_CREATE);
@@ -6334,6 +6355,13 @@ messages:
          return;
       }
 
+      if IsClass(what,&User)
+         AND Send(what,@IsSpying)
+         AND what <> self
+      {
+         return;
+      }
+
       if pbLogged_on
       {
          AddPacket(1,BP_REMOVE,4,what);
@@ -6350,6 +6378,13 @@ messages:
 
       if IsClass(what,&DM)
          AND Send(what,@IsDMStealthed)
+         AND what <> self
+      {
+         return;
+      }
+
+      if IsClass(what,&User)
+         AND Send(what,@IsSpying)
          AND what <> self
       {
          return;
@@ -6386,6 +6421,13 @@ messages:
       if IsClass(what,&DM)
          AND Send(what,@IsDMStealthed)
          AND what <> self         
+      {
+         return;
+      }
+
+      if IsClass(what,&User)
+         AND Send(what,@IsSpying)
+         AND what <> self
       {
          return;
       }
@@ -6720,6 +6762,13 @@ messages:
 
       if IsClass(what,&DM)
          AND Send(what,@IsDMStealthed)
+         AND what <> self
+      {
+         return;
+      }
+
+      if IsClass(what,&User)
+         AND Send(what,@IsSpying)
          AND what <> self
       {
          return;

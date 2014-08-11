@@ -1041,6 +1041,9 @@ properties:
    % Banditry stance object
    poStance = $
 
+   % If true, player does not load as an object to others
+   pbSpying = FALSE
+
 messages:
 
    Constructor()
@@ -13881,6 +13884,17 @@ messages:
    GetStance()
    {
       return poStance;
+   }
+   
+   IsSpying()
+   {
+      return pbSpying;
+   }
+   
+   SetSpying(value=FALSE)
+   {
+      pbSpying = value;
+      return;
    }
 
 end

@@ -50,6 +50,11 @@ messages:
       return Send(who,@GetAgility);
    }
 
+   % Creates a Reflection without a Brain (or superior held?)
+   % Sends player in super invis like an admin for 2 seconds, player is super held
+   % Returns player to reflection location, deletes reflection
+   % if reflection is attacked spy is cancelled and player is returned
+   % if check fails, player stumbles into next zone
    DoSkill(who=$, oTarget=$)
    {
 
