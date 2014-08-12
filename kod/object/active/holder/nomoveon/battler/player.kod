@@ -1043,6 +1043,7 @@ properties:
 
    % If true, player does not load as an object to others
    pbSpying = FALSE
+   ptSpyTimer = $
 
 messages:
 
@@ -13893,7 +13894,58 @@ messages:
    
    SetSpying(value=FALSE)
    {
+      local lObjects, i, oObject;
+
+      if pbSpying = TRUE
+         AND value = FALSE
+      {
+         lObjects = Send(poOwner,@GetHolderActive);
+         for i in lObjects
+         {
+            oObject = Send(poOwner,@HolderExtractObject,#data=i);
+            if IsClass(oObject,&User)
+            {
+               Post(oObject,@SomethingEntered,#what=self);
+            }
+         }
+      }
+
+      if pbSpying = FALSE
+         AND value = TRUE
+      {
+         lObjects = Send(poOwner,@GetHolderActive);
+         for i in lObjects
+         {
+            oObject = Send(poOwner,@HolderExtractObject,#data=i);
+            if IsClass(oObject,&User)
+            {
+               Send(oObject,@SomethingLeft,#what=self);
+            }
+         }
+         ptSpyTimer = CreateTimer(self,@SpyTimer,4000);
+      }
+
       pbSpying = value;
+      return;
+   }
+   
+   SpyTimer()
+   {
+      if ptSpyTimer <> $
+      {
+         DeleteTimer(ptSpyTimer);
+         ptSpyTimer = $;
+      }
+      
+      Send(self,@SpyFailure);
+      
+      return;
+   }
+   
+   SpyFailure()
+   {
+      ptSpyTimer = $;
+      Send(self,@SetSpying,#value=FALSE);
       return;
    }
 

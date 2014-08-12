@@ -20,6 +20,8 @@ resources:
    Spy_name_rsc = "spy"
    Spy_icon_rsc = isecwind.bgf
    Spy_desc_rsc = "Allows someone who is moving stealthily to peer into the next room."
+   
+   Spy_success = "You carefully creep into the next area, as yet unseen."
 
 classvars:
 
@@ -50,13 +52,21 @@ messages:
       return Send(who,@GetAgility);
    }
 
-   % Creates a Reflection without a Brain (or superior held?)
-   % Sends player in super invis like an admin for 2 seconds, player is super held
-   % Returns player to reflection location, deletes reflection
-   % if reflection is attacked spy is cancelled and player is returned
-   % if check fails, player stumbles into next zone
-   DoSkill(who=$, oTarget=$)
+   DoSkill(who=$)
    {
+      local chance, iAgility, iAbility;
+      
+      iAgility = Send(self,@GetRequisiteStat,#who=who);
+      iAbility = Send(who,@GetSkillAbility,#skill_num=viSkill_num);
+      
+      chance = (iAgility/2) + iAbility;
+      chance = bound(chance,5,95);
+      
+      if chance > Random(0,100)
+      {
+         Send(who,@MsgSendUser,#message_rsc=Spy_success);
+         Send(who,@SetSpying,#value=TRUE);
+      }
 
       propagate;
    }

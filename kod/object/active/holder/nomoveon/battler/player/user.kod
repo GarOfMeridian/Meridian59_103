@@ -6195,7 +6195,7 @@ messages:
    NewOwner(what = $)
    "A user has a new owner when they enter a new room."
    {
-      local old, oAwareness, oObject, oPlayer;
+      local old, oAwareness, oObject, oPlayer, oHide, oSpy;
 
       old = $;
       Send(self,@CancelIfOffer);
@@ -6287,6 +6287,16 @@ messages:
                AND Send(oPlayer,@GetSkillAbility,#skill_num=SKID_AWARENESS) > 0
             {
                Send(Send(SYS,@FindSkillByNum,#num=SKID_AWARENESS),@DoSkill,#who=oPlayer,#oTarget=self);
+            }
+         }
+         
+         oHide = Send(SYS,@FindSkillByNum,#num=SKID_HIDE);
+         if Send(oHide,@IsHiding,#who=self)
+         {
+            oSpy = Send(SYS,@FindSkillByNum,#num=SKID_SPY);
+            if Send(self,@GetSkillAbility,#skill_num=SKID_SPY) > 0
+            {
+               Send(oSpy,@DoSkill,#who=self);
             }
          }
       }
