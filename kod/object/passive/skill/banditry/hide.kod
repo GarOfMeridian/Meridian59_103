@@ -18,14 +18,14 @@ constants:
 resources:
 
    Hide_name_rsc = "hide"
-   Hide_icon_rsc = isecwind.bgf
+   Hide_icon_rsc = ifade.bgf
    Hide_desc_rsc = "Allows the user to mask their life energies, thereby avoiding general detection "
                    "and targeting by others. "
                    "Only the most astute adversaries will detect a master of hiding."
 
    Hide_skill_intro = "Banditry Lv. 5: The ability to avoid showing up on other player's mystical sense of the area."
    
-   begin_hiding_rsc = "You attune your spirit to the flow of your surroundings."
+   begin_hiding_rsc = "You mask your spirit and blend in with the natural presence of the area."
    fail_hide_rsc = "You fail to hide your life energies."
    
    hide_stop = "You stop hiding."
@@ -68,6 +68,11 @@ messages:
    {
       local chance, iAgility, iAbility;
       
+      if Send(self,@IsHiding,#who=who)
+      {
+         return;
+      }
+      
       iAgility = Send(self,@GetRequisiteStat,#who=who);
       iAbility = Send(who,@GetSkillAbility,#skill_num=viSkill_num);
       
@@ -98,6 +103,7 @@ messages:
          If Send(who,@GetOwner) <> $
          {
             Post(Send(who,@GetOwner),@SomethingChanged,#what=who);
+            Post(who,@ShowAddEnchantment,#what=self,#type=ENCHANTMENT_PLAYER);
          }
       }
 
@@ -114,6 +120,7 @@ messages:
          If Send(who,@GetOwner) <> $
          {
             Post(Send(who,@GetOwner),@SomethingChanged,#what=who);
+            Post(who,@ShowRemoveEnchantment,#what=self,#type=ENCHANTMENT_PLAYER);
          }
       }
 

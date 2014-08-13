@@ -54,6 +54,23 @@ properties:
 
 messages:
 
+   TryThrow(who=$,what=$,daggers=$)
+   {
+      local damage;
+
+      if Send(self,@CanPayCosts,#who=who,#oTarget=what)
+      {
+         Send(self,@PayCosts,#who=who);
+         damage = Random(Send(daggers,@GetMinDamage),Send(daggers,@GetMaxDamage));
+         
+         damage = Send(self,@DamageFactors,#damage=damage,#who=who,#weapon_used=daggers);
+         
+         Send(what,@AssessDamage,#what=who,#damage=damage,#atype=Send(daggers,@GetDamageType),#aspell=Send(daggers,@GetSpellType));
+      }
+   
+      return;
+   }
+
    FindLikelyAmmo(who=$,report=FALSE)
    {
       local oWeapon, oLikelyAmmo, oAmmo, cAmmoType, iAmmoValue, i;
@@ -162,11 +179,7 @@ messages:
       local iDamage, stat;
 
       iDamage = damage;
-      % Get weapon proficiency bonuses.
-      if weapon_used <> $
-      {
-         iDamage = iDamage + (Send(weapon_used,@GetProf,#who=who)+1)*viMaxProficiencyDamage/100;
-      }
+      iDamage = iDamage + (Send(weapon_used,@GetProf,#who=who)+1)*viMaxProficiencyDamage/100;
 
       % Get Aim damage bonus.
       stat = Send(self,@GetRequisiteStat,#who=who);

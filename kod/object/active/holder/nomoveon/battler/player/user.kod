@@ -3006,7 +3006,6 @@ messages:
 
          If Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
          {
-    %        Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
             piAccruedSneak = 0;
             if ptSneakTimer <> $
             {
@@ -3017,7 +3016,6 @@ messages:
 
          If Send(self,@GetSkillAbility,#skill_num=SKID_HIDE) > 0
          {
-        %    Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@StopHiding,#who=self);
             piAccruedHide = 0;
             if ptHideTimer <> $
             {
@@ -3036,15 +3034,29 @@ messages:
       {
          if ptSneakTimer = $
             AND Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
+            AND NOT Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking)
          {
             ptSneakTimer = CreateTimer(self,@AttemptSneak,1000);
+         }
+
+         if Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking)
+            AND piAccruedSneak <> 0
+         {
+            piAccruedSneak = 0;
          }
          
          if ptHideTimer = $
             AND Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking,#who=self)
             AND Send(self,@GetSkillAbility,#skill_num=SKID_HIDE) > 0
+            AND NOT Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding)
          {
             ptHideTimer = CreateTimer(self,@AttemptHide,1000);
+         }
+
+         if Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding)
+            AND piAccruedHide <> 0
+         {
+            piAccruedHide = 0;
          }
       }
 	  
@@ -3104,6 +3116,7 @@ messages:
 
       if Send(self,@GetSkillAbility,#skill_num=SKID_SNEAK) > 0
          AND piAccruedSneak > 4000
+         AND NOT Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking)
       {
          piAccruedSneak = 0;
          Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@DoSkill,#who=self);
@@ -3119,6 +3132,7 @@ messages:
       
       if Send(self,@GetSkillAbility,#skill_num=SKID_HIDE) > 0
          AND piAccruedHide > 4000
+         AND NOT Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding)
       {
          piAccruedHide = 0;
          Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@DoSkill,#who=self);
@@ -4064,6 +4078,46 @@ messages:
          {
             Send(self,@SetAutoloot,#value=FALSE);
             Send(self,@MsgSendUser,#message_rsc=autoloot_off_msg);
+            return;
+         }
+
+         If StringContain(String,"stance focused mind")
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_FOCUSED_MIND) > 0
+            AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_FOCUSED_MIND)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_FOCUSED_MIND),@BeginStance,#who=self);
+            return;
+         }
+
+         If StringContain(String,"stance reckless heart")
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_RECKLESS_HEART) > 0
+            AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_RECKLESS_HEART)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_RECKLESS_HEART),@BeginStance,#who=self);
+            return;
+         }
+
+         If StringContain(String,"stance heavy arms")
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_HEAVY_ARMS) > 0
+            AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_HEAVY_ARMS)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_HEAVY_ARMS),@BeginStance,#who=self);
+            return;
+         }
+
+         If StringContain(String,"stance swift hands")
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_SWIFT_HANDS) > 0
+            AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_SWIFT_HANDS)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_SWIFT_HANDS),@BeginStance,#who=self);
+            return;
+         }
+
+         If StringContain(String,"stance light feet")
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_LIGHT_FEET) > 0
+            AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_LIGHT_FEET)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_LIGHT_FEET),@BeginStance,#who=self);
             return;
          }
       }

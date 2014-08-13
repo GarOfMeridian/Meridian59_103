@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Dagger is RangedWeapon
+Dagger is Weapon
 
 constants:
 
@@ -59,11 +59,10 @@ messages:
       return send(who,@GetSkillAbility,#skill_num=SKID_PARRY) * 2;
    }
 
-   GetAttackName()
+   GetAmmoType()
    {
-      return dagger_ammo_name;      
+      return vcAmmo;
    }
-
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

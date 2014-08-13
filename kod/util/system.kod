@@ -3376,6 +3376,8 @@ messages:
        Send(self,@CreateOneSKillIfNew,#num=SKID_RECKLESS_HEART,#class=&RecklessHeart);
        Send(self,@CreateOneSKillIfNew,#num=SKID_FOCUSED_MIND,#class=&FocusedMind);
        Send(self,@CreateOneSKillIfNew,#num=SKID_SPY,#class=&Spy);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_BACKSTAB,#class=&Backstab);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_TIGHT_GRIP,#class=&TightGrip);
 
        return;
    }

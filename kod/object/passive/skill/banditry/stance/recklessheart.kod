@@ -25,6 +25,8 @@ resources:
    
    RecklessHeart_begin = "Your heart pounds as you prepare for violence."
    RecklessHeart_end = "Your heartrate slows."
+   
+   reckless_attack_rsc = "You put all your might into your swing!"
 
 classvars:
 
@@ -69,9 +71,9 @@ messages:
 
       % Up to 20% final damage increase from skill, and up to 5% from stat.
       iDamageBonus = 100 + ((iRecklessHeartAbility+1) / 5) + (Bound(iStat-20,0,50) / 10);
-      iDamageBonus = Bound(iDamageBonus,100,120);
+      iDamageBonus = Bound(iDamageBonus,100,205);
 
-      Send(self,@ImproveAbility,#who=who,#target=what);  
+      Send(self,@ImproveAbility,#who=who,#target=what);
       
       return damage * iDamageBonus / 100;
    }
@@ -86,8 +88,8 @@ messages:
       iDamageBonus = 100 + ((iRecklessHeartAbility+1) / 5);
       iDamageBonus = Bound(iDamageBonus,100,120);
 
-      Send(self,@ImproveAbility,#who=who,#target=what);  
-      
+      Send(self,@ImproveAbility,#who=who,#target=what);
+
       return damage * iDamageBonus / 100;
    }
 

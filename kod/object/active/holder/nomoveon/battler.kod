@@ -320,7 +320,7 @@ messages:
    % For a monster, the stroke_obj is itself.
    TryAttack(what = $,stroke_obj=$)
    {
-      local iChanceToHit, iDamage, iPreliminary, oWeapon, oTumble;
+      local iChanceToHit, iDamage, iPreliminary, oWeapon, oTumble, iBackstabDamage, bDoingBackstab;
 
       oWeapon = Send(self,@GetWeapon);
 
@@ -345,6 +345,11 @@ messages:
       }
       
       if iChanceToHit >= random(1,1000)
+         OR (IsClass(self,&Player)
+             AND Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking,#who=self)
+             AND Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding,#who=self)
+             AND Send(self,@GetSkillAbility,#skill_num=SKID_BACKSTAB) > 0
+             AND Send(Send(SYS,@FindSkillByNum,#num=SKID_BACKSTAB),@TryAutomaticHit,#who=self,#what=what))
       {
          % We hit!
          iPreliminary = Send(self,@GetDamage,#what=what,#stroke_obj=stroke_obj);
@@ -354,9 +359,23 @@ messages:
          {
             iPreliminary = iPreliminary * iChanceToHit / 1000;
          }
-         
+
+         bDoingBackstab = FALSE;
+         if IsClass(self,&Player)
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_BACKSTAB) > 0
+            AND Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@IsSneaking,#who=self)
+            AND Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding,#who=self)
+         {
+            iBackstabDamage = Send(Send(SYS,@FindSkillByNum,#num=SKID_BACKSTAB),@LastPriorityModifyDamage,#who=self,#what=what,#damage=iPreliminary);
+            if iBackstabDamage > iPreliminary
+            {
+               iPreliminary = iBackstabDamage;
+               bDoingBackstab = TRUE;
+            }
+         }
+
          iDamage = Send(what,@AssessDamage,#what=self,#damage=iPreliminary,
-            #atype=Send(self,@GetDamageType),#aspell=Send(self,@GetSpellType));
+            #atype=Send(self,@GetDamageType),#aspell=Send(self,@GetSpellType),#absolute=bDoingBackstab);
          Send(self,@AssessHit,#what=what,#stroke_obj=stroke_obj,
               #damage=iDamage);
          if iDamage = $

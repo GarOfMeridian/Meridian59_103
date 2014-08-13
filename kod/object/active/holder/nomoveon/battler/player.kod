@@ -4510,8 +4510,9 @@ messages:
          {
             if use_weapon <> $
                AND IsClass(use_weapon,&Dagger)
+               AND Send(self,@GetSkillAbility,#skill_num=SKID_THROW) > 0
             {
-               Post(self,@TryAttack,#what=oTarget,#use_weapon=$,#stroke_obj=Send(SYS,@FindSkillByNum,#num=SKID_THROW));
+               Post(self,@TryThrowingDagger,#what=oTarget);
                return FALSE;
             }
             
@@ -10848,12 +10849,12 @@ messages:
       local i, oEnch,state, bFound, oYellNum, oYellRoom;
       
       if event = EVENT_RUN
-         OR event = EVENT_ATTACK
          OR event = EVENT_DAMAGE
          OR event = EVENT_REST
+         OR event = EVENT_ATTACK
       {
-         Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@StopHiding,#who=self);
-         Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
+         Post(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@StopHiding,#who=self);
+         Post(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),@StopSneaking,#who=self);
       }
 
       bFound = FALSE;
@@ -13908,6 +13909,7 @@ messages:
                Post(oObject,@SomethingEntered,#what=self);
             }
          }
+         Send(self,@ShowRemoveEnchantment,#what=Send(SYS,@FindSkillByNum,#num=SKID_SPY),#type=ENCHANTMENT_PLAYER);
       }
 
       if pbSpying = FALSE
@@ -13923,13 +13925,14 @@ messages:
             }
          }
          ptSpyTimer = CreateTimer(self,@SpyTimer,4000);
+         Send(self,@ShowAddEnchantment,#what=Send(SYS,@FindSkillByNum,#num=SKID_SPY),#type=ENCHANTMENT_PLAYER);
       }
 
       pbSpying = value;
       return;
    }
    
-   SpyTimer()
+   SpyFailure()
    {
       if ptSpyTimer <> $
       {
@@ -13937,15 +13940,31 @@ messages:
          ptSpyTimer = $;
       }
       
-      Send(self,@SpyFailure);
+      Send(self,@SetSpying,#value=FALSE);
       
       return;
    }
    
-   SpyFailure()
+   SpyTimer()
    {
       ptSpyTimer = $;
-      Send(self,@SetSpying,#value=FALSE);
+      Send(self,@SpyFailure);
+      return;
+   }
+   
+   TryThrowingDagger(what=$)
+   {
+      local i, oEachItem;
+
+      for i in Send(self,@GetHolderPassive)
+      {
+         oEachItem = Send(self,@HolderExtractObject,#data=i);
+         if IsClass(oEachItem,&ThrowingDagger)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_THROW),@TryThrow,#who=self,#what=what,#daggers=oEachItem);
+         }
+      }
+      
       return;
    }
 

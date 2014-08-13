@@ -5,6 +5,6 @@
 !include $(TOPDIR)\common.mak
 
 DEPEND = ..\banditry.bof
-BOFS = awareness.bof sneak.bof hide.bof stance.bof tumble.bof backstab.bof spy.bof perception.bof
+BOFS = awareness.bof sneak.bof hide.bof stance.bof tumble.bof backstab.bof spy.bof perception.bof tightgrip.bof
 
 !include $(KODDIR)\kod.mak

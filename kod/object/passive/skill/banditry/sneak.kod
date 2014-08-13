@@ -18,7 +18,7 @@ constants:
 resources:
 
    Sneak_name_rsc = "sneak"
-   Sneak_icon_rsc = isecwind.bgf
+   Sneak_icon_rsc = ieavesdr.bgf
    Sneak_desc_rsc = "Allows proficient never-do-wells to avoid detection when entering areas. "
                     "Only the most astute adversaries will detect a master of sneaking."
 
@@ -67,6 +67,11 @@ messages:
    {
       local chance, iAgility, iAbility;
       
+      if Send(self,@IsSneaking,#who=who)
+      {
+         return;
+      }
+      
       iAgility = Send(self,@GetRequisiteStat,#who=who);
       iAbility = Send(who,@GetSkillAbility,#skill_num=viSkill_num);
       
@@ -94,6 +99,7 @@ messages:
       {
          plSneaking = Cons(who,plSneaking);
          Send(who,@MsgSendUser,#message_rsc=begin_sneaking_rsc);
+         Send(who,@ShowAddEnchantment,#what=self,#type=ENCHANTMENT_PLAYER);
       }
 
       return;
@@ -106,6 +112,7 @@ messages:
       {
          plSneaking = DelListElem(plSneaking,who);
          Send(who,@MsgSendUser,#message_rsc=sneak_stop);
+         Send(who,@ShowRemoveEnchantment,#what=self,#type=ENCHANTMENT_PLAYER);
       }
 
       return;
