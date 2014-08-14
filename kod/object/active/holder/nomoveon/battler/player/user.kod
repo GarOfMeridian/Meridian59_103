@@ -4081,6 +4081,14 @@ messages:
             return;
          }
 
+         If StringContain(String,"stance poised soul")
+            AND Send(self,@GetSkillAbility,#skill_num=SKID_POISED_SOUL) > 0
+            AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_POISED_SOUL)
+         {
+            Send(Send(SYS,@FindSkillByNum,#num=SKID_POISED_SOUL),@BeginStance,#who=self);
+            return;
+         }
+
          If StringContain(String,"stance focused mind")
             AND Send(self,@GetSkillAbility,#skill_num=SKID_FOCUSED_MIND) > 0
             AND Send(self,@GetStance) <> Send(SYS,@FindSkillByNum,#num=SKID_FOCUSED_MIND)

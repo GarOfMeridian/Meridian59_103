@@ -44,9 +44,9 @@ classvars:
 
    viSkill_num = SKID_RECKLESS_HEART
    viSchool = SKS_BANDITRY
-   viSkill_Level = 5
+   viSkill_Level = 6
    viChance_to_Increase = 10
-   viMeditate_ratio = 100
+   viMeditate_ratio = 500
 
    viSkillExertion = 0
    vbCheck_exertion = FALSE

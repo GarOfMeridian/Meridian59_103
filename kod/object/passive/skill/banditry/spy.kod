@@ -21,7 +21,7 @@ resources:
    Spy_icon_rsc = iinvisib.bgf
    Spy_desc_rsc = "Allows someone who is moving stealthily to peer into the next room."
    
-   Spy_success = "You carefully creep into the next area, as yet unseen."
+   Spy_success = "You carefully creep into the next area, momentarily unseen."
 
 classvars:
 
@@ -34,7 +34,7 @@ classvars:
 
    viSkill_num = SKID_SPY
    viSchool = SKS_BANDITRY
-   viSkill_Level = 4
+   viSkill_Level = 5
    viChance_to_Increase = 20
    viMeditate_ratio = 90
 

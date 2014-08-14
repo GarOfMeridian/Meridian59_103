@@ -105,6 +105,16 @@ messages:
    {
       return damage;
    }
+   
+   ModifyRegenerationTime(who=$,iTime=60000)
+   {
+      return iTime;
+   }
+
+   ModifyRejuvenationTime(who=$,iTime=60000)
+   {
+      return iTime;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

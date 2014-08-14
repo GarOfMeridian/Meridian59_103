@@ -6141,8 +6141,15 @@ messages:
 
       iTime = iTime - Send(Send(SYS,@GetParliament),@GetFactionRegenBonus,
                            #who=self,#hpregen=TRUE);
+      
+      iTime = bound(iTime,1000,60000);
 
-      return bound(iTime,1000,60000);
+      if Send(self,@GetStance) <> $
+      {
+         iTime = Send(Send(self,@GetStance),@ModifyRegenerationTime,#who=self,#iTime=iTime);
+      }
+
+      return iTime;
    }
 
    CalculateManaTime()
@@ -6171,6 +6178,11 @@ messages:
          {
             iTime = Send(oSpell,@AdjustManaTime,#who=self,#time=iTime);
          }
+      }
+                           
+      if Send(self,@GetStance) <> $
+      {
+         iTime = Send(Send(self,@GetStance),@ModifyRejuvenationTime,#who=self,#iTime=iTime);
       }
 
       return iTime;
@@ -10711,6 +10723,11 @@ messages:
       local iTime, lRadiusState;
 
       iTime = 1000 + (30* (51-Send(self,@getStamina))); 
+                           
+      if Send(self,@GetStance) <> $
+      {
+         iTime = Send(Send(self,@GetStance),@ModifyRegenerationTime,#who=self,#iTime=iTime);
+      }
       
       return iTime;
    }

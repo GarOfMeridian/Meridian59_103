@@ -3378,6 +3378,7 @@ messages:
        Send(self,@CreateOneSKillIfNew,#num=SKID_SPY,#class=&Spy);
        Send(self,@CreateOneSKillIfNew,#num=SKID_BACKSTAB,#class=&Backstab);
        Send(self,@CreateOneSKillIfNew,#num=SKID_TIGHT_GRIP,#class=&TightGrip);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_POISED_SOUL,#class=&PoisedSoul);
 
        return;
    }

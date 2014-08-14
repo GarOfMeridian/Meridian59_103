@@ -5,6 +5,6 @@
 !include $(TOPDIR)\common.mak
 
 DEPEND = ..\stance.bof
-BOFS = lightfeet.bof swifthands.bof heavyarms.bof recklessheart.bof focusedmind.bof
+BOFS = lightfeet.bof swifthands.bof heavyarms.bof recklessheart.bof focusedmind.bof poisedsoul.bof
 
 !include $(KODDIR)\kod.mak
