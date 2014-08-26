@@ -244,6 +244,11 @@ messages:
    {
       local oCorpse;
 
+      if type = SAY_YELL OR NOT IsClass(what,&User)
+      {
+          propagate;
+      }
+
       if StringContain(string,"summon")
          AND what <> $
          AND IsClass(what,&User)
