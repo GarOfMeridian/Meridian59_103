@@ -241,6 +241,11 @@ messages:
       
       propagate;
    }
+   
+   GetPlayerKiller()
+   {
+      return poPlayerKiller;
+   }
 
    GetDearlyDeparted()
    {

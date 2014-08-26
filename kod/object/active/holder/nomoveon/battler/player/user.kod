@@ -4335,6 +4335,7 @@ messages:
       {
          if IsClass(what,&ReagentBag)
             AND Send(what,@GetReagentBagContents) <> $
+            AND Send(what,@GetOwner) = self
          {
             Send(self,@UserObjectContents,#what=what);
             return;
@@ -4342,6 +4343,8 @@ messages:
 
          if IsClass(what,&DeadBody)
             AND Send(what,@GetCorpseContents) <> $
+            AND Send(self,@SquaredDistanceTo,#what=what) <> $
+            AND Send(self,@SquaredDistanceTo,#what=what) <= 6
          {
             Send(self,@UserObjectContents,#what=what);
             return;
