@@ -84,6 +84,7 @@ messages:
       poDearlyDeparted = DearlyDeparted;
       piTimeOfDeath = GetTime();
       poPlayerKiller = oPlayerKiller;
+      Send(Send(self,@GetDearlyDeparted),@SetCorpse,#corpse=self);
 
       if decomposes
       {
@@ -95,7 +96,7 @@ messages:
          else
          {
             % Make player corpses hang around longer.
-            ptDelete = CreateTimer(self,@DeleteTimerMessage,600000);	    
+            ptDelete = CreateTimer(self,@DeleteTimerMessage,600000*6);	    
             Send(Send(SYS,@Findroombynum,#num=RID_UNDERWORLD),@Newdeath,#what=self,#inKocatan=inKocatan);
          }
       }
@@ -135,6 +136,8 @@ messages:
    Delete()
    {
       local i;
+      
+      Send(Send(self,@GetDearlyDeparted),@SetCorpse);
 
       if ptDelete <> $
       {

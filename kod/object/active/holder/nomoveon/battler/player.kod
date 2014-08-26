@@ -1036,6 +1036,9 @@ properties:
 
    % Put new reagents in your bag
    pbReagentBagAuto = TRUE
+   
+   % Track your last corpse
+   poCorpse = $
 
 messages:
 
@@ -13805,6 +13808,17 @@ messages:
    {
       pbReagentBagAuto = value;
       return;
+   }
+   
+   SetCorpse(corpse=$)
+   {
+      poCorpse = corpse;
+      return;
+   }
+   
+   GetCorpse()
+   {
+      return poCorpse;
    }
 
 end
