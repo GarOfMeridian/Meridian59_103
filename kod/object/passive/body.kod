@@ -84,7 +84,11 @@ messages:
       poDearlyDeparted = DearlyDeparted;
       piTimeOfDeath = GetTime();
       poPlayerKiller = oPlayerKiller;
-      Send(Send(self,@GetDearlyDeparted),@SetCorpse,#corpse=self);
+      
+      if poDearlyDeparted <> $
+      {
+         Send(poDearlyDeparted,@SetCorpse,#corpse=self);
+      }
 
       if decomposes
       {
@@ -137,7 +141,10 @@ messages:
    {
       local i;
       
-      Send(Send(self,@GetDearlyDeparted),@SetCorpse);
+      if poDearlyDeparted <> $
+      {
+         Send(poDearlyDeparted,@SetCorpse);
+      }
 
       if ptDelete <> $
       {
