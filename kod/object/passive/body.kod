@@ -134,6 +134,8 @@ messages:
 
    Delete()
    {
+      local i;
+
       if ptDelete <> $
       {
          Send(Send(SYS,@FindRoomByNum,#num=RID_UNDERWORLD),@CorpseDecomposed,#what=self);
@@ -151,6 +153,12 @@ messages:
       {
          send(poOwner,@CorpseFading,#corpse=self);
       }
+      
+      for i in plCorpseContents
+      {
+         Send(i,@Delete);
+      }
+      plCorpseContents = $;
       
       propagate;
    }
