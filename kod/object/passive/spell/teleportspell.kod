@@ -107,7 +107,9 @@ messages:
          return FALSE;
       }
       
-      if NOT Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+      if oRoom <> $
+         AND NOT Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+         AND NOT IsClass(oRoom,&GuildHall)
          AND vbIsCombatRestricted
          AND Send(who,@PlayerEnemiesInYellRange) <> $
       {
