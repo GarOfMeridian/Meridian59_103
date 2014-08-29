@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Rescue is TeleportationSpell
+HometownRecall is TeleportationSpell
 
 constants:
 
@@ -16,59 +16,47 @@ constants:
 
 resources:
 
-   rescue_name_rsc = "rescue"
-   rescue_icon_rsc = rescuico.bgf
-   rescue_desc_rsc = \
-      "Calls upon Shal'ille to transport you back to "
-      "safety.  Ability determines how fast you are rescued.  "
-      "Requires emerald to cast."
+   HometownRecall_name_rsc = "hometown recall"
+   HometownRecall_icon_rsc = iblink.bgf
+   HometownRecall_desc_rsc = \
+      "Focuses all your will on returning to your hometown. Ability determines how fast you recall. "
+      "Casting at your hometown will return you to whence you came if the ability is used recently enough, "
+      "and without moving far."
+      "Requires nothing but willpower to cast."
 
-   Rescue_Start = "You start your rescue preparations."
-   Rescue_Success = "You feel a holy force rescue you from your current situation."
-   Rescue_Already_Cast = "Further magics will not come to your aid when you are already attempting to teleport."
-   Rescue_Token_Cancel = "You cannot rescue while holding a token."
+   HometownRecall_Start = "You start your recall preparations."
+   HometownRecall_Success = "You move through space, seeking your hometown."
+   HometownRecall_Already_Cast = "You are already attempting to teleport."
+   HometownRecall_No_Region = "Your hometown seems to be too far away to reach by magical means."
    
-   Rescue_depart_to_destination = "%s vanishes in a burst of protective light!"
-   
-   rescue_sound = srescue.wav
+   HometownRecall_depart_to_destination = "%s vanishes into pale white light."
 
 classvars:
 
-   vrName = rescue_name_rsc
-   vrIcon = rescue_icon_rsc
-   vrDesc = rescue_desc_rsc
+   vrName = HometownRecall_name_rsc
+   vrIcon = HometownRecall_icon_rsc
+   vrDesc = HometownRecall_desc_rsc
 
-   Teleport_Start_Rsc = Rescue_Start
-   Teleport_Already_Cast_Rsc = Rescue_Already_Cast
+   Teleport_Start_Rsc = HometownRecall_Start
+   Teleport_Already_Cast_Rsc = HometownRecall_Already_Cast
 
-   viSpell_num = SID_RESCUE
-   viSchool = SS_SHALILLE
-   viSpell_level = 3
+   viSpell_num = SID_HOMETOWN_RECALL
+   viSchool = SS_KRAANAN
+   viSpell_level = 1
    viMana = 16
 
-   vrSucceed_wav = rescue_sound
    viChance_To_Increase = 10
    viMeditate_ratio = 30
-
-   viFlash = FLASH_GOOD
 
 properties:
 
 messages:
 
-   ResetReagents()
-   {
-      plReagents = $;
-      plReagents = Cons([&Emerald,1],plReagents);
-
-      return;
-   }
-
    DoTeleport(who = $)
    {
       local i, each_obj, oCurrentRoom, oTargetRoom;
 
-      send(who,@MsgSendUser,#message_rsc=Rescue_Success);
+      send(who,@MsgSendUser,#message_rsc=HometownRecall_Success);
             
       for i in Send(Send(who,@GetOwner),@GetHolderActive)
       {
@@ -76,14 +64,23 @@ messages:
          if IsClass(each_obj,&User)
             AND each_obj <> who
          {
-            Send(each_obj,@MsgSendUser,#message_rsc=Rescue_depart_to_destination,#parm1=Send(who,@GetName));
+            Send(each_obj,@MsgSendUser,#message_rsc=HometownRecall_depart_to_destination,#parm1=Send(who,@GetName));
          }
+      }
+      
+      if Send(who,@GetHometownRecallSavedFightingSpot) <> $
+      {
+         Send(who,@HometownRecallSendPlayerToBoundLocation);
+         Send(who,@ClearHometownRecallSavedFightingSpot);
+         return;
       }
 
       oCurrentRoom = send(who,@GetOwner);
 
       if oCurrentRoom <> $
       {
+         Send(who,@HometownRecallBindPlayerToCurrentLocation);
+
          % Teleport to Ko'catan Inn if we're in Kocatan, or at the Pool of Vigor.
          if send(oCurrentRoom,@GetRegion) = RID_KOCATAN
             OR send(oCurrentRoom,@GetRoomNum) = RID_ORC_CAVE5_EXT
@@ -113,7 +110,7 @@ messages:
 
    GetPotionClass()
    {
-      return &RescuePotion;
+      return &HometownRecallPotion;
    }
 
 end

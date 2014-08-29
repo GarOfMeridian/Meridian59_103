@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-DeathRift is Spell
+DeathRift is TeleportationSpell
 
 constants:
 
@@ -37,7 +37,7 @@ resources:
    DeathRift_warning = "~BYou sense a nearby connection forming between dimensions!"
    
    Death_Rift_Start = "You begin summoning the flames of the Underworld..."
-   Death_Rift_Already_Cast = "You are already creating a death rift."
+   Death_Rift_Already_Cast = "You can't summon further energies, as you are already attempting to teleport."
    
 classvars:
 

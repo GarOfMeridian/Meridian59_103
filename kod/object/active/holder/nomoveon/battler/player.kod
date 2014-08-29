@@ -179,6 +179,8 @@ resources:
       "~IYour aggression halts your attempt to escape from the current situation."
    player_cancel_teleport_phase = \
       "~IThe motive magics that might have teleported you instead snap and fade as you phase out of existence."
+   teleportation_gone_too_far_fail = \
+      "~IAs you travel away from your own teleportation magics, you feel them snap and fade."
 
    player_improved = "~I~BYou have improved in the art of %s."
    player_improved_wav_rsc = imp.wav
@@ -1016,6 +1018,14 @@ properties:
    piBound_fine_col = 0
    piBound_angle = ANGLE_SOUTH
    
+   % Bound location for Hometown recall
+   piHometownRecallBound_Room = $
+   piHometownRecallBound_row = 0
+   piHometownRecallBound_col = 0
+   piHometownRecallBound_fine_row = 0
+   piHometownRecallBound_fine_col = 0
+   piHometownRecallBound_angle = 0
+   
    % Is the player currently using a Death Rift spell?
    pbDeath_rift = FALSE
    ptDeathRiftTimer = $
@@ -1564,7 +1574,11 @@ messages:
          }
       }
       
-      Post(self,@CancelTeleportation);
+      if Send(self,@IsTeleporting)
+      {
+         Send(self,@MsgSendUser,#message_rsc=teleportation_gone_too_far_fail);
+         Post(self,@CancelTeleportation);
+      }
 
       return;
    }
@@ -13793,6 +13807,76 @@ messages:
          poTeleportationDestRoom = $;
       }
 
+      return;
+   }
+   
+   ClearHometownRecallSavedFightingSpot()
+   {
+      if piHometownRecallBound_Room <> $
+      {
+         piHometownRecallBound_Room = $;
+         piHometownRecallBound_row = 0;
+         piHometownRecallBound_col = 0;
+         piHometownRecallBound_fine_row = 0;
+         piHometownRecallBound_fine_col = 0;
+         piHometownRecallBound_angle = 0;
+      }
+
+      return;
+   }
+   
+   HasHometownRecallSavedFightingSpot()
+   {
+      if piHometownRecallBound_Room <> $
+      {
+         return TRUE;
+      }
+
+      return FALSE;
+   }
+   
+   HometownRecallBindPlayerToCurrentLocation()
+   "Saves the player's current location as a special teleport destination."
+   {
+      local poOwner;
+      
+      poOwner = Send(self,@GetOwner);
+      
+      if poOwner = $
+      {
+         return;
+      }
+
+      piHometownRecallBound_Room = Send(poOwner,@GetRoomNum);
+      piHometownRecallBound_row = Send(self,@GetRow);
+      piHometownRecallBound_col = Send(self,@GetCol);
+      piHometownRecallBound_fine_row = Send(self,@GetFineRow);
+      piHometownRecallBound_fine_col = Send(self,@GetFineCol);
+      piHometownRecallBound_angle = Send(self,@GetAngle);
+
+      return;
+   }
+
+   HometownRecallSendPlayerToBoundLocation()
+   "Sends the player to their saved teleport destination."
+   {
+      local poOwner;
+      
+      poOwner = Send(self,@GetOwner);
+      
+      if poOwner = $
+         OR piHometownRecallBound_Room = $
+         OR NOT Send(self,@IsLoggedOn)
+      {
+         return;
+      }
+
+      Send(SYS,@UtilGoNearSquare,#what=self,
+           #where=Send(SYS,@FindRoomByNum,#num=piHometownRecallBound_Room),
+           #new_row=piHometownRecallBound_row,#new_col=piHometownRecallBound_col,
+           #fine_row=piHometownRecallBound_fine_row,#fine_col=piHometownRecallBound_fine_col,
+           #new_angle=piHometownRecallBound_angle, #max_distance=3);
+      
       return;
    }
 

@@ -91,6 +91,7 @@ properties:
    % Times may be up to twice as slow at zero spellpower.
    piRescueBaseDelaySec = 15
    piGuildHallRecallBaseDelaySec = 20
+   piHometownRecallBaseDelaySec = 45
    piElusionBaseDelaySec = 10
    piDeathRiftBaseDelaySec = 30
 
@@ -346,6 +347,11 @@ messages:
       if IsClass(what,&GuildHallRecall)
       {
          return piGuildHallRecallBaseDelaySec;
+      }
+      
+      if IsClass(what,&HometownRecall)
+      {
+         return piHometownRecallBaseDelaySec;
       }
       
       if isClass(what,&Elusion)

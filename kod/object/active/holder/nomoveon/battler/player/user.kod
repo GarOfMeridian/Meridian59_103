@@ -6287,6 +6287,7 @@ messages:
          {
             Send(self,@CheckLeavingNewbieOrGuest,#leaving=old);
             Send(self,@CheckTokenInNewRoom,#what=old);
+            Send(self,@ClearHometownRecallSavedFightingSpot);
          }
          
          % If room is no combat and safe logoff, record it as the player's last safe location

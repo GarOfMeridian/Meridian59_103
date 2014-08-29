@@ -14,6 +14,8 @@ TeleportationSpell is Spell
 % Changing rooms, logging off, or attacking all break a teleporation in progress.
 % In addition, players cannot teleport for a short time after engaging in combat.
 
+% Hometown Recall returns you to your old location so that you can continue building.
+
 constants:
 
    include blakston.khd
@@ -91,12 +93,20 @@ messages:
    {
       local iDelay;
 
+      send(who,@MsgSendUser,#message_rsc=Teleport_Start_Rsc);
+
       % Start with the base time.  Reduce time by spellpower.
       iDelay = 1000 * Send(Send(SYS,@GetSettings),@GetTeleportBaseDelaySec,#what=self);
       iDelay = iDelay + (iDelay - (((iSpellPower+1) * iDelay) / 100));
 
+      % No delay in safe zones. No point in making players wait.
+      if Send(who,@GetOwner) <> $
+         AND Send(Send(who,@GetOwner),@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+      {
+         iDelay = 0;
+      }
+
       send(who,@StartTeleportationTimer,#iTime=iDelay,#oTeleportationSpell=self,#oDestRoom=oDestRoom);
-      send(who,@MsgSendUser,#message_rsc=Teleport_Start_Rsc);
 
       propagate;
    }

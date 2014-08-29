@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-RecallPotion is Potion
+GuildHallRecallPotion is Potion
 
 constants:
 
@@ -16,7 +16,7 @@ constants:
 
 resources:
 
-   RecallPotion_name_rsc = "potion of recall"
+   RecallPotion_name_rsc = "potion of guildhall recall"
    RecallPotion_desc_rsc = "This is a glass vial of colored liquid.  "
                         "It smells like earth and strength."
    RecallPotion_bad_desc_rsc = "This is a glass vial of slightly cloudy colored liquid.  "
