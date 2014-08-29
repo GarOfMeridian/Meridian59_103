@@ -748,6 +748,8 @@ resources:
    phase_fatigue_cleared = "This area of peace lifts your phase fatigue."
    phased_player_description = "This is the ghosted body of %q, whose consciousness has travelled to "
                                "another plane of existence."
+                               
+   Hometown_Bind_Timed_Out = "~IYou lose your grasp on the last place you hometown recalled from."
    
 classvars:
 
@@ -1025,6 +1027,9 @@ properties:
    piHometownRecallBound_fine_row = 0
    piHometownRecallBound_fine_col = 0
    piHometownRecallBound_angle = 0
+   
+   ptHometownRecallTimer = $
+   piHometownGracePeriodTime = 0
    
    % Is the player currently using a Death Rift spell?
    pbDeath_rift = FALSE
@@ -13877,6 +13882,73 @@ messages:
            #fine_row=piHometownRecallBound_fine_row,#fine_col=piHometownRecallBound_fine_col,
            #new_angle=piHometownRecallBound_angle, #max_distance=3);
       
+      return;
+   }
+   
+   StartHometownRecallTimer(overrideTime=0)
+   {
+      if ptHometownRecallTimer = $
+      {
+         if overrideTime = 0
+         {
+            ptHometownRecallTimer = CreateTimer(self,@EndHometownRecallGracePeriod,300000);
+         }
+         else
+         {
+            ptHometownRecallTimer = CreateTimer(self,@EndHometownRecallGracePeriod,overrideTime);
+         }
+      }
+
+      return;
+   }
+   
+   ClearHometownRecallTimer()
+   {
+      if ptHometownRecallTimer <> $
+      {
+         DeleteTimer(ptHometownRecallTimer);
+         ptHometownRecallTimer = $;
+      }
+
+      return;
+   }
+   
+   FreezeHometownRecallTimer()
+   {
+      if ptHometownRecallTimer <> $
+      {
+         piHometownGracePeriodTime = GetTimeRemaining(ptHometownRecallTimer);
+         DeleteTimer(ptHometownRecallTimer);
+         ptHometownRecallTimer = $;
+      }
+
+      return;
+   }
+   
+   ResumeHometownRecallTimer()
+   {
+      if ptHometownRecallTimer = $
+         AND piHometownGracePeriodTime > 0
+      {
+         ptHometownRecallTimer = CreateTimer(self,@EndHometownRecallGracePeriod,piHometownGracePeriodTime);
+         piHometownGracePeriodTime = 0;
+      }
+      return;
+   }
+   
+   EndHometownRecallGracePeriod(timer=$)
+   {
+      % Don't nab the destination away from players that are casting it
+      if Send(self,@IsTeleporting)
+      {
+         Send(self,@ClearHometownRecallTimer);
+         Send(self,@StartHometownRecallTimer,#overrideTime=10000);
+         return;
+      }
+
+      ptHometownRecallTimer = $;
+      Send(self,@MsgSendUser,#message_rsc=Hometown_Bind_Timed_Out);
+      Send(self,@ClearHometownRecallSavedFightingSpot);
       return;
    }
 

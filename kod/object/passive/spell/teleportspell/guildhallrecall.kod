@@ -47,6 +47,8 @@ classvars:
    viChance_To_Increase = 10
    viMeditate_ratio = 30
 
+   vbInstantInSafeZones = FALSE
+
 properties:
 
 messages:

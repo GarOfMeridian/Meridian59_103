@@ -715,6 +715,8 @@ messages:
          Send(self,@SysMsgSendUser,#message_rsc=user_logon_delay);
          ptLogonDelayTimer = CreateTimer(self,@LogonHoldOff,piLogonDelay);
       }
+      
+      Send(self,@ResumeHometownRecallTimer);
 
       return;
    }
@@ -796,6 +798,8 @@ messages:
 
       % Have to put here so room enchantments are removed first.
       Send(self,@FreezeAllEnchantments);
+      
+      Send(self,@FreezeHometownRecallTimer);
 
       Send(SYS,@SystemUserLogoff,#what=self);
 
@@ -6287,7 +6291,6 @@ messages:
          {
             Send(self,@CheckLeavingNewbieOrGuest,#leaving=old);
             Send(self,@CheckTokenInNewRoom,#what=old);
-            Send(self,@ClearHometownRecallSavedFightingSpot);
          }
          
          % If room is no combat and safe logoff, record it as the player's last safe location

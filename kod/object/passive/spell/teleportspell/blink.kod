@@ -46,6 +46,7 @@ classvars:
    viMeditate_ratio = 20
    
    vbIsCombatRestricted = FALSE
+   vbRestrictedInSomeAreas = FALSE
 
 properties:
 
