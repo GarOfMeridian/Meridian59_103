@@ -110,6 +110,7 @@ messages:
       if oRoom <> $
          AND NOT Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
          AND NOT IsClass(oRoom,&GuildHall)
+         AND NOT IsClass(self,&Rescue)
          AND vbIsCombatRestricted
          AND Send(who,@PlayerEnemiesInYellRange) <> $
       {
@@ -120,7 +121,7 @@ messages:
       propagate;
    }
 
-   CastSpell(who = $, iSpellPower = 0, oDestRoom = $)
+   CastSpell(who = $, iSpellPower = 0, oDestRoom = $, bItemCast = FALSE)
    {
       local iDelay;
 
@@ -142,6 +143,12 @@ messages:
          AND vbInstantInSafeZones
       {
          iDelay = 0;
+      }
+      
+      if IsClass(self,&Rescue)
+         AND bItemCast
+      {
+         iDelay = iDelay * 5;
       }
 
       send(who,@StartTeleportationTimer,#iTime=iDelay,#oTeleportationSpell=self,#oDestRoom=oDestRoom);
