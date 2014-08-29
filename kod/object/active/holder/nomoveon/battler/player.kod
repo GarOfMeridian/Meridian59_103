@@ -175,10 +175,10 @@ resources:
       "~IYour liege has no use for one such as you, lacking in prowess or "
       "devotion.  Your name has been stricken from the roll of membership.~n"
 
-   player_cancel_rescue = \
+   player_cancel_teleport = \
       "~IYour aggression halts your attempt to escape from the current situation."
-   player_cancel_rescue_phase = \
-      "~IThe protective magics that might have rescued you instead snap and fade as you phase out of existence."
+   player_cancel_teleport_phase = \
+      "~IThe motive magics that might have teleported you instead snap and fade as you phase out of existence."
 
    player_improved = "~I~BYou have improved in the art of %s."
    player_improved_wav_rsc = imp.wav
@@ -990,8 +990,10 @@ properties:
    % This keeps the duration of our Second Wind skill's "downtime"
    ptSecondWind = $
 
-   % Measures how long we have to wait before we're rescued.
-   ptRescue = $
+   % Measures how long we have to wait before we teleport, and by which manner.
+   ptTeleportationTimer = $
+   poTeleportationSpell = $
+   poTeleportationDestRoom = $
 
    % piTimeAttackedPlayer records the last time we attacked a player.
    %  This is used in conjunction with the constant ATTACKED_PLAYER_WAIT
@@ -1097,7 +1099,7 @@ messages:
          piCrystalizeManaSurging = FALSE;
       }
 
-      Send(self,@CancelRescue);
+      Send(self,@CancelTeleportation);
 
       if ptAttackTimer <> $
       {
@@ -1506,62 +1508,6 @@ messages:
       return FALSE;
    }
 
-   StartRescueTimer(time=5000)
-   "Starts a timer which will rescue the player after time ms."
-   {
-      if ptRescue <> $
-      {
-         return FALSE;
-      }
-
-      ptRescue = CreateTimer(self,@EndRescueTimer,time);
-
-      return TRUE;
-   }
-
-   EndRescueTimer()
-   {
-      ptRescue = $;
-      Send(self,@EndRescue);
-
-      return;
-   }
-
-   EndRescue()
-   "Deletes rescue timer if it exists and does the rescue operation."
-   {
-      Send(self,@CancelRescue);
-      
-      if poOwner <> $
-         AND Send(poOwner,@GetRoomNum) <> RID_OUTOFGRACE
-      {
-         Send(Send(SYS,@FindSpellByNum,#num=SID_RESCUE),@DoRescue,#who=self);
-      }
-
-      return;
-   }
-   
-   CancelRescue()
-   "Cancels the rescue timer if it exists and does not execute the rescue operation."
-   {
-      if ptRescue <> $
-      {
-         DeleteTimer(ptRescue);
-         ptRescue = $;
-      }
-      return;
-   }
-
-   CanRescue()
-   {
-      if ptRescue <> $
-      {
-         return FALSE;
-      }
-
-      return TRUE;
-   }
-
    TryDeflect(what = $,caster=$)
    {
       local oDeflect;
@@ -1617,6 +1563,8 @@ messages:
             Send(self,@RefreshPhaseTimeToBase);
          }
       }
+      
+      Post(self,@CancelTeleportation);
 
       return;
    }
@@ -2137,7 +2085,7 @@ messages:
          ptMana = $;
       }
 
-      Send(self,@CancelRescue);
+      Send(self,@CancelTeleportation);
 
       % Tell others that we're leaving
       oRoom = Send(self, @GetOwner);
@@ -4010,13 +3958,12 @@ messages:
          return FALSE;
       }
 
-      % Stop any rescue attempts if the user makes an attack.
-      if ptRescue <> $
+      % Stop any teleport attempts if the user makes an attack.
+      if Send(self,@IsTeleporting)
          AND actual = TRUE
       {
-         Send(self,@MsgSendUser,#message_rsc=player_cancel_rescue);
-         DeleteTimer(ptRescue);
-         ptRescue = $;
+         Send(self,@MsgSendUser,#message_rsc=player_cancel_teleport);
+         Send(self,@CancelTeleportation);
       }
 
       return TRUE;
@@ -8475,8 +8422,8 @@ messages:
          plApparitionList = $;
       }
 
-      % Stop any rescue attempts that were going on.
-      Send(self,@CancelRescue);
+      % Stop any teleport attempts that were going on.
+      Send(self,@CancelTeleportation);
       
       piLastDeathTime = getTime();
 
@@ -13645,12 +13592,11 @@ messages:
       {
          ptPhaseTimer = CreateTimer(self,@PhaseTimerEnd,piRemainingPhaseTime);
 
-         % Stop any rescue attempts if the user phases out.
-         if ptRescue <> $
+         % Stop any teleport attempts if the user phases out.
+         if Send(self,@IsTeleporting)
          {
-            Send(self,@MsgSendUser,#message_rsc=player_cancel_rescue_phase);
-            DeleteTimer(ptRescue);
-            ptRescue = $;
+            Send(self,@MsgSendUser,#message_rsc=player_cancel_teleport_phase);
+            Send(self,@CancelTeleportation);
          }
       }
       
@@ -13797,6 +13743,56 @@ messages:
    SetReagentBagAuto(value=TRUE)
    {
       pbReagentBagAuto = value;
+      return;
+   }
+   
+   StartTeleportationTimer(iTime=10000,oTeleportationSpell=$,oDestRoom=$)
+   {
+      if ptTeleportationTimer <> $
+      {
+         DeleteTimer(ptTeleportationTimer);
+         ptTeleportationTimer = $;
+      }
+
+      ptTeleportationTimer = CreateTimer(self,@EndTeleportationTimer,iTime);
+      poTeleportationSpell = oTeleportationSpell;
+      poTeleportationDestRoom = oDestRoom;
+
+      return;
+   }
+   
+   IsTeleporting()
+   {
+      if ptTeleportationTimer <> $
+      {
+         return TRUE;
+      }
+      return FALSE;
+   }
+   
+   CancelTeleportation()
+   {
+      if ptTeleportationTimer <> $
+      {
+         DeleteTimer(ptTeleportationTimer);
+         ptTeleportationTimer = $;
+         poTeleportationSpell = $;
+         poTeleportationDestRoom = $;
+      }
+
+      return;
+   }
+   
+   EndTeleportationTimer(timer=$)
+   {
+      ptTeleportationTimer = $;
+      if poTeleportationSpell <> $
+      {
+         Send(poTeleportationSpell,@DoTeleport,#who=self,#oDestRoom=poTeleportationDestRoom);
+         poTeleportationSpell = $;
+         poTeleportationDestRoom = $;
+      }
+
       return;
    }
 

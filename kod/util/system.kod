@@ -2972,6 +2972,7 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_FIREBALL,#class=&Fireball);
       Send(self,@CreateOneSpellIfNew,#num=SID_DMRESCUE,#class=&DMRescue);
       Send(self,@CreateOneSpellIfNew,#num=SID_RESCUE,#class=&Rescue);
+      Send(self,@CreateOneSpellIfNew,#num=SID_GUILDHALL_RECALL,#class=&GuildHallRecall);
       Send(self,@CreateOneSpellIfNew,#num=SID_SMITE,#class=&Smite);
       Send(self,@CreateOneSpellIfNew,#num=SID_DAMN,#class=&Damn);
       Send(self,@CreateOneSpellIfNew,#num=SID_SCRY,#class=&Scry);
@@ -5089,6 +5090,8 @@ messages:
       plItemTemplates = cons(create(&FeignDeathPotion),plItemTemplates);
       plItemTemplates = cons(create(&RescuePotion),plItemTemplates);
       plItemTemplates = cons(create(&EagleEyesPotion),plItemTemplates);
+      plItemTemplates = cons(create(&RecallPotion),plItemTemplates);
+
 
       plItemTemplates = cons(create(&NecromancerAmulet),plItemTemplates);
       plItemTemplates = cons(create(&HunterSword),plItemTemplates);
