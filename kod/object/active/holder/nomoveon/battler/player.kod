@@ -13983,6 +13983,7 @@ messages:
       {
          oEachRoom = Send(SYS,@FindRoomByNum,#num=iRID);
          if oEachRoom <> $
+            AND NOT IsClass(oEachRoom,&GuildHall)
          {
             for i in Send(oEachRoom,@GetHolderActive)
             {
