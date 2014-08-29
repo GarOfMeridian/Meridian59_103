@@ -33,7 +33,6 @@ resources:
    DeathRift_travel = "A vast passage of flames opens, and you find yourself pulled to the Underworld!"
    DeathRift_travel_notify = "A fiery portal flares open briefly, dragging %s to the Underworld!"
    DeathRift_travel_notify_with_dest = "A fiery portal flares open briefly, dragging %s through the Underworld and toward %s!"
-   DeathRift_generic_fail = "The evil pact's magic fails. Something seems amiss."
    DeathRift_warning = "~BYou sense a nearby connection forming between dimensions!"
    
    Death_Rift_Start = "You begin summoning the flames of the Underworld..."
@@ -61,6 +60,7 @@ classvars:
    viFlash = FLASH_BAD
    
    vbIsCombatRestricted = FALSE
+   vbInstantInSafeZones = FALSE
 
 properties:
 
@@ -81,17 +81,6 @@ messages:
       if NOT Send(who,@CheckPlayerFlag,#flag=PFLAG_PKILL_ENABLE)
       {
          Send(who,@MsgSendUser,#message_rsc = DeathRift_no_angeled);
-         return FALSE;
-      }
-      
-      oRoom = Send(who,@GetOwner);
-      
-      if oRoom = $
-         OR NOT Send(oRoom,@CanHavePlayerPortal)
-         OR Send(oRoom, @GetRegion) = RID_NEWB_BASE
-         OR Send(oRoom, @GetRegion) = RID_GUEST_BASE
-      {
-         Send(who,@MsgSendUser,#message_rsc=DeathRift_generic_fail);
          return FALSE;
       }
       
