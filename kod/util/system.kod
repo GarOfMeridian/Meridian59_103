@@ -2972,8 +2972,6 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_FIREBALL,#class=&Fireball);
       Send(self,@CreateOneSpellIfNew,#num=SID_DMRESCUE,#class=&DMRescue);
       Send(self,@CreateOneSpellIfNew,#num=SID_RESCUE,#class=&Rescue);
-      Send(self,@CreateOneSpellIfNew,#num=SID_GUILDHALL_RECALL,#class=&GuildHallRecall);
-      Send(self,@CreateOneSpellIfNew,#num=SID_HOMETOWN_RECALL,#class=&HometownRecall);
       Send(self,@CreateOneSpellIfNew,#num=SID_SMITE,#class=&Smite);
       Send(self,@CreateOneSpellIfNew,#num=SID_DAMN,#class=&Damn);
       Send(self,@CreateOneSpellIfNew,#num=SID_SCRY,#class=&Scry);
@@ -3178,6 +3176,8 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_LOADOUT,#class=&Loadout);
       Send(self,@CreateOneSpellIfNew,#num=SID_CONVEYANCE,#class=&Conveyance);
       Send(self,@CreateOneSpellIfNew,#num=SID_PHASE,#class=&Phase);
+      Send(self,@CreateOneSpellIfNew,#num=SID_GUILDHALL_RECALL,#class=&GuildHallRecall);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HOMETOWN_RECALL,#class=&HometownRecall);
 
       % Trance may be searched for frequently, leave at end of list
       Send(self,@CreateOneSpellIfNew,#num=SID_TRANCE,#class=&Trance);
