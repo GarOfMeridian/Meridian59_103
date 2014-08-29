@@ -13951,6 +13951,57 @@ messages:
       Send(self,@ClearHometownRecallSavedFightingSpot);
       return;
    }
+   
+   PlayerEnemiesInYellRange()
+   "Returns a list of player enemies in this room and adjacent rooms the player can attack."
+   {
+      local iRID, oRoom, oEachRoom, i, oEachObj, lEnemies;
+
+      lEnemies = $;
+      
+      oRoom = Send(self,@GetOwner);
+      if oRoom = $
+      {
+         return lEnemies;
+      }
+
+      for i in Send(oRoom,@GetHolderActive)
+      {
+         oEachObj = Send(oRoom,@HolderExtractObject,#data=i);
+
+         if IsClass(oEachObj,&User)
+            AND oEachObj <> self
+            AND NOT IsClass(oEachObj,&DM)
+            AND NOT Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+            AND Send(self,@AllowPlayerAttack,#victim=oEachObj,#report=FALSE,#actual=FALSE)
+         {
+            lEnemies = Cons(oEachObj,lEnemies);
+         }
+      }
+
+      for iRID in Send(oRoom,@GetYellZone)
+      {
+         oEachRoom = Send(SYS,@FindRoomByNum,#num=iRID);
+         if oEachRoom <> $
+         {
+            for i in Send(oEachRoom,@GetHolderActive)
+            {
+               oEachObj = Send(oEachRoom,@HolderExtractObject,#data=i);
+               
+               if IsClass(oEachObj,&User)
+                  AND oEachObj <> self
+                  AND NOT IsClass(oEachObj,&DM)
+                  AND NOT Send(oEachRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+                  AND Send(self,@AllowPlayerAttack,#victim=oEachObj,#report=FALSE,#actual=FALSE)
+               {
+                  lEnemies = Cons(oEachObj,lEnemies);
+               }
+            }
+         }
+      }
+      
+      return lEnemies;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

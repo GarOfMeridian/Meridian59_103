@@ -34,6 +34,7 @@ resources:
    Teleport_Token_Cancel = "You cannot teleport while holding a token."
    Teleport_Attacked_Recently = "Your heart is still racing from your recent combat, making it impossible to focus enough to teleport."
    Teleport_Generic_Fail = "Something about this area prevents all forms of teleportation magics..."
+   Teleport_Fail_Enemies_Nearby = "The delicate threads of your teleportation magics unravel due to the presence of nearby enemies!"
 
 classvars:
 
@@ -74,14 +75,6 @@ messages:
 
          return FALSE;
       }
-
-      % Can't cast just after attacking someone
-      if Send(who, @GetLastPlayerAttackTime) + Send(Send(SYS, @GetSettings), @TeleportAttackDelaySec) > GetTime()
-         AND vbIsCombatRestricted
-      {
-         Send(who, @MsgSendUser, #message_rsc = Teleport_Attacked_Recently);
-         return FALSE;
-      }
       
       if Send(who,@FindHolding,#class=&Token)
          AND NOT IsClass(self,&Blink)
@@ -100,6 +93,25 @@ messages:
          AND vbRestrictedInSomeAreas
       {
          Send(who,@MsgSendUser,#message_rsc=Teleport_Generic_Fail);
+         return FALSE;
+      }
+
+      % Can't cast just after attacking someone
+      if Send(who, @GetLastPlayerAttackTime) + Send(Send(SYS, @GetSettings), @TeleportAttackDelaySec) > GetTime()
+         AND oRoom <> $
+         AND NOT Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+         AND Send(who,@CheckPlayerFlag,#flag=PFLAG_PKILL_ENABLE)
+         AND vbIsCombatRestricted
+      {
+         Send(who, @MsgSendUser, #message_rsc = Teleport_Attacked_Recently);
+         return FALSE;
+      }
+      
+      if NOT Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+         AND vbIsCombatRestricted
+         AND Send(who,@PlayerEnemiesInYellRange) <> $
+      {
+         Send(who,@MsgSendUser,#message_rsc=Teleport_Fail_Enemies_Nearby);
          return FALSE;
       }
 
