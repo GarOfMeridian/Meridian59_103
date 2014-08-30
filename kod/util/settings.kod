@@ -89,8 +89,8 @@ properties:
 
    % Teleports will never be faster than this duration in seconds.
    % Times may be up to twice as slow at zero spellpower.
-   piRescueBaseDelaySec = 60
-   piGuildHallRecallBaseDelaySec = 60
+   piRescueBaseDelaySec = 15
+   piGuildHallRecallBaseDelaySec = 30
    piHometownRecallBaseDelaySec = 60
    piElusionBaseDelaySec = 10
    piDeathRiftBaseDelaySec = 30
