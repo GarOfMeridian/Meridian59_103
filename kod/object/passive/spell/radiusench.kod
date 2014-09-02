@@ -442,6 +442,20 @@ messages:
          return FALSE;
       }
       
+      if Send(target,@GetOwner) <> $
+         AND Send(Send(target,@GetOwner),@IsArena)
+         AND NOT Send(Send(target,@GetOwner),@IsValidTarget,#who=target)
+      {
+         return FALSE;
+      }
+
+      if Send(source,@GetOwner) <> $
+         AND Send(Send(source,@GetOwner),@IsArena)
+         AND NOT Send(Send(source,@GetOwner),@IsValidTarget,#who=source)
+      {
+         return FALSE;
+      }
+
       If IsClass(target,&Player)
          AND Send(target,@IsPhasedOut)
       {
