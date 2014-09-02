@@ -267,7 +267,7 @@ messages:
    RecalculateActiveEnchantments()
    {
       local i, source, iDrain, iPeriodic, lEnchanted, iPower, iRange, iDuration,
-      iDistance, oObject, oRoom, oActive, oPassive, oCrystalizeMana, iCrystalizeManaAbility;
+      iDistance, oObject, oRoom, oActive, oPassive, oCrystalizeMana, iCrystalizeManaAbility, lPeriodicTargets, oPeriodicTarget;
 
       if ptRecalculationTimer <> $
       {
@@ -357,10 +357,38 @@ messages:
          }
 
          % Perform periodic effects
+         % This is especially complicated because we want players to see active spells in the arena while watching
+         % But the spells should not do periodic effects on them (damage, healing, etc).
+         % Non-periodic effects don't generally matter because watchers cannot cast, fight, or use items
          if viPeriodicEffect
             AND iPeriodic > Send(self,@CalculatePeriodicEffectTime,#iPower=iPower)
          {
-            Send(self,@PeriodicEffect,#lEnchanted=lEnchanted,#iPower=iPower,#iRange=iRange,#source=source);
+            if Send(source,@GetOwner) <> $
+               AND IsClass(Send(source,@GetOwner),&Room)
+               AND Send(Send(source,@GetOwner),@IsArena)
+            {
+               if IsClass(source,&User)
+                  AND Send(Send(source,@GetOwner),@IsValidTarget,#who=source)
+               {
+                  lPeriodicTargets = $;
+                  for oPeriodicTarget in lEnchanted
+                  {
+                     if Send(oPeriodicTarget,@GetOwner) <> $
+                        AND IsClass(Send(oPeriodicTarget,@GetOwner),&Room)
+                        AND Send(Send(oPeriodicTarget,@GetOwner),@IsArena)
+                        AND Send(Send(oPeriodicTarget,@GetOwner),@IsValidTarget,#who=oPeriodicTarget)
+                     {
+                        lPeriodicTargets = Cons(oPeriodicTarget,lPeriodicTargets);
+                     }
+                  }
+                  Send(self,@PeriodicEffect,#lEnchanted=lPeriodicTargets,#iPower=iPower,#iRange=iRange,#source=source);
+               }
+            }
+            else
+            {
+               Send(self,@PeriodicEffect,#lEnchanted=lEnchanted,#iPower=iPower,#iRange=iRange,#source=source);
+            }
+
             iPeriodic = iPeriodic - Send(self,@CalculatePeriodicEffectTime,#iPower=iPower);
          }
 
@@ -442,18 +470,18 @@ messages:
          return FALSE;
       }
       
-      if Send(target,@GetOwner) <> $
-         AND Send(Send(target,@GetOwner),@IsArena)
-         AND NOT Send(Send(target,@GetOwner),@IsValidTarget,#who=target)
-      {
-         return FALSE;
-      }
-
-      if Send(source,@GetOwner) <> $
+      if target <> source
+         AND Send(source,@GetOwner) <> $
          AND Send(Send(source,@GetOwner),@IsArena)
          AND NOT Send(Send(source,@GetOwner),@IsValidTarget,#who=source)
       {
          return FALSE;
+      }
+      
+      if Send(target,@GetOwner) <> $
+         AND Send(Send(target,@GetOwner),@IsArena)
+      {
+         return TRUE;
       }
 
       If IsClass(target,&Player)
