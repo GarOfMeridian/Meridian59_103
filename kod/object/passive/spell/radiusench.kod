@@ -630,7 +630,7 @@ messages:
 
       oRoom = Send(who,@GetOwner);
 
-      % Only cancel Persist spells if they are offensive & caster is entering a non-combat room
+      % Cancel Persist spells if they are offensive & caster is entering a non-combat room
       if viCasterPersist
          AND (event = EVENT_NEWOWNER
              OR event = EVENT_REQNEWOWNER)
@@ -638,6 +638,17 @@ messages:
          if oRoom <> $
             AND NOT (viAffectsEnemies
                      AND Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT))
+         {
+            return FALSE;
+         }
+      }
+
+      % Cancel Persist spells if the caster is entering the arena
+      if viCasterPersist
+         AND event = EVENT_NEWOWNER
+      {
+         if oRoom <> $
+            AND Send(oRoom,@IsArena)
          {
             return FALSE;
          }
@@ -716,6 +727,33 @@ messages:
       }
 
       return;
+   }
+   
+   IsActiveRoomRadiusEnchantment(oRoom=$,iPower=0,source=$)
+   "Differentiates between enchants in the case of a user changing between rooms that both have old style REs with the same caster and spellpower."
+   {
+      local i, oActiveSource, oActivePower, oActiveRoom;
+
+      if oRoom <> $
+         AND IsClass(oRoom,&Room)
+         AND piOldAreaEnchStyle
+      {
+         for i in plCurrentEnchantments
+         {
+            oActiveSource = Nth(i,1);
+            oActivePower = Nth(i,5);
+            oActiveRoom = Nth(i,8);
+            
+            if oActiveRoom = oRoom
+               AND oActivePower = iPower
+               AND oActiveSource = source
+            {
+               return TRUE;
+            }
+         }
+      }
+
+      return FALSE;
    }
    
    RemoveEnchantmentEffects()

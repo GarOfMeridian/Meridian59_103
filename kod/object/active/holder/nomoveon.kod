@@ -147,6 +147,7 @@ messages:
          if Nth(i,1) = what
             AND Nth(i,2) = iPower
             AND Nth(i,3) = source
+            AND NOT Send(Nth(i,1),@IsActiveRoomRadiusEnchantment,#oRoom=Send(who,@GetOwner),#iPower=iPower,#source=source)
          {
             If IsClass(self,&User)
             {
