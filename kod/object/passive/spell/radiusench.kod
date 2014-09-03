@@ -149,9 +149,9 @@ messages:
          for i in plCurrentEnchantments
          {
             if Nth(i,8) = oRoom
+               AND Send(who,@IsAffectedByRadiusEnchantment,#what=self)
             {
                if IsClass(who,&User)
-                  AND Send(who,@IsAffectedByRadiusEnchantment,#what=self)
                {
                   Send(who,@MsgSendUser,#message_rsc=radius_ench_old_style_aleady_cast);
                }
