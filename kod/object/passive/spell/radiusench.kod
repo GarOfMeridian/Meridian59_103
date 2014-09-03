@@ -267,7 +267,7 @@ messages:
    RecalculateActiveEnchantments()
    {
       local i, source, iDrain, iPeriodic, lEnchanted, iPower, iRange, iDuration,
-      iDistance, oObject, oRoom, oActive, oPassive, oCrystalizeMana, iCrystalizeManaAbility, lPeriodicTargets, oPeriodicTarget;
+      iDistance, oObject, oRoom, oActive, oPassive, oCrystalizeMana, iCrystalizeManaAbility, oPeriodicTarget;
 
       if ptRecalculationTimer <> $
       {
@@ -363,30 +363,14 @@ messages:
          if viPeriodicEffect
             AND iPeriodic > Send(self,@CalculatePeriodicEffectTime,#iPower=iPower)
          {
-            if Send(source,@GetOwner) <> $
-               AND IsClass(Send(source,@GetOwner),&Room)
-               AND Send(Send(source,@GetOwner),@IsArena)
+            for oPeriodicTarget in lEnchanted
             {
-               if IsClass(source,&User)
-                  AND Send(Send(source,@GetOwner),@IsValidTarget,#who=source)
+               if Send(oPeriodicTarget,@GetOwner) <> $
+                  AND IsClass(Send(oPeriodicTarget,@GetOwner),&Room)
+                  AND Send(Send(oPeriodicTarget,@GetOwner),@IsValidTarget,#who=oPeriodicTarget)
                {
-                  lPeriodicTargets = $;
-                  for oPeriodicTarget in lEnchanted
-                  {
-                     if Send(oPeriodicTarget,@GetOwner) <> $
-                        AND IsClass(Send(oPeriodicTarget,@GetOwner),&Room)
-                        AND Send(Send(oPeriodicTarget,@GetOwner),@IsArena)
-                        AND Send(Send(oPeriodicTarget,@GetOwner),@IsValidTarget,#who=oPeriodicTarget)
-                     {
-                        lPeriodicTargets = Cons(oPeriodicTarget,lPeriodicTargets);
-                     }
-                  }
-                  Send(self,@PeriodicEffect,#lEnchanted=lPeriodicTargets,#iPower=iPower,#iRange=iRange,#source=source);
+                  Send(self,@PeriodicEffect,#oBattler=oPeriodicTarget,#iPower=iPower,#iRange=iRange,#source=source);
                }
-            }
-            else
-            {
-               Send(self,@PeriodicEffect,#lEnchanted=lEnchanted,#iPower=iPower,#iRange=iRange,#source=source);
             }
 
             iPeriodic = iPeriodic - Send(self,@CalculatePeriodicEffectTime,#iPower=iPower);
@@ -469,15 +453,7 @@ messages:
       {
          return FALSE;
       }
-      
-      if target <> source
-         AND Send(source,@GetOwner) <> $
-         AND Send(Send(source,@GetOwner),@IsArena)
-         AND NOT Send(Send(source,@GetOwner),@IsValidTarget,#who=source)
-      {
-         return FALSE;
-      }
-      
+
       if Send(target,@GetOwner) <> $
          AND Send(Send(target,@GetOwner),@IsArena)
       {
@@ -619,7 +595,7 @@ messages:
       return;
    }
    
-   PeriodicEffect(lEnchanted=$,iPower=0,iRange=0,source=$)
+   PeriodicEffect(oBattler=$,iPower=0,iRange=0,source=$)
    {
       return;
    }
