@@ -357,6 +357,12 @@ messages:
             }
          }
 
+         % Refresh information for targets
+         for oObject in lEnchanted
+         {
+            Send(oObject,@AddRadiusEnchantment,#what=self,#iPower=iPower,#source=source);
+         }
+
          % Perform periodic effects
          % This is especially complicated because we want players to see active spells in the arena while watching
          % But the spells should not do periodic effects on them (damage, healing, etc).
@@ -729,34 +735,7 @@ messages:
 
       return;
    }
-   
-   IsActiveRoomRadiusEnchantment(oRoom=$,iPower=0,source=$)
-   "Differentiates between enchants in the case of a user changing between rooms that both have old style REs with the same caster and spellpower."
-   {
-      local i, oActiveSource, oActivePower, oActiveRoom;
 
-      if oRoom <> $
-         AND IsClass(oRoom,&Room)
-         AND piOldAreaEnchStyle
-      {
-         for i in plCurrentEnchantments
-         {
-            oActiveSource = Nth(i,1);
-            oActivePower = Nth(i,5);
-            oActiveRoom = Nth(i,8);
-            
-            if oActiveRoom = oRoom
-               AND oActivePower = iPower
-               AND oActiveSource = source
-            {
-               return TRUE;
-            }
-         }
-      }
-
-      return FALSE;
-   }
-   
    RemoveEnchantmentEffects()
    "Need to override spell.kod's thing, since we do this ourselves specially."
    {
