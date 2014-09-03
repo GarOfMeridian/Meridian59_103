@@ -145,7 +145,7 @@ messages:
       if IsClass(Send(oBattler,@GetOwner),&GuildHall)
          AND NOT Send(Send(oBattler,@GetOwner),@InFoyer,#who=oBattler)
       {
-         continue;
+         return;
       }
 
       if IsClass(oBattler,&User)
