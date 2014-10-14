@@ -161,7 +161,7 @@ messages:
          {
             % class is monster
             Send(i,@StartManaBomb);
-            Send(i,@StartEnchantment,#what=self,#time=(MONSTER_BASE_EFFECT_TIME*iSpellPower));
+            Send(i,@StartEnchantment,#what=self,#time=Bound((MONSTER_BASE_EFFECT_TIME*iMana)/5,1000,35000));
          }
       }
 
