@@ -65,6 +65,7 @@ classvars:
    viMeditate_ratio = 20
 
    viAffectsEveryone = TRUE
+   viCasterPersist = TRUE
 
 properties:
 
