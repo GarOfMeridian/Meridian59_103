@@ -16,7 +16,7 @@ constants:
 
 resources:
 
-   room_BlackDesert1 = blackdesert1.roo
+   room_BlackDesert1 = blackdesert.roo
    room_name_BlackDesert1 = "Black Desert One"
    BlackDesert1_music = walk5.mp3
 
