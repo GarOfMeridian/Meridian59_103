@@ -14395,6 +14395,8 @@ messages:
       piStomach = 0;
       piTimeLastStomachUpdate = 0;
 
+      Send(self,@SetPlayerFlag,#flag=PFLAG_MURDERER,#value=FALSE);
+      Send(self,@SetPlayerFlag,#flag=PFLAG_OUTLAW,#value=FALSE);
       Send(self,@SetPlayerFlag,#flag=PFLAG_HAUNTED,#value=FALSE);
       Send(self,@SetPlayerFlag,#flag=PFLAG_PKILL_LOCK,#value=FALSE);
       Send(self,@SetPlayerFlag,#flag=PFLAG_INTRIGUING,#value=FALSE);
