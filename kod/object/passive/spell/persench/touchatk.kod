@@ -210,7 +210,7 @@ messages:
 
    ModifyHitRoll(who=$,what=$,hit_roll=$)
    {
-      return hit_roll + (300*Send(who,@GetBaseMaxHealth) / (100+Send(who,@GetStamina)));
+      return hit_roll;
    }
 
    GetAttackType(weapon_used=$)
