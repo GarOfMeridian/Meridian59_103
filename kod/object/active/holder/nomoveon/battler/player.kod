@@ -9971,6 +9971,7 @@ messages:
          for i in plUsing
          {
             if IsClass(i,&JewelofFroz)
+               OR IsClass(i,&Weapon)
             {
                iFrozCount = iFrozCount + 1;
             }

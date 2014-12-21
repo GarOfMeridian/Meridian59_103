@@ -462,7 +462,8 @@ messages:
          OR IsClass(what,&Lute)
          OR IsClass(what,&Totem)
          OR (IsClass(what,&JewelofFroz)
-               AND Send(poOwner,@IsUsingA,#class=&JewelofFroz))
+               AND (Send(poOwner,@IsUsingA,#class=&JewelofFroz)
+                       OR Send(poOwner,@IsUsingA,#class=&Weapon)))
       {
          Send(self,@SlingOnBack,#report=FALSE);
          return TRUE;
