@@ -9972,6 +9972,7 @@ messages:
          {
             if IsClass(i,&JewelofFroz)
                OR IsClass(i,&Weapon)
+               OR IsClass(i,&Torch)
             {
                iFrozCount = iFrozCount + 1;
             }

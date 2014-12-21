@@ -463,7 +463,8 @@ messages:
          OR IsClass(what,&Totem)
          OR (IsClass(what,&JewelofFroz)
                AND (Send(poOwner,@IsUsingA,#class=&JewelofFroz)
-                       OR Send(poOwner,@IsUsingA,#class=&Weapon)))
+                       OR Send(poOwner,@IsUsingA,#class=&Weapon)
+                       OR Send(poOwner,@IsUsingA,#class=&Torch)))
       {
          Send(self,@SlingOnBack,#report=FALSE);
          return TRUE;
