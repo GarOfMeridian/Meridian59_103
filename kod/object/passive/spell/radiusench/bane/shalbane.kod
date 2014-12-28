@@ -53,15 +53,15 @@ classvars:
    radius_ench_enter = ShalilleBane_enter
    radius_ench_leave = ShalilleBane_leave
    
-   Bane_Hurt_Caster = ShalilleBane_Hurt_Caster
-   Bane_Kills_You = ShalilleBane_Kills_You
+   vrBaneHurt = ShalilleBane_Hurt_Caster
+   vrBaneKills = ShalilleBane_Kills_You
 
    vrIcon = ShalilleBane_icon_rsc
    vrDesc = ShalilleBane_desc_rsc
    vrName = ShalilleBane_name_rsc   
 
-   viSpell_num = SID_ShalilleBane
-   viSchool = SS_SHALILLE
+   viSpell_num = SID_SHALILLEBANE
+   viSchool = SS_QOR
 
    vrSucceed_wav = ShalilleBane_sound
 

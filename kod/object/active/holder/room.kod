@@ -3951,7 +3951,7 @@ messages:
       lRadiusState = Send(who,@GetMostPowerfulRadiusEnchantmentState,#byClass=&Silence);
       if lRadiusState <> $
       {
-         Send(Nth(lRadiusState,1),@ReqCommunication,#who=who,#state=lRadiusState);
+         return Send(Nth(lRadiusState,1),@ReqCommunication,#who=who,#state=lRadiusState);
       }
       
       return TRUE;

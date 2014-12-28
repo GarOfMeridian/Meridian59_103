@@ -54,8 +54,8 @@ classvars:
    radius_ench_enter = QorBane_enter
    radius_ench_leave = QorBane_leave
    
-   Bane_Hurt_Caster = QorBane_HurtCaster
-   Bane_Kills_You = QorBane_kills_you
+   vrBaneHurt = QorBane_HurtCaster
+   vrBaneKills = QorBane_kills_you
 
    vrIcon = QorBane_icon_rsc
    vrDesc = QorBane_desc_rsc

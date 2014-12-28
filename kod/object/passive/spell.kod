@@ -1616,16 +1616,20 @@ messages:
       % Count that this spell was cast successfully
       Send(Send(SYS, @GetStatistics), @SpellCast, #oSpell = self, #who = who);
 
-      lRadiusState = Send(who,@GetMostPowerfulRadiusEnchantmentState,#byClass=&QorBane);
+      lRadiusState = Send(who,@GetMostPowerfulRadiusEnchantmentState,
+                              #byClass=&QorBane);
       if lRadiusState <> $
       {
-         Send(Nth(lRadiusState,1),@SuccessfulCastTrigger,#who=who,#oSpell=self,#state=lRadiusState,#iSpellPower=iSpellPower);
+         Post(Nth(lRadiusState,1),@SuccessfulCastTrigger,#who=who,#oSpell=self,
+                                 #state=lRadiusState,#iSpellPower=iSpellPower);
       }
 
-      lRadiusState = Send(who,@GetMostPowerfulRadiusEnchantmentState,#byClass=&ShalilleBane);
+      lRadiusState = Send(who,@GetMostPowerfulRadiusEnchantmentState,
+                              #byClass=&ShalilleBane);
       if lRadiusState <> $
       {
-         Send(Nth(lRadiusState,1),@SuccessfulCastTrigger,#who=who,#oSpell=self,#state=lRadiusState,#iSpellPower=iSpellPower);
+         Post(Nth(lRadiusState,1),@SuccessfulCastTrigger,#who=who,#oSpell=self,
+                                 #state=lRadiusState,#iSpellPower=iSpellPower);
       }
       
       return;
