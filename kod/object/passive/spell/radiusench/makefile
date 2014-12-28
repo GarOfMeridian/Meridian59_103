@@ -11,6 +11,7 @@ BOFS = antimag.bof \
        truce.bof \
        umbrella.bof \
        winds.bof \
-       bane.bof
+       bane.bof \
+       silence.bof
 
 !include $(KODDIR)\kod.mak

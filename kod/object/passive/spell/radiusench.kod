@@ -845,6 +845,11 @@ messages:
    {
       return;
    }
+   
+   ReqCommunication(who=$,state=$)
+   {
+      return TRUE;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
