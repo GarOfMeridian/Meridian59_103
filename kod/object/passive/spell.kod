@@ -1437,7 +1437,7 @@ messages:
 
    CastSpell(who = $, lTargets = $, iSpellPower = 0, bItemCast=FALSE)
    {
-      local oTarget, oRoom;
+      local oTarget, oRoom, lRadiusState;
 
       if IsClass(who,&DM)
       {

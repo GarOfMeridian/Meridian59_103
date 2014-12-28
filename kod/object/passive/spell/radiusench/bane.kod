@@ -106,6 +106,7 @@ messages:
             Send(who,@Killed,#what=Nth(state,3));
             Send(Nth(state,3),@KilledSomething,#what=who);
          }
+      }
 
       return;
    }

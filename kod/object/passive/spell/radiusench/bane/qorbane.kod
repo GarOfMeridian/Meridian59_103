@@ -57,9 +57,9 @@ classvars:
    Bane_Hurt_Caster = QorBane_HurtCaster
    Bane_Kills_You = QorBane_kills_you
 
-   vrIcon = QorBane_name_rsc
-   vrDesc = QorBane_icon_rsc
-   vrName = QorBane_desc_rsc   
+   vrIcon = QorBane_icon_rsc
+   vrDesc = QorBane_desc_rsc
+   vrName = QorBane_name_rsc   
 
    viSpell_num = SID_QORBANE
    viSchool = SS_SHALILLE
