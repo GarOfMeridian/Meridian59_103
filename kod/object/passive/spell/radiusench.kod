@@ -841,5 +841,10 @@ messages:
       return time;
    }
 
+   SuccessfulCastTrigger(who=$,state=$,oSpell=$,iSpellPower=0)
+   {
+      return;
+   }
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
