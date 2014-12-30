@@ -426,7 +426,6 @@ messages:
 
    Constructor(color=0,vAttack_Type=$,vAttack_Spell=$,vSpeed=$,
                vTreasure_Type=$,vKarma=$,vLevel=$,vDifficulty=$,
-               vVisionDistance=$,vCashmin=$,vCashmax=$,
                vSpellChance=$,vWimpy=$,vMaxHitPoints=$,vMaxMana=$,
                vAim=$,vAgility=$,vArmor=$)
    "Simple enough, we create a monster. If they are questworthy, we note it."
@@ -496,32 +495,9 @@ messages:
          piDifficulty = viDifficulty;
       }
       
-      if vVisionDistance <> $
-      {
-         piVisionDistance = vVisionDistance;
-      }
-      else
-      {
-         piVisionDistance = viVisionDistance;
-      }
-      
-      if vCashMin <> $
-      {
-         piCashmin = vCashmin;
-      }
-      else
-      {
-         piCashmin = viCashmin;
-      }
-      
-      if vCashmax <> $
-      {
-         piCashmax = vCashmax;
-      }
-      else
-      {
-         piCashmax = viCashmax;
-      }
+      piVisionDistance = viVisionDistance;
+      piCashmin = viCashmin;
+      piCashmax = viCashmax;
       
       if vSpellChance <> $
       {
