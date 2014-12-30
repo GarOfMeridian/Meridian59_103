@@ -309,7 +309,6 @@ classvars:
 
 properties:
 
-   piVisionDistance
    piAnimation = ANIM_NONE
 
    % List of the mobs wanted items.
