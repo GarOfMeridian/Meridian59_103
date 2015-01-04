@@ -1637,6 +1637,8 @@
    TID_KRIIPA        = 55
    TID_MOLLUSK       = 56
    TID_SHADOWBEAST   = 57
+   
+   TID_AVAR_CHIEF_POISON = 58
 
    TID_RAT_KING      = 58
    TID_EARTH_ELE     = 59
