@@ -1596,6 +1596,8 @@
    TID_MEDIUM_TOUGH  = 5
    TID_TOUGH         = 6
    TID_VERY_TOUGH    = 7
+   
+   TID_AVAR_CHIEF_POISON = 8
 
    TID_UNDEAD        = 21
    TID_SPIDER_LAIR   = 22
@@ -1637,8 +1639,6 @@
    TID_KRIIPA        = 55
    TID_MOLLUSK       = 56
    TID_SHADOWBEAST   = 57
-   
-   TID_AVAR_CHIEF_POISON = 58
 
    TID_RAT_KING      = 58
    TID_EARTH_ELE     = 59
