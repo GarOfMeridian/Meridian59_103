@@ -126,7 +126,7 @@ messages:
 
    SetClan()
    {
-      piColor_translation = PT_PURPLETOYELLOW;
+      piColor_translation = XLAT_PURPLETOBLACK;
 
       if poOwner <> $
       {
