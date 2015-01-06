@@ -273,7 +273,7 @@ messages:
 
       if Random(1,POISON_CHANCE) = 1
          AND IsClass(what,&Player)
-         AND NOT Send(what,@IsEnchanted,#byClass=&Poison);
+         AND NOT Send(what,@IsEnchanted,#byClass=&Poison)
       {
          oSpell = Send(SYS,@FindSpellByNum,#num=SID_POISON);
          Send(oSpell,@MakePoisoned,#who=what,
