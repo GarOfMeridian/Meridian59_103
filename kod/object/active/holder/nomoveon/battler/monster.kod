@@ -5195,7 +5195,7 @@ messages:
          Send(poOwner,@SomeoneSaid,#type=SAY_RESOURCE,#what=self,
               #string=monster_teach_impossible);
          
-         if Send(who,@GetBaseMaxHealth) = 100+Send(who,@GetStamina)
+         if Send(who,@GetBaseMaxHealth) >= 100+Send(who,@GetRawStamina)
             AND Send(who,@GetReincarnations) < MAX_REINCARNATIONS
          {
             Send(poOwner,@SomeoneSaid,#type=SAY_RESOURCE,#what=self,
