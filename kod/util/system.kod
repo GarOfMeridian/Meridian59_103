@@ -2511,6 +2511,7 @@ messages:
       
       Send(self,@CreateOneRoomIfNew,#num=RID_WAYLAY_OASIS,#class=&WaylayOasis);
       Send(self,@CreateOneRoomIfNew,#num=RID_BLACK_DESERT_LARGE,#class=&BlackDesertLarge);
+      Send(self,@CreateOneRoomIfNew,#num=RID_BLACK_DESERT_NOSLOPES,#class=&BlackDesertNoSlopes);
 
 
       if poRentableRoomMaintenance <> $  % After a clean build, for example.

@@ -1,0 +1,93 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BlackDesertNoSlopes is Room
+
+constants:
+
+   include blakston.khd
+   
+   SECTOR_FLOOR_BEGIN = 1
+   SECTOR_FLOOR_END = 191
+   
+   SECTOR_BORDER = 192
+
+resources:
+
+   room_name_BlackDesertNoSlopes = "Black Desert No Slopes"
+   room_BlackDesertNoSlopes = blackdesertnoslopes.roo
+   BlackDesertNoSlopes_music = temple.mp3
+
+classvars:
+
+   vrName = room_name_BlackDesertNoSlopes
+
+   viTeleport_row = 5
+   viTeleport_col = 5
+
+   viTerrain_type = TERRAIN_MOUNTAIN
+
+properties:
+
+   prRoom = room_BlackDesertNoSlopes
+   piRoom_num = RID_BLACK_DESERT_NOSLOPES
+
+   prMusic = BlackDesertNoSlopes_music
+
+
+   piBaseLight = LIGHT_NICE
+   piOutside_factor = 3
+
+   piDirectional_percent = DIRECTIONAL_PERCENT_OUTDOORS
+
+messages:
+
+   SomeoneSaid(what = $,type = $,string = $,parm1 = $,parm2 = $,parm3 = $,
+               parm4 = $, parm5 = $,parm6 = $,parm7 = $,parm8 = $)
+   {
+      local i, iHeight;
+
+      if NOT isClass(what,&player) OR type = SAY_YELL
+      {
+         propagate;
+      }
+
+      i = SECTOR_FLOOR_BEGIN;
+      iHeight = 0;
+      if StringEqual(string,"randomize")
+      {
+         while i <= SECTOR_FLOOR_END
+         {
+            iHeight = Bound(iHeight + Random(-5,5),0,$);
+            if Random(1,30) = 1
+            {
+               Send(self,@SetSector,#sector=i,
+                                    #animation=ANIMATE_FLOOR_LIFT,
+                                    #height=100,
+                                    #speed=0);
+            }
+            else
+            {
+               Send(self,@SetSector,#sector=i,
+                                    #animation=ANIMATE_FLOOR_LIFT,
+                                    #height=iHeight,
+                                    #speed=0);
+            }
+            
+            i = i + 1;
+         }
+      }
+
+      return;
+   }
+
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
