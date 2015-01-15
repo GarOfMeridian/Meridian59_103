@@ -18,7 +18,7 @@ resources:
 
    HouseKey_name_rsc = "house key"
    HouseKey_icon_rsc = roomkey.bgf
-   HouseKey_desc_rsc = "This key will take you to your house in Tos " \
+   HouseKey_desc_rsc = "This key will take you to your house in Tos "
                        "if you use it in Familiars."
 
 classvars:
