@@ -52,11 +52,20 @@ messages:
    SomeoneSaid(what = $,type = $,string = $,parm1 = $,parm2 = $,parm3 = $,
                parm4 = $, parm5 = $,parm6 = $,parm7 = $,parm8 = $)
    {
-      local i, iHeight;
+      local i, iHeight, iRowsMax, iColsMax, iNumObjects, each_obj;
 
       if NOT isClass(what,&player) OR type = SAY_YELL
       {
          propagate;
+      }
+      
+      for i in Send(self,@GetHolderPassive)
+      {
+         each_obj = Send(self,@HolderExtractObject,#data=i);
+         if IsClass(i,&Skull)
+         {
+            Send(i,@Delete);
+         }
       }
 
       i = SECTOR_FLOOR_BEGIN;
@@ -83,6 +92,23 @@ messages:
             
             i = i + 1;
          }
+      }
+      
+      iRowsMax = Send(self,@GetRoomRows);
+      iColsMax = Send(self,@GetRoomCols);
+      
+      iNumObjects = Random(5,20);
+      
+      i = 0;
+      while i <= iNumObjects
+      {
+         Send(self,@NewHold,#what=Create(&Skull),
+                            #new_row=Random(1,iRowsMax),
+                            #new_col=Random(1,iColsMax),
+                            #fine_row=Random(1,63),
+                            #fine_col=Random(1,63),
+                            #angle=ANGLE_EAST);
+         i = i + 1;
       }
 
       propagate;
