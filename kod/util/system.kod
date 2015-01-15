@@ -2508,6 +2508,9 @@ messages:
       Send(self,@CreateOneRoomIfNew,#num=RID_OLD_MARION,#class=&OldMarion);
       Send(self,@CreateOneRoomIfNew,#num=RID_OLD_BAR_NORTH,#class=&OldBarloqueNorth);
       Send(self,@CreateOneRoomIfNew,#num=RID_OLD_BAR_SOUTH,#class=&OldBarloqueSouth);
+      
+      Send(self,@CreateOneRoomIfNew,#num=RID_WAYLAY_OASIS,#class=&WaylayOasis);
+      Send(self,@CreateOneRoomIfNew,#num=RID_BLACK_DESERT_LARGE,#class=&BlackDesertLarge);
 
 
       if poRentableRoomMaintenance <> $  % After a clean build, for example.
