@@ -65,7 +65,7 @@ messages:
       {
          while i <= SECTOR_FLOOR_END
          {
-            iHeight = Bound(iHeight + Random(-10,10),0,$);
+            iHeight = Bound(iHeight + Random(-10,10),0,900);
             if Random(1,30) = 1
             {
                Send(self,@SetSector,#sector=i,
