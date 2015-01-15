@@ -24,7 +24,7 @@ classvars:
 
    vrName = room_name_waylay
 
-   viTeleport_row = 5
+   viTeleport_row = 16
    viTeleport_col = 5
 
    viTerrain_type = TERRAIN_MOUNTAIN
