@@ -849,6 +849,9 @@
 
    % Rentable Rooms 10000+
    RID_RENTABLE_START = 10000
+   
+   % Desert start
+   RID_DESERT_START = 200000
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    % RID Constants with .roo extentions.                           %
