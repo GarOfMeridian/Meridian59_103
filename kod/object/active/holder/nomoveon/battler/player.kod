@@ -806,6 +806,7 @@ resources:
    you_may_access = "%s"
    conveyance_new_target = \
       "You will now convey items to the vault of %s."
+   player_permission_removed = "Permission removed."
 
       
    pvp_notify_wav = gong.wav

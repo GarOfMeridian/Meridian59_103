@@ -204,7 +204,7 @@ messages:
             {
                bFound = Send(self,@GetDiscipleRobeFromVault,
                              #who=who,#indef=indef,#name=name,#school=school,
-                             #oBox=oBox);
+                             #plBoxList=plBoxList);
                if NOT bFound
                {
                   plDoNotSearchSchool = Cons(school,plDoNotSearchSchool);
