@@ -14471,7 +14471,8 @@ messages:
          return;
       }
       
-      if Send(who,@GetVaultAccessList) >= 5
+      if Send(who,@GetVaultAccessList) <> $
+         AND Length(Send(who,@GetVaultAccessList)) >= 5
       {
          Send(self,@MsgSendUser,#message_rsc=player_too_many_accesses);
          return;
