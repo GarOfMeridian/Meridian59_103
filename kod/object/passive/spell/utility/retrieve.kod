@@ -77,11 +77,11 @@ messages:
          oVault = Send(SYS,@FindVaultByNum,#num=VID_KOCATAN);
       }
       
-      if Send(oVault,@GetPlayerSafeBox,#who=who) = $
-      {
-         Send(who,@MsgSendUser,#message_rsc=Retrieve_no_vault);
-         return FALSE;
-      }
+%      if Send(oVault,@GetPlayerSafeBox,#who=who) = $
+%      {
+%         Send(who,@MsgSendUser,#message_rsc=Retrieve_no_vault);
+%         return FALSE;
+%      }
 
       if NOT Send(Send(who,@GetOwner),@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
       {
@@ -103,7 +103,8 @@ messages:
       local i, n, z, each_obj, countHolding, countNeeded, findAmount,
             class, number, have_number, bFound, plRetrieve_list, plPassive,
             indef, name, plDoNotSearch, bDoNotSearch, school,
-            plDoNotSearchSchool, bDoNotSearchSchool, oRoom, oVault, oBox;
+            plDoNotSearchSchool, bDoNotSearchSchool, oRoom, oVault,
+            plBoxList, plAccessList, b;
 
       plRetrieve_list = Send(who,@GetLoadoutList);
       plPassive = Send(who,@GetHolderPassive);
@@ -114,7 +115,7 @@ messages:
       Send(who,@MsgSendUser,#message_rsc=Retrieve_cast);
       
       oVault = $;
-      oBox = $;
+      plBoxList = $;
       oRoom = Send(who,@GetOwner);
       if oRoom = $
          OR Send(oRoom,@GetRegion) <> RID_KOCATAN
@@ -128,12 +129,14 @@ messages:
       
       if oVault <> $
       {
-         oBox = Send(oVault,@GetPlayerSafeBox,#who=who);
-      }
-
-      if oBox = $
-      {
-         return;
+         plAccessList = Send(who,@GetVaultAccessList);
+         
+         plBoxList = Cons(Send(oVault,@GetPlayerSafeBox,#who=who),plBoxList);
+         
+         for b in plAccessList
+         {
+            plBoxList = Cons(Send(oVault,@GetPlayerSafeBox,#who=b),plBoxList);
+         }
       }
       
       for i in plRetrieve_list
@@ -227,7 +230,7 @@ messages:
             {
                bFound = Send(self,@GetSingleItemFromVault,#who=who,
                                   #class=class,#indef=indef,#name=name,
-                                  #oBox=oBox);
+                                  #plBoxList=plBoxList);
                if NOT bFound
                {
                   plDoNotSearch = Cons(class,plDoNotSearch);
@@ -250,7 +253,7 @@ messages:
                   {
                      Send(self,@GetNumberItemFromVault,#who=who,#class=class,
                                #number=number-have_number,#name=name,
-                               #oBox=oBox);
+                               #plBoxList=plBoxList);
                   }                  
                   break;
                }
@@ -258,7 +261,7 @@ messages:
             if NOT bFound
             {
                Send(self,@GetNumberItemFromVault,#who=who,#class=class,
-                         #number=number,#name=name,#oBox=oBox);
+                         #number=number,#name=name,#plBoxList=plBoxList);
             }
          }
       }
@@ -267,31 +270,39 @@ messages:
    }
 
    GetDiscipleRobeFromVault(who=$,class=&DiscipleRobe,indef="an",name="item",
-                            school=SS_RIIJA,oBox=$)
+                            school=SS_RIIJA,plBoxList=$)
    {
-      local i, each_obj, bFound;
+      local i, each_obj, bFound, oBox;
 
       bFound = FALSE;
       
-      for i in Send(oBox,@GetHolderPassive)
+      for oBox in plBoxList
       {
-         each_obj = Send(oBox,@HolderExtractObject,#data=i);
-         if IsClass(each_obj,class)
-            AND Send(each_obj,@GetSchool) = school
+         if oBox = $
          {
-            bFound = TRUE;
-            if Send(who,@ReqNewHold,#what=each_obj)
+            continue;
+         }
+
+         for i in Send(oBox,@GetHolderPassive)
+         {
+            each_obj = Send(oBox,@HolderExtractObject,#data=i);
+            if IsClass(each_obj,class)
+               AND Send(each_obj,@GetSchool) = school
             {
-               Send(who,@NewHold,#what=each_obj);
-               return TRUE;
-            }
-            else
-            {
-               Send(who,@MsgSendUser,
-                    #message_rsc=Retrieve_cant_carry_one,
-                    #parm1=Send(each_obj,@GetIndef),
-                    #parm2=Send(each_obj,@GetTrueName));
-               return FALSE;
+               bFound = TRUE;
+               if Send(who,@ReqNewHold,#what=each_obj)
+               {
+                  Send(who,@NewHold,#what=each_obj);
+                  return TRUE;
+               }
+               else
+               {
+                  Send(who,@MsgSendUser,
+                       #message_rsc=Retrieve_cant_carry_one,
+                       #parm1=Send(each_obj,@GetIndef),
+                       #parm2=Send(each_obj,@GetTrueName));
+                  return FALSE;
+               }
             }
          }
       }
@@ -304,30 +315,38 @@ messages:
       return FALSE;
    }
 
-   GetSingleItemFromVault(who=$,class=&Item,indef="an",name="item",oBox=$)
+   GetSingleItemFromVault(who=$,class=&Item,indef="an",name="item",plBoxList=$)
    {
-      local i, each_obj, bFound;
+      local i, each_obj, bFound, oBox;
 
       bFound = FALSE;
       
-      for i in Send(oBox,@GetHolderPassive)
+      for oBox in plBoxList
       {
-         each_obj = Send(oBox,@HolderExtractObject,#data=i);
-         if IsClass(each_obj,class)
+         if oBox = $
          {
-            bFound = TRUE;
-            if Send(who,@ReqNewHold,#what=each_obj)
+            continue;
+         }
+
+         for i in Send(oBox,@GetHolderPassive)
+         {
+            each_obj = Send(oBox,@HolderExtractObject,#data=i);
+            if IsClass(each_obj,class)
             {
-               Send(who,@NewHold,#what=each_obj);
-               return TRUE;
-            }
-            else
-            {
-               Send(who,@MsgSendUser,
-                        #message_rsc=Retrieve_cant_carry_one,
-                        #parm1=Send(each_obj,@GetIndef),
-                        #parm2=Send(each_obj,@GetTrueName));
-               return FALSE;
+               bFound = TRUE;
+               if Send(who,@ReqNewHold,#what=each_obj)
+               {
+                  Send(who,@NewHold,#what=each_obj);
+                  return TRUE;
+               }
+               else
+               {
+                  Send(who,@MsgSendUser,
+                           #message_rsc=Retrieve_cant_carry_one,
+                           #parm1=Send(each_obj,@GetIndef),
+                           #parm2=Send(each_obj,@GetTrueName));
+                  return FALSE;
+               }
             }
          }
       }
@@ -340,10 +359,10 @@ messages:
       return FALSE;
    }
 
-   GetNumberItemFromVault(who=$,class=&Item,number=-1,name="item",oBox=$)
+   GetNumberItemFromVault(who=$,class=&Item,number=-1,name="item",plBoxList=$)
    {
       local i, each_obj, bFound,
-            oSplit, iCanHold, iNumInBox, iGetNumber, bSentErrorMsg;
+            oSplit, iCanHold, iNumInBox, iGetNumber, bSentErrorMsg, oBox;
 
       if number < 1
       {
@@ -352,64 +371,72 @@ messages:
       bFound = FALSE;
       bSentErrorMsg = FALSE;
 
-      for i in Send(oBox,@GetHolderPassive)
+      for oBox in plBoxList
       {
-         iGetNumber = number;
-         each_obj = Send(oBox,@HolderExtractObject,#data=i);
-         
-         if IsClass(each_obj,class)
+         if oBox = $
          {
-            iCanHold = Send(who,@GetNumberCanHold,#what=each_obj);
-            iNumInBox = Send(each_obj,@GetNumber);
-            bFound = TRUE;
+            continue;
+         }
 
-            if iGetNumber > iNumInBox
-            {
-               iGetNumber = iNumInBox;
-            }
+         for i in Send(oBox,@GetHolderPassive)
+         {
+            iGetNumber = number;
+            each_obj = Send(oBox,@HolderExtractObject,#data=i);
 
-            if iCanhold <> $
-               AND iGetNumber > iCanHold
+            if IsClass(each_obj,class)
             {
-               if iCanHold > 0
+               iCanHold = Send(who,@GetNumberCanHold,#what=each_obj);
+               iNumInBox = Send(each_obj,@GetNumber);
+               bFound = TRUE;
+
+               if iGetNumber > iNumInBox
                {
-                  if NOT bSentErrorMsg
-                  {
-                     Send(who,@MsgSendUser,#message_rsc=Retrieve_cant_carry_all,
-                          #parm1=Send(each_obj,@GetTrueName));
-                     bSentErrorMsg = TRUE;       
-                  }
+                  iGetNumber = iNumInBox;
                }
-               else
-               {
-                  if NOT bSentErrorMsg
-                  {
-                     Send(who,@MsgSendUser,#message_rsc=Retrieve_cant_carry_any,
-                          #parm1=Send(each_obj,@GetTrueName));    
-                     bSentErrorMsg = TRUE;       
-                  }                      
-                  return;
-               }         
-               iGetNumber = iCanHold;
-            }
 
-            if iGetNumber > 0
-            {
-               oSplit = Send(each_obj,@Split,#number=iGetNumber);
-               if Send(each_obj,@ReqNewOwner,#what=oSplit)
+               if iCanhold <> $
+                  AND iGetNumber > iCanHold
                {
-                  Send(who,@NewHold,#what=oSplit);
-                  number = number - iGetNumber;
-                  if number < 1
+                  if iCanHold > 0
                   {
+                     if NOT bSentErrorMsg
+                     {
+                        Send(who,@MsgSendUser,#message_rsc=Retrieve_cant_carry_all,
+                             #parm1=Send(each_obj,@GetTrueName));
+                        bSentErrorMsg = TRUE;       
+                     }
+                  }
+                  else
+                  {
+                     if NOT bSentErrorMsg
+                     {
+                        Send(who,@MsgSendUser,#message_rsc=Retrieve_cant_carry_any,
+                             #parm1=Send(each_obj,@GetTrueName));    
+                        bSentErrorMsg = TRUE;       
+                     }                      
                      return;
-                  }
+                  }         
+                  iGetNumber = iCanHold;
                }
-               else
+
+               if iGetNumber > 0
                {
-                  Send(each_obj,@AddNumber,#number=iGetNumber);
-               }
-            }        
+                  oSplit = Send(each_obj,@Split,#number=iGetNumber);
+                  if Send(each_obj,@ReqNewOwner,#what=oSplit)
+                  {
+                     Send(who,@NewHold,#what=oSplit);
+                     number = number - iGetNumber;
+                     if number < 1
+                     {
+                        return;
+                     }
+                  }
+                  else
+                  {
+                     Send(each_obj,@AddNumber,#number=iGetNumber);
+                  }
+               }        
+            }
          }
       }
       
