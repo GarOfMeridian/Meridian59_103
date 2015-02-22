@@ -1078,6 +1078,9 @@ properties:
    ptPhaseVisualEffectTimer = $
    piRemainingPhaseTime = 60000 * 8
    ptCanPhaseTimer = $
+   
+   % Players can toggle grouping
+   piWantToGroup = TRUE
 
    % Put new reagents in your bag
    pbReagentBagAuto = TRUE
@@ -5534,6 +5537,7 @@ messages:
          if IsClass(what,&Monster)
             AND (use_weapon = $
                OR NOT IsClass(use_weapon,&ActiveWallElement))
+            AND piWantToGroup
          {
             Send(self,@JoinBuilderGroup);
          }
@@ -14369,6 +14373,17 @@ messages:
    {
       pbReagentBagAuto = value;
 
+      return;
+   }
+   
+   GetGrouping()
+   {
+      return piWantToGroup;
+   }
+   
+   SetGrouping(value=TRUE)
+   {
+      piWantToGroup = value;
       return;
    }
    
