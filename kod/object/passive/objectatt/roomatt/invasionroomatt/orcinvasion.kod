@@ -67,7 +67,7 @@ messages:
    {
       local i;
       
-      plVictoryRewards = [[1,REWARD_TOUGHER],
+      plVictoryRewards = [[2,REWARD_TOUGHER],
                           [1,REWARD_TOUGHER],
                           [1,REWARD_TOUGHER],
                           [1,REWARD_TOUGHER],
