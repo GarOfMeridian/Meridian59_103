@@ -19,25 +19,16 @@ constants:
    REWARD_MONEY = 1
    REWARD_ITEM = 2
    REWARD_TOUGHER = 3
-   
-   GOAL_KILLS = 1
-   GOAL_BOSS = 2
-   GOAL_MINIBOSSES = 3
-   
-   % 1 minute to begin other survivals
-   DEFLT_START_TIME = 60000
-   
-   % Report goals every 1 minute
-   REPORT_TIME = 60000
-
-   % Starts when Miniboss is killed
-   RESPAWN_MINIBOSS_TIME = 60000
 
 resources:
       
    orcinvasionatt_beginning_in_location = \
       "~BThe orc pit boss and other denizens of the caves are preparing "
       "to attack at %s. Shal'ille calls for the aid of all adventurers!"
+   
+   orcinvasionatt_happening_in_location = \
+      "The forces of the orc pit boss rally and attack %s once more!"
+   
    orcinvasionatt_ended = \
       "The forces of the orc pit boss have been defeated!"
 
@@ -59,6 +50,7 @@ resources:
 classvars:
 
    invasionatt_beginning_in_location = orcinvasionatt_beginning_in_location
+   invasionatt_happening_in_location = orcinvasionatt_happening_in_location
    invasionatt_ended = orcinvasionatt_ended
    invasionatt_boss_goal_msg = orcinvasionatt_boss_goal_msg
    invasionatt_minibosses_goal_msg = orcinvasionatt_minibosses_goal_msg
@@ -68,8 +60,6 @@ classvars:
    invasionatt_broadcast_victory = orcinvasionatt_broadcast_victory
 
 properties:
-
-   piFinalLevel = 5
 
 messages:
 

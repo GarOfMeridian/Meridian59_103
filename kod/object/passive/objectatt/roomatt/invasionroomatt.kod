@@ -42,6 +42,9 @@ resources:
    definvasionatt_beginning_in_location = \
       "~BThe forces of evil are preparing to attack at %s. Shal'ille calls "
       "for the aid of all adventurers!"
+   
+   definvasionatt_happening_in_location = \
+      "Shal'ille calls for the aid of all adventurers at %s!"
       
    invasionatt_beginning_in_sixty = \
       "You sense approaching doom."
@@ -111,6 +114,7 @@ resources:
 classvars:
 
    invasionatt_beginning_in_location = definvasionatt_beginning_in_location
+   invasionatt_happening_in_location = definvasionatt_happening_in_location
    invasionatt_ended = definvasionatt_ended
    invasionatt_boss_goal_msg = definvasionatt_boss_goal_msg
    invasionatt_minibosses_goal_msg = definvasionatt_minibosses_goal_msg
@@ -150,6 +154,13 @@ properties:
    
    % This keeps track of [player, kills, rounds participated]
    plRewardPoints = $
+   
+   % Enemies rise by this many levels per wave
+   % Boss is finallevel * boost
+   % Miniboss is finallevel-1 * boost
+   piBoostMultiplier = 5
+   piBossBoostMultiplier = 10
+   piMiniBossBoostMultiplier = 10
 
 messages:
 
@@ -204,6 +215,11 @@ messages:
       
       ptReportGoalsTimer = CreateTimer(self,@ReportGoalsTrigger,REPORT_TIME);
       
+      for i in Send(SYS,@GetUsersLoggedOn)
+      {
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_happening_in_location,
+                             #parm1=Send(poHostObject,@GetName));
+      }
       for i in Send(poHostObject,@GetPlayers)
       {
          Send(i,@MsgSendUser,#message_rsc=invasionatt_begin_level);
@@ -410,7 +426,7 @@ messages:
 
       cBoss = Nth(plBosses,Random(1,Length(plBosses)));
       Send(poHostObject,@GenerateMonster,#oMonster=Create(cBoss),#bStack=TRUE,
-                                    #piSurvivalLevel=piLevel*10);
+                                    #piSurvivalLevel=piLevel*piBossBoostMultiplier);
       piSpawnedBossThisRound = TRUE;
 
       return;
@@ -430,7 +446,7 @@ messages:
 
       cMiniboss = Nth(plMinibosses,Random(1,Length(plMinibosses)));
       Send(poHostObject,@GenerateMonster,#oMonster=Create(cMiniboss),#bStack=TRUE,
-                                 #piSurvivalLevel=piLevel*10);
+                                 #piSurvivalLevel=piLevel*piMiniBossBoostMultiplier);
       return;
    }
    
@@ -988,7 +1004,7 @@ messages:
    
    BoostMonster(boost_val=0)
    {
-      return boost_val + (piLevel*5);
+      return boost_val + (piLevel*piBoostMultiplier);
    }
    
    Victory()
@@ -1045,7 +1061,7 @@ messages:
             }
             if Nth(i,2) = REWARD_TOUGHER
             {
-               Send(oHighestPlayer,@GainBaseMaxHealth,#amount = 1);
+               Send(oHighestPlayer,@GainBaseMaxHealth,#amount = Nth(i,1));
 
                Send(oHighestPlayer,@evaluatepkstatus);
 
@@ -1065,6 +1081,7 @@ messages:
                   lRanking = DelListElem(lRanking,n);
                }
             }
+            oHighestPlayer = $;
          }
       }
       
