@@ -23,9 +23,6 @@ constants:
    GOAL_KILLS = 1
    GOAL_BOSS = 2
    GOAL_MINIBOSSES = 3
-
-   % 3 minutes to begin public survivals
-   PB_START_TIME = 180000
    
    % 1 minute to begin other survivals
    DEFLT_START_TIME = 60000
@@ -42,7 +39,7 @@ resources:
       "As you enter this place, you feel Shal'ille's holy support fill you. "
       "You will need it to defeat the forces of evil that have gathered here."
       
-   invasionatt_beginning_in_location = \
+   definvasionatt_beginning_in_location = \
       "~BThe forces of evil are preparing to attack at %s. Shal'ille calls "
       "for the aid of all adventurers!"
       
@@ -53,7 +50,7 @@ resources:
       "Shal'ille bolsters you with her holy support even as the forces of "
       "evil flood the area!"
    
-   invasionatt_ended = \
+   definvasionatt_ended = \
       "The forces of evil have been defeated!"
    
    invasionatt_cant_pvp = \
@@ -70,16 +67,16 @@ resources:
       "To defeat the forces of evil and save the land, you must:"
    invasionatt_kill_goal_msg = \
       "Defeat %i of the attacking monsters."
-   invasionatt_boss_goal_msg = \
-      "Slay the evil orc pit boss himself!"
-   invasionatt_minibosses_goal_msg = \
-      "Slay the wizard servants of the evil orc pit boss."
+   definvasionatt_boss_goal_msg = \
+      "Slay the boss himself!"
+   definvasionatt_minibosses_goal_msg = \
+      "Slay the lieutenants of the boss."
       
-   invasionatt_boss_slain_goal_msg = \
-      "~BThe orc pit boss has been slain!"
+   definvasionatt_boss_slain_goal_msg = \
+      "~BThe boss has been slain!"
    
-   invasionatt_minibosses_slain_goal_msg = \
-      "The lieutenants of the orc pit boss have fallen!"
+   definvasionatt_minibosses_slain_goal_msg = \
+      "The lieutenants of the boss have fallen!"
       
    invasionatt_kills_remaining = \
       "There are %i monsters remaining in this offensive."
@@ -101,7 +98,7 @@ resources:
    reward_improve_maxhealth = \
       "You know you'll feel stronger once you heal from today's battle."
       
-   invasionatt_broadcast_victory = \
+   definvasionatt_broadcast_victory = \
       "With Shal'ille's aid, the brave adventurers of the land have staved off "
       "evil at %s."
       
@@ -112,6 +109,15 @@ resources:
    background_invasion_sky = 3sky.bgf
       
 classvars:
+
+   invasionatt_beginning_in_location = definvasionatt_beginning_in_location
+   invasionatt_ended = definvasionatt_ended
+   invasionatt_boss_goal_msg = definvasionatt_boss_goal_msg
+   invasionatt_minibosses_goal_msg = definvasionatt_minibosses_goal_msg
+
+   invasionatt_boss_slain_goal_msg = definvasionatt_boss_slain_goal_msg
+   invasionatt_minibosses_slain_goal_msg = definvasionatt_minibosses_slain_goal_msg
+   invasionatt_broadcast_victory = definvasionatt_broadcast_victory
 
 properties:
 
@@ -125,6 +131,7 @@ properties:
    plMonsters = $
    
    piLevel = 1
+   piFinalLevel = 5
    
    piRegroupTime = 15000
    ptNextLevelTimer = $
@@ -149,25 +156,8 @@ messages:
    Constructed()
    {
       local i;
-      
-      plVictoryRewards = [[1,REWARD_TOUGHER],
-                          [1,REWARD_TOUGHER],
-                          [1,REWARD_TOUGHER],
-                          [1,REWARD_TOUGHER],
-                          [1,REWARD_TOUGHER],
-                          [&Rose,REWARD_ITEM],
-                          [5000,REWARD_MONEY],
-                          [4000,REWARD_MONEY],
-                          [3000,REWARD_MONEY],
-                          [2000,REWARD_MONEY]];
 
       plGenerators = Send(poHostObject,@GetGenerators);
-      plBosses = [&OrcPitBoss];
-      plMinibosses = [&OrcWizard];
-      plFixedRewards = [[&RingInvisibility,3]];
-      
-      plMonsters = [[&CaveOrc,20],[&Orc,80]];
-
       ptNextLevelTimer = CreateTimer(self,@InitiateNextLevel,DEFLT_START_TIME);
 
       for i in Send(SYS,@GetUsersLoggedOn)
@@ -198,37 +188,21 @@ messages:
    {
       local i, n, p;
 
-      ptNextLevelTimer = $;
-      pbSpawnWaves = TRUE;
-
-      if piLevel = 2
+      if piLevel = piFinalLevel - 1
       {
-         plMonsters = [[&CaveOrc,40],[&Orc,60]];
+         Send(self,@SpawnMiniboss);
+         Send(self,@SpawnMiniboss);
       }
 
-      if piLevel = 3
-      {
-         plMonsters = [[&CaveOrc,60],[&Orc,40]];
-      }
-
-      if piLevel = 4
-      {
-         plMonsters = [[&CaveOrc,80],[&Orc,20]];
-      }
-
-      if piLevel = 5
-      {
-         plMonsters = [[&CaveOrc,90],[&Shadowbeast,10]];
-      }
-      
-      ptReportGoalsTimer = CreateTimer(self,@ReportGoalsTrigger,REPORT_TIME);
-      
-      if piLevel = 5
+      if piLevel = piFinalLevel
       {
          Send(self,@SpawnBoss);
-         Send(self,@SpawnMiniboss);
-         Send(self,@SpawnMiniboss);
       }
+
+      ptNextLevelTimer = $;
+      pbSpawnWaves = TRUE;
+      
+      ptReportGoalsTimer = CreateTimer(self,@ReportGoalsTrigger,REPORT_TIME);
       
       for i in Send(poHostObject,@GetPlayers)
       {
@@ -383,7 +357,7 @@ messages:
 
       piLevel = piLevel + 1;
       
-      if piLevel > 5
+      if piLevel > piFinalLevel
       {
          Send(self,@Victory);
          return;
@@ -417,10 +391,14 @@ messages:
 
       plLevelGoals = Cons([GOAL_KILLS,iRand],plLevelGoals);
 
-      if piSpawnedBossThisRound
+      if piLevel = piFinalLevel - 1
+      {
+         plLevelGoals = Cons([GOAL_MINIBOSSES,2],plLevelGoals);
+      }
+
+      if piLevel = piFinalLevel
       {
          plLevelGoals = Cons([GOAL_BOSS,1],plLevelGoals);
-         plLevelGoals = Cons([GOAL_MINIBOSSES,2],plLevelGoals);
       }
       
       return;
