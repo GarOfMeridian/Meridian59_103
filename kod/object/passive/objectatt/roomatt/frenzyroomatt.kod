@@ -41,8 +41,8 @@ resources:
       "Qor gleefully rewards you with energy for your brutal slaying of %s!"
 
    frenzyatt_killed_by_player = \
-      "~B~U~k[###]~n ~B~v%q was just slain under the blood skies at "
-      "%q by %q."
+      "~B~U~k[###]~n ~B~v%s was just slain under the blood skies at "
+      "%s by %s."
 
    frenzy_room_begin_wav = chaosup.wav
    background_frenzyatt = redsky.bgf

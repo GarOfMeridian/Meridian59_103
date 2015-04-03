@@ -37,8 +37,8 @@ resources:
       "Civilized behavior returns as Faren's surging ferocity fades."
 
    chaosatt_killed_by_player = \
-      "~B~U~k[###]~n ~B~v%q was just slain in the furious wilds at "
-      "%q by %q."
+      "~B~U~k[###]~n ~B~v%s was just slain in the furious wilds at "
+      "%s by %s."
 
    chaos_room_begin_wav = chaosup.wav
    background_chaosatt = 1skyc.bgf

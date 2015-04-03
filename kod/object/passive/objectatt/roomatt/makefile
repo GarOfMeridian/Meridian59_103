@@ -6,6 +6,6 @@
 
 DEPEND = ..\roomatt.bof
 BOFS = survivalroomatt.bof chaosroomatt.bof frenzyroomatt.bof \
-       anonroomatt.bof
+       anonroomatt.bof invasionroomatt.bof
 
 !include $(KODDIR)\kod.mak

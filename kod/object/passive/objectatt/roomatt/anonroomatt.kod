@@ -43,8 +43,8 @@ resources:
       "unobfuscate yourself?"
 
    anonatt_killed_by_player = \
-      "~B~U~k[###]~n ~B~v%q was just slain in the confusion at "
-      "%q by %q."
+      "~B~U~k[###]~n ~B~v%s was just slain in the confusion at "
+      "%s by %s."
 
    background_anonatt = 1skyd.bgf
       

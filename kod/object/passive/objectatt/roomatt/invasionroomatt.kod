@@ -8,24 +8,17 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-SurvivalRoomAttribute is RoomAttribute
+InvasionRoomAttribute is RoomAttribute
 
-% This turns any pre-existing room into a survival room with a specific list
-% of participants.
-% Players may join these from any safe location, but, if they do, they
-% return to that location upon leaving, penning, or dying.
-
-% Survival begins after 60 seconds of waiting for participants.
-% The Survival begins at Level 1.
-% When players complete certain objectives, the level increases.
-% Monsters are more difficult at each level, and loot drops and XP increase.
-
-% If players aren't attacked for a long period of time, they're clearly
-% abusing something. Enemies will begin spawning with MOVES_THROUGH_WALLS.
+% This is a standard event invasion by mobs.
 
 constants:
 
    include blakston.khd
+   
+   REWARD_MONEY = 1
+   REWARD_ITEM = 2
+   REWARD_TOUGHER = 3
    
    GOAL_KILLS = 1
    GOAL_BOSS = 2
@@ -45,62 +38,84 @@ constants:
 
 resources:
 
-   survatt_welcome_message = \
-      "You can feel Kraanan's eyes upon you as you undertake his greatest "
-      "challenge. This place will grow progressively more "
-      "dangerous as time goes on. Death seems inevitable, and dying will be "
-      "as lethal as ever."
+   invasionatt_welcome_message = \
+      "As you enter this place, you feel Shal'ille's holy support fill you. "
+      "You will need it to defeat the forces of evil that have gathered here."
       
-   survatt_beginning_in_sixty = \
-      "~BCombat will begin in sixty seconds."
+   invasionatt_beginning_in_location = \
+      "~BThe forces of evil are preparing to attack at %s. Shal'ille calls "
+      "for the aid of all adventurers!"
       
-   survatt_beginning_in_location = \
-      "~BKraanan grins. Sounds of combat echo from %s. "
-      "Survive, conquer, and be rewarded."
+   invasionatt_beginning_in_sixty = \
+      "You sense approaching doom."
    
-   survatt_ended_at_level = \
-      "~BKraanan's challenge at %s has ended, and the warrior god is "
-      "satisfied. "
-      "His valorous combatants reached level %i. "
-      "%s was the last survivor."
+   invasionatt_has_begun = \
+      "Shal'ille bolsters you with her holy support even as the forces of "
+      "evil flood the area!"
    
-   survatt_next_level_in_seconds = \
-      "~BYou have defeated wave number %i. The next arrives in %i seconds."
-      
-   survatt_begin_level = \
-      "~BWave %i of the enemy force has arrived."
+   invasionatt_ended = \
+      "The forces of evil have been defeated!"
+   
+   invasionatt_cant_pvp = \
+      "Shal'ille refuses to allow you to attack another player. The forces of "
+      "evil must be defeated at all costs!"
+   
+   invasionatt_begin_level = \
+      "The forces of evil rally and surge!"
+   
+   invasionatt_survival_no_cast_rsc = \
+      "The forces of evil prevent your %s spell!"
 
-   survatt_survival_no_cast_rsc = "You cannot cast %s here."
-
-   survatt_goals_header = \
-      "To defeat this wave of enemies, you must:"
-   survatt_kill_goal_msg = \
-      "Kill %i enemy creatures."
-   survatt_boss_goal_msg = \
-      "Kill a boss."
-   survatt_minibosses_goal_msg = \
-      "Kill %i minibosses."
+   invasionatt_goals_header = \
+      "To defeat the forces of evil and save the land, you must:"
+   invasionatt_kill_goal_msg = \
+      "Defeat %i of the attacking monsters."
+   invasionatt_boss_goal_msg = \
+      "Slay the evil orc pit boss himself!"
+   invasionatt_minibosses_goal_msg = \
+      "Slay the wizard servants of the evil orc pit boss."
       
-   survatt_boss_slain_goal_msg = \
-      "~BA boss has been slain!"
-   survatt_minibosses_slain_goal_msg = \
-      "~BTwo minibosses have been slain!"
+   invasionatt_boss_slain_goal_msg = \
+      "~BThe orc pit boss has been slain!"
+   
+   invasionatt_minibosses_slain_goal_msg = \
+      "The lieutenants of the orc pit boss have fallen!"
       
-   survatt_kills_remaining = \
-      "There are %i kills remaining until the next wave."
+   invasionatt_kills_remaining = \
+      "There are %i monsters remaining in this offensive."
       
-   survatt_wall_blitz_activated = \
-      "~BA surge of ethereal fury overcomes the horde!"
+   invasionatt_fixed_reward_msg = \
+      "You see the glimmer of a %s somewhere on the battlefield."
+      
+   invasionatt_next_level_in_seconds = \
+      "The enemy will rally in %i seconds."
+      
+   victory_message = \
+      "The battle was hard-fought, but the thrill of victory brings "
+      "its own rewards."
+      
+   reward_money_msg = \
+      "You find and loot %i shillings."
+   reward_item_msg = \
+      "You find and loot one %s."
+   reward_improve_maxhealth = \
+      "You know you'll feel stronger once you heal from today's battle."
+      
+   invasionatt_broadcast_victory = \
+      "With Shal'ille's aid, the brave adventurers of the land have staved off "
+      "evil at %s."
+      
+   reward_tougher_wav_rsc = tougher.wav
 
-   survatt_fixed_reward_msg = \
-      "It seems one of the fallen enemies has dropped one %s on the battlefield!"
+   invasion_room_begin_wav = gong.wav
 
-   survatt_round_begin_wav = gong.wav
-   background_survival_sky = 3sky.bgf
+   background_invasion_sky = 3sky.bgf
       
 classvars:
 
 properties:
+
+   plVictoryRewards = $
 
    plGenerators = $
    
@@ -113,11 +128,8 @@ properties:
    
    piRegroupTime = 15000
    ptNextLevelTimer = $
-   piWallBlitzTime = 300000
    
    pbSpawnWaves = FALSE
-
-   ptWallBlitzTimer = $
    
    plFixedRewards = $
    
@@ -128,44 +140,45 @@ properties:
    
    % Boolean for resource restoration on level completion.
    pbRestoreResources = TRUE
+   
+   % This keeps track of [player, kills, rounds participated]
+   plRewardPoints = $
 
 messages:
 
    Constructed()
    {
       local i;
+      
+      plVictoryRewards = [[1,REWARD_TOUGHER],
+                          [1,REWARD_TOUGHER],
+                          [1,REWARD_TOUGHER],
+                          [1,REWARD_TOUGHER],
+                          [1,REWARD_TOUGHER],
+                          [&Rose,REWARD_ITEM],
+                          [5000,REWARD_MONEY],
+                          [4000,REWARD_MONEY],
+                          [3000,REWARD_MONEY],
+                          [2000,REWARD_MONEY]];
 
       plGenerators = Send(poHostObject,@GetGenerators);
-
-      % Set the regroup time from the SurvivalRoomMaintenance default
-      piRegroupTime = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                           @GetRegroupTime);
-      % Set wall blitz time.
-      piWallBlitzTime = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetWallBlitzTime);
-      pbRestoreResources = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRestoreResources);
-      plBosses = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetBosses);
-      plMinibosses = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetMiniBosses);
-      plFixedRewards = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetFixedRewards);
+      plBosses = [&OrcPitBoss];
+      plMinibosses = [&OrcWizard];
+      plFixedRewards = [[&RingInvisibility,3]];
       
-      plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRoundOneMonsters);
+      plMonsters = [[&CaveOrc,20],[&Orc,80]];
 
       ptNextLevelTimer = CreateTimer(self,@InitiateNextLevel,DEFLT_START_TIME);
 
       for i in Send(SYS,@GetUsersLoggedOn)
       {
-         Send(i,@MsgSendUser,#message_rsc=survatt_beginning_in_location,
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_beginning_in_location,
                              #parm1=Send(poHostObject,@GetName));
       }
       
       for i in Send(poHostObject,@GetPlayers)
       {
-         Send(i,@MsgSendUser,#message_rsc=survatt_beginning_in_sixty);
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_beginning_in_sixty);
       }
       
       for i in Send(poHostObject,@GetMonsters)
@@ -190,55 +203,36 @@ messages:
 
       if piLevel = 2
       {
-         plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRoundTwoMonsters);
+         plMonsters = [[&CaveOrc,40],[&Orc,60]];
       }
-      
+
       if piLevel = 3
       {
-         plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRoundThreeMonsters);
+         plMonsters = [[&CaveOrc,60],[&Orc,40]];
       }
-      
+
       if piLevel = 4
       {
-         plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRoundFourMonsters);
+         plMonsters = [[&CaveOrc,80],[&Orc,20]];
       }
+
+      if piLevel = 5
+      {
+         plMonsters = [[&CaveOrc,90],[&Shadowbeast,10]];
+      }
+      
+      ptReportGoalsTimer = CreateTimer(self,@ReportGoalsTrigger,REPORT_TIME);
       
       if piLevel = 5
       {
-         plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRoundFiveMonsters);
-      }
-      
-      if piLevel = 6
-      {
-         plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetRoundSixMonsters);
-      }
-      
-      if piLevel = 7
-      {
-         plMonsters = Send(Send(SYS,@GetSurvivalRoomMaintenance),
-                              @GetAllMonsters);
-      }
-      
-      ptWallBlitzTimer = CreateTimer(self,@ActivateWallBlitz,piWallBlitzTime);
-      ptReportGoalsTimer = CreateTimer(self,@ReportGoalsTrigger,REPORT_TIME);
-      
-      if Random(1,20) < piLevel
-      {
          Send(self,@SpawnBoss);
+         Send(self,@SpawnMiniboss);
+         Send(self,@SpawnMiniboss);
       }
-      
-      Send(self,@SpawnMiniboss);
-      Send(self,@SpawnMiniboss);
       
       for i in Send(poHostObject,@GetPlayers)
       {
-         Send(i,@MsgSendUser,#message_rsc=survatt_begin_level,
-                             #parm1=piLevel);
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_begin_level);
       }
 
       plLevelGoals = $;
@@ -246,7 +240,7 @@ messages:
       
       Send(self,@ReportGoals);
       
-      Send(poHostObject,@SomethingWaveRoom,#wave_rsc=survatt_round_begin_wav);
+      Send(poHostObject,@SomethingWaveRoom,#wave_rsc=invasion_room_begin_wav);
 
       return;
    }
@@ -267,51 +261,32 @@ messages:
    
       for i in Send(poHostObject,@GetPlayers)
       {
-         Send(i,@MsgSendUser,#message_rsc=survatt_goals_header);
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_goals_header);
          for n in plLevelGoals
          {
             if Nth(n,1) = GOAL_KILLS
             {
-               Send(i,@MsgSendUser,#message_rsc=survatt_kill_goal_msg,
+               Send(i,@MsgSendUser,#message_rsc=invasionatt_kill_goal_msg,
+                                   #parm1=Nth(n,2));
+            }
+            if Nth(n,1) = GOAL_MINIBOSSES
+            {
+               Send(i,@MsgSendUser,#message_rsc=invasionatt_minibosses_goal_msg,
                                    #parm1=Nth(n,2));
             }
             if Nth(n,1) = GOAL_BOSS
             {
-               Send(i,@MsgSendUser,#message_rsc=survatt_boss_goal_msg);
-            }
-            if Nth(n,1) = GOAL_MINIBOSSES
-            {
-               Send(i,@MsgSendUser,#message_rsc=survatt_minibosses_goal_msg,
-                                   #parm1=Nth(n,2));
+               Send(i,@MsgSendUser,#message_rsc=invasionatt_boss_goal_msg);
             }
          }
       }
       return;
    }
-   
-   ActivateWallBlitz()
-   {
-      local i, each_obj;
-      
-      ptWallBlitzTimer = $;
-      
-      for i in Send(poHostObject,@GetMonsters)
-      {
-         Send(i,@SetBehaviorFlag,#flag=AI_MOVE_WALKTHROUGH_WALLS);
 
-      }
-      
-      for i in Send(poHostObject,@GetPlayers)
-      {
-         Send(i,@MsgSendUser,#message_rsc=survatt_wall_blitz_activated);
-      }
-      
-      return;
-   }
-   
    LevelComplete()
    {
-      local i, lFixedReward, oReward, iRewardTime, lRandomSpawnPoint;
+      local i, n, lFixedReward, oReward, iRewardTime, lRandomSpawnPoint,
+            bFoundPlayerInRewards;
 
       iRewardTime = 0;
 
@@ -333,11 +308,6 @@ messages:
          }
       }
       
-      if ptWallBlitzTimer <> $
-      {
-         DeleteTimer(ptWallBlitzTimer);
-         ptWallBlitzTimer = $;
-      }
       if ptReportGoalsTimer <> $
       {
          DeleteTimer(ptReportGoalsTimer);
@@ -356,7 +326,7 @@ messages:
             oReward = Create(Nth(lFixedReward,1));
             for i in Send(poHostObject,@GetPlayers)
             {
-               Send(i,@MsgSendUser,#message_rsc=survatt_fixed_reward_msg,
+               Send(i,@MsgSendUser,#message_rsc=invasionatt_fixed_reward_msg,
                                    #parm1=Send(oReward,@GetName));
             }
             
@@ -377,9 +347,6 @@ messages:
             iRewardTime = iRewardTime + 45000;
          }
       }
-
-      ptNextLevelTimer = CreateTimer(self,@InitiateNextLevel,
-                              piRegroupTime + iRewardTime);
       
       for i in Send(poHostObject,@GetPlayers)
       {
@@ -395,12 +362,35 @@ messages:
             }
             Send(i,@RechargeAllRods,#alternate_recharge=TRUE);
          }
-         Send(i,@MsgSendUser,#message_rsc=survatt_next_level_in_seconds,
-                             #parm1 = piLevel,
-                             #parm2 = (piRegroupTime + iRewardTime)/1000);
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_next_level_in_seconds,
+                             #parm1 = (piRegroupTime + iRewardTime)/1000);
+
+         bFoundPlayerInRewards = FALSE;
+         for n in plRewardPoints
+         {
+            if Nth(n,1) = i
+            {
+               SetNth(n,3,Nth(n,3)+1);
+               bFoundPlayerInRewards = TRUE;
+            }
+         }
+         
+         if NOT bFoundPlayerInRewards
+         {
+            plRewardPoints = Cons([i,0,1],plRewardPoints);
+         }
       }
 
       piLevel = piLevel + 1;
+      
+      if piLevel > 5
+      {
+         Send(self,@Victory);
+         return;
+      }
+
+      ptNextLevelTimer = CreateTimer(self,@InitiateNextLevel,
+                              piRegroupTime + iRewardTime);
       
       return;
    }
@@ -423,19 +413,13 @@ messages:
       iRand = Random((iTotalParticipants)*5,
                      (iTotalParticipants)*15);
                      
-      iRand = Bound(iRand,1,75);
+      iRand = Bound(iRand,15,150);
 
       plLevelGoals = Cons([GOAL_KILLS,iRand],plLevelGoals);
 
-      iRand = Random(1,3);
-      if iRand = 1
-         AND piSpawnedBossThisRound
+      if piSpawnedBossThisRound
       {
          plLevelGoals = Cons([GOAL_BOSS,1],plLevelGoals);
-      }
-
-      if iRand = 2
-      {
          plLevelGoals = Cons([GOAL_MINIBOSSES,2],plLevelGoals);
       }
       
@@ -448,7 +432,7 @@ messages:
 
       cBoss = Nth(plBosses,Random(1,Length(plBosses)));
       Send(poHostObject,@GenerateMonster,#oMonster=Create(cBoss),#bStack=TRUE,
-                                    #piSurvivalLevel=piLevel);
+                                    #piSurvivalLevel=piLevel*10);
       piSpawnedBossThisRound = TRUE;
 
       return;
@@ -468,13 +452,14 @@ messages:
 
       cMiniboss = Nth(plMinibosses,Random(1,Length(plMinibosses)));
       Send(poHostObject,@GenerateMonster,#oMonster=Create(cMiniboss),#bStack=TRUE,
-                                 #piSurvivalLevel=piLevel);
+                                 #piSurvivalLevel=piLevel*10);
       return;
    }
    
    SomethingKilled(what=$,victim=$)
    {
-      local i, n, p, cDeadClass, respawnCheck, oTarget, mob, oMonster, plParticipants;
+      local i, n, p, cDeadClass, respawnCheck, oTarget, mob, oMonster, plParticipants,
+            bPlayerFoundInRewardPoints, iPointsMultiplier;
       
       if IsClass(victim,&User)
       {
@@ -491,6 +476,45 @@ messages:
          }
 
          cDeadClass = GetClass(victim);
+         
+         % Measure players' contributions
+         if IsClass(what,&Player)
+         {
+            if plRewardPoints = $
+            {
+               plRewardPoints = Cons([what,0,0],plRewardPoints);
+            }
+            
+            iPointsMultiplier = 1;
+            if Send(what,@GetBaseMaxHealth) < 100
+            {
+               iPointsMultiplier = 2;
+            }
+            if Send(what,@GetBaseMaxHealth) < 50
+            {
+               iPointsMultiplier = 3;
+            }
+
+            bPlayerFoundInRewardPoints = FALSE;
+            for i in plRewardPoints
+            {
+               if Nth(i,1) = what
+               {
+                  SetNth(i,2,Nth(i,2)+
+                             (Send(self,@GetWorth,#mob=victim)*
+                              iPointsMultiplier));
+                  bPlayerFoundInRewardPoints = TRUE;
+               }
+            }
+            
+            if NOT bPlayerFoundInRewardPoints
+            {
+               plRewardPoints = Cons([what,
+                                      (Send(self,@GetWorth,#mob=victim)*
+                                      iPointsMultiplier),0],
+                                      plRewardPoints);
+            }
+         }
          
          for respawnCheck in plMinibosses
          {
@@ -510,7 +534,7 @@ messages:
                
                for p in Send(poHostObject,@GetPlayers)
                {
-                  Send(p,@MsgSendUser,#message_rsc=survatt_kills_remaining,
+                  Send(p,@MsgSendUser,#message_rsc=invasionatt_kills_remaining,
                                       #parm1=Nth(i,2));
                }
             }
@@ -554,7 +578,7 @@ messages:
                for n in plParticipants
                {
                   Send(n,@MsgSendUser,
-                         #message_rsc=survatt_boss_slain_goal_msg);
+                         #message_rsc=invasionatt_boss_slain_goal_msg);
                }
             }
             if Nth(i,1) = GOAL_MINIBOSSES
@@ -562,7 +586,7 @@ messages:
                for n in plParticipants
                {
                   Send(n,@MsgSendUser,
-                       #message_rsc=survatt_minibosses_slain_goal_msg);
+                       #message_rsc=invasionatt_minibosses_slain_goal_msg);
                }
             }
 
@@ -596,6 +620,39 @@ messages:
       }
 
       return;
+   }
+   
+   GetWorth(mob=$)
+   {
+      local i;
+      
+      for i in plMiniBosses
+      {
+         if i = GetClass(mob)
+         {
+            return 50;
+         }
+      }
+      
+      for i in plBosses
+      {
+         if i = GetClass(mob)
+         {
+            return 100;
+         }
+      }
+      
+      if Send(mob,@GetLevel) >= 100
+      {
+         return 3;
+      }
+      
+      if Send(mob,@GetLevel) >= 50
+      {
+         return 2;
+      }
+      
+      return 1;
    }
 
    AggroBosses(victim = $)
@@ -664,7 +721,7 @@ messages:
       if IsClass(what,&User)
       {
          Post(self,@AggroSome,#who=what);
-         Post(what,@MsgSendUser,#message_rsc=survatt_welcome_message);
+         Post(what,@MsgSendUser,#message_rsc=invasionatt_welcome_message);
          return;
       }
 
@@ -723,11 +780,6 @@ messages:
             % run after mob is set up in room.
             Post(what,@TargetSwitch,#what=oTarget,#iHatred=100);
             Post(what,@EnterStateChase,#target=oTarget,#actnow=True);
-         }
-
-         if ptWallBlitzTimer = $
-         {
-            Send(what,@SetBehaviorFlag,#flag=AI_MOVE_WALKTHROUGH_WALLS);
          }
       }
 
@@ -817,15 +869,12 @@ messages:
          }
       }
       
+      plRewardPoints = $;
+      
       if ptNextLevelTimer <> $
       {
          DeleteTimer(ptNextLevelTimer);
          ptNextLevelTimer = $;
-      }
-      if ptWallBlitzTimer <> $
-      {
-         DeleteTimer(ptWallBlitzTimer);
-         ptWallBlitzTimer = $;
       }
       if ptReportGoalsTimer <> $
       {
@@ -840,22 +889,6 @@ messages:
 
       propagate;
    }
-   
-   LastUserLeft(what=$)
-   {
-      local i;
-
-      for i in Send(SYS,@GetUsersLoggedOn)
-      {
-         Send(i,@MsgSendUser,#message_rsc=survatt_ended_at_level,
-                             #parm1=Send(poHostObject,@GetName),
-                             #parm2=piLevel,
-                             #parm3=Send(what,@GetTrueName));
-      }
-
-      Post(self,@Delete);
-      propagate;
-   }
 
    GetLevel()
    {
@@ -868,7 +901,7 @@ messages:
          OR IsClass(oSpell,&Jig)
       {
          % We have to provide the fail message here.
-         Send(who,@MsgSendUser,#message_rsc=survatt_survival_no_cast_rsc,
+         Send(who,@MsgSendUser,#message_rsc=invasionatt_survival_no_cast_rsc,
                #parm1=Send(oSpell,@GetName));
 
          return FALSE;
@@ -934,17 +967,7 @@ messages:
    {
       return plMonsters;
    }
-   
-   BoostsMonsters()
-   {
-      return TRUE;
-   }
-   
-   BoostMonster(boost_val=0)
-   {
-      return boost_val + piLevel;
-   }
-   
+
    ModifiesRoomBackground()
    {
       return TRUE;
@@ -952,7 +975,7 @@ messages:
    
    ModifyRoomBackground(rBackground=$)
    {
-      return background_survival_sky;
+      return background_invasion_sky;
    }
    
    OverridesMonsterDots()
@@ -978,6 +1001,96 @@ messages:
    ModifyMonsterGenTime(iTime=0)
    {
       return 1000;
+   }
+   
+   BoostsMonsters()
+   {
+      return TRUE;
+   }
+   
+   BoostMonster(boost_val=0)
+   {
+      return boost_val + (piLevel*5);
+   }
+   
+   Victory()
+   {
+      local i, n, z, lRanking, iHighestPoints, oHighestPlayer, oTreasure;
+
+      for i in Send(SYS,@GetUsersLoggedOn)
+      {
+         Send(i,@MsgSendUser,#message_rsc=invasionatt_broadcast_victory,
+                             #parm1=Send(poHostObject,@GetName));
+      }
+      
+      for i in Send(poHostObject,@GetPlayers)
+      {
+         Send(i,@MsgSendUser,#message_rsc=victory_message);
+         
+         for n in plRewardPoints
+         {
+            if Nth(n,1) = i
+            {
+               lRanking = Cons([i,Nth(n,2)*Nth(n,3)],lRanking);
+            }
+         }
+      }
+      
+      for i in plVictoryRewards
+      {
+         for n in lRanking
+         {
+            iHighestPoints = 0;
+            oHighestPlayer = $;
+            if Nth(n,2) > iHighestPoints
+            {
+               oHighestPlayer = Nth(n,1);
+               iHighestPoints = Nth(n,2);
+            }
+         }
+         
+         if oHighestPlayer <> $
+         {
+            if Nth(i,2) = REWARD_MONEY
+            {
+               oTreasure = Create(&Money,#amount=Nth(i,1));
+               Send(oHighestPlayer,@MsgSendUser,#message_rsc=reward_money_msg,
+                                   #parm1=Nth(i,1));
+               Send(oHighestPlayer,@NewHold,#what=oTreasure);
+            }
+            if Nth(i,2) = REWARD_ITEM
+            {
+               oTreasure = Create(Nth(i,1));
+               Send(oHighestPlayer,@MsgSendUser,#message_rsc=reward_item_msg,
+                                   #parm1=Send(oTreasure,@GetName));
+               Send(oHighestPlayer,@NewHold,#what=oTreasure);
+            }
+            if Nth(i,2) = REWARD_TOUGHER
+            {
+               Send(oHighestPlayer,@GainBaseMaxHealth,#amount = 1);
+
+               Send(oHighestPlayer,@evaluatepkstatus);
+
+               Send(oHighestPlayer,@MsgSendUser,#message_rsc=reward_improve_maxhealth);
+               Send(oHighestPlayer,@WaveSendUser,#what=oHighestPlayer,
+                     #wave_rsc=reward_tougher_wav_rsc);
+               Send(oHighestPlayer,@DrawHealth);
+               Post(oHighestPlayer,@DrawOffense);
+               Post(oHighestPlayer,@DrawDefense);
+            }
+            
+            % Been rewarded, remove from rankings
+            for n in lRanking
+            {
+               if Nth(n,1) = oHighestPlayer
+               {
+                  lRanking = DelListElem(lRanking,n);
+               }
+            }
+         }
+      }
+      
+      return;
    }
 
 end

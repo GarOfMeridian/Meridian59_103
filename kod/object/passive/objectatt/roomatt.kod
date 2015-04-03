@@ -171,5 +171,10 @@ messages:
       return iTime;
    }
    
+   ReqSomethingAttack(what = $,victim = $,use_weapon = $,report = TRUE)
+   {
+      return TRUE;
+   }
+   
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
