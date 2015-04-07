@@ -805,9 +805,9 @@ classvars:
    viFinger_space = 2
    viGauntlet_space = 1
 
-   % Our actual max is this plus a bonus for might.
-   viBulk_hold_max = 1700
-   viWeight_hold_max = 1700
+   % Equal to 1700 + 1400 (70 might * 20) but all players get this max now.
+   viBulk_hold_max = 3100
+   viWeight_hold_max = 3100
 
    viMax_vigor = 200
 
@@ -11642,12 +11642,12 @@ messages:
 
    GetBulkMax()
    {
-      return viBulk_hold_max + (Send(self,@GetMight) * 20);
+      return viBulk_hold_max;
    }
 
    GetWeightMax()
    {
-      return viWeight_hold_max + (Send(self,@GetMight) * 20);
+      return viWeight_hold_max;
    }
 
    CountKnownAtLevel(school=$,level=$)
