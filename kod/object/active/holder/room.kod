@@ -4995,19 +4995,19 @@ messages:
    
    GetPlayers()
    {
-      local i, plPlayers;
+      local i, lPlayers;
       
-      plPlayers = $;
+      lPlayers = $;
       
       for i in plActive
       {
          if IsClass(First(i),&Player)
          {
-            plPlayers = Cons(First(i),plPlayers);
+            lPlayers = Cons(First(i),lPlayers);
          }
       }
 
-      return plPlayers;
+      return lPlayers;
    }
    
    GetActivePlayers()
