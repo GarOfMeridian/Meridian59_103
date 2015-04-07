@@ -348,11 +348,11 @@ messages:
       
       % Get the relevant amount of primary stat for our proficiency. This will 
       % be our base bonus percentage.
-      stat = send(weapProf,@GetRequisiteStat,#who=who) - 25;
+      stat = send(weapProf,@GetRequisiteStat,#who=who);
       
       % Scale down the bonus damage percentage if the user is not fully 
       % proficient in the weapon.
-      bonusPercentage = 100 + bound(stat * profAbility / 100, 0, 40);
+      bonusPercentage = 100 + bound(stat * profAbility / 100, 0, 70);
 
       iDamage = iDamage * bonusPercentage / 100;
       

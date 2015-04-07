@@ -47,6 +47,10 @@ classvars:
    viGround_group = 1
    viInventory_group = 3
    viBroken_group = 2
+   
+   viMinDamage = 4
+   viMaxDamage = 8
+   viRange = 128
 
 properties:
 
