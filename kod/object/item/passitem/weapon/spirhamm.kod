@@ -50,6 +50,10 @@ classvars:
    viGround_group = 1
    viInventory_group = 3
    viBroken_group = 2
+   
+   viMinDamage = 5
+   viMaxDamage = 9
+   viRange = 128
 
 properties:
 
@@ -81,6 +85,11 @@ messages:
       Send(self,@SetSpellFlag,#flag=ATCK_SPELL_HOLY,#value=TRUE);
 
       propagate;
+   }
+
+   GetBaseDamage(who=$,target=$)
+   {
+      return random(viMinDamage, viMaxDamage);
    }
 
    WeaponExpires()

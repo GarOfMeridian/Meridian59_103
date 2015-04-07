@@ -47,6 +47,10 @@ classvars:
 
    vrWeapon_window_overlay = shortsword_window_overlay_rsc
    vrWeapon_overlay = shortsword_player_overlay
+   
+   viMinDamage = 2
+   viMaxDamage = 7
+   viRange = 192
 
 properties:
 
@@ -54,6 +58,10 @@ properties:
 
 messages:
 
+   GetBaseDamage(who=$,target=$)
+   {
+      return random(viMinDamage, viMaxDamage);
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

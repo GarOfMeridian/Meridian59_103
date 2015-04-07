@@ -50,6 +50,10 @@ classvars:
    viGround_group = 1
    viInventory_group = 3
    viBroken_group = 2
+   
+   viMinDamage = 4
+   viMaxDamage = 9
+   viRange = 192
 
 properties:
 
@@ -57,6 +61,11 @@ properties:
    piAttack_Spell = 0
 
 messages:
+
+   GetBaseDamage(who=$,target=$)
+   {
+      return random(viMinDamage, viMaxDamage);
+   }
 
    DoShatter()
    {

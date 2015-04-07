@@ -49,12 +49,21 @@ classvars:
    viGround_group = 1
    viInventory_group = 3
    viBroken_group = 2
+   
+   viMinDamage = 7
+   viMaxDamage = 13
+   viRange = 128
 
 properties:
 
    piAttack_type = ATCK_WEAP_NONMAGIC+ATCK_WEAP_SLASH
 
 messages:
+
+   GetBaseDamage(who=$,target=$)
+   {
+      return random(viMinDamage, viMaxDamage);
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

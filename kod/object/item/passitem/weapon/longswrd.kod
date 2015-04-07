@@ -48,6 +48,10 @@ classvars:
    viGround_group = 1
    viInventory_group = 3
    viBroken_group = 2
+   
+   viMinDamage = 3
+   viMaxDamage = 8
+   viRange = 192
 
 properties:
 
@@ -55,6 +59,10 @@ properties:
 
 messages:
 
+   GetBaseDamage(who=$,target=$)
+   {
+      return random(viMinDamage, viMaxDamage);
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
