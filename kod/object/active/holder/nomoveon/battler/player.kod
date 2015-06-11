@@ -1459,6 +1459,8 @@ messages:
 
    SetVigorRestThreshold(amount = 0)
    {
+      local i;
+
       piVigor_rest_threshold = amount;
 
       % Don't go above rest threshold if we're still waiting for Second Wind.
@@ -1469,6 +1471,12 @@ messages:
 
       piVigor_rest_threshold = Bound(piVigor_rest_threshold,10,80 +
                ((Send(self,@GetSkillAbility,#skill_num=SKID_SECOND_WIND)+1)/5));
+
+      for i in plUsing
+      {
+         piVigor_rest_threshold = piVigor_rest_threshold +
+                                  Send(i,@GetMaxVigorBonus);
+      }
 
       Send(self,@DrawVigor);
 
@@ -5395,13 +5403,13 @@ messages:
    {
       local i, j, iResistance, oSoldierShield, gainchance, color_rsc,
             iDuration, oSpell, oGort,iLimit, origdamage, oWeapon, shrunken,
-            bAttackerEmpowered, bShielded, oRod;
+            bAttackerEmpowered, bShielded, oRod, lCurrentEmpowerments,
+            iEmpowermentPercentage;
 
       if NOT precision
       {
          damage = damage * 100;
       }
-
       origdamage = damage/100;
       color_rsc = player_hit_color_none;
 
@@ -5416,6 +5424,19 @@ messages:
       {
          color_rsc = player_hit_color_blue;
       }
+      
+      % Empowerments e.g. 6% increased acid damage
+      lCurrentEmpowerments = Send(what,@GetCurrentEmpowerments);
+      iEmpowermentPercentage = 0;
+      for i in lCurrentEmpowerments
+      {
+         if atype & Nth(i,1)
+            OR aspell & Nth(i,1)
+         {
+            iEmpowermentPercentage = iEmpowermentPercentage + Nth(i,2);
+         }
+      }
+      damage = (damage * (100+iEmpowermentPercentage))/100;
 
       if NOT absolute
       {
@@ -7162,6 +7183,8 @@ messages:
          {
             piMax_mana = piMax_mana + Send(i,@GetManaChange);
          }
+         
+         piMax_mana = piMax_mana + Send(i,@GetMaxManaBonus);
       }
 
       for i in plEnchantments

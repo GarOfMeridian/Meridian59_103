@@ -116,6 +116,71 @@ messages:
    {
       return resistance_list;
    }
+   
+   ModifyEmpowerment(empowerment_list=$)
+   {
+      return empowerment_list;
+   }
+   
+   ModifyMaxHealth(max_health = 0)
+   {
+      return max_health;
+   }
+
+   ModifyMaxMana(max_mana = 0)
+   {
+      return max_mana;
+   }
+
+   ModifyMaxVigor(max_vigor = 0)
+   {
+      return max_vigor;
+   }
+   
+   ModifyMight(might = 0)
+   {
+      return might;
+   }
+   
+   ModifyIntellect(intellect = 0)
+   {
+      return intellect;
+   }
+   
+   ModifyStamina(stamina = 0)
+   {
+      return stamina;
+   }
+   
+   ModifyAgility(agility = 0)
+   {
+      return agility;
+   }
+   
+   ModifyMysticism(mysticism = 0)
+   {
+      return mysticism;
+   }
+
+   ModifyAim(aim = 0)
+   {
+      return aim;
+   }
+   
+   ModifySpellPower(iModifier=0,oSpell=$,oCaster=$)
+   {
+      return iModifier;
+   }
+
+   ModifyVisualDampening(visual_dampening=0)
+   {
+      return visual_dampening;
+   }
+
+   ModifyBindDampening(bind_dampening=0)
+   {
+      return bind_dampening;
+   }
 
    Delete()
    {
