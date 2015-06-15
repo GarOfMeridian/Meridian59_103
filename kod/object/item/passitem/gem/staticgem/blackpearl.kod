@@ -38,6 +38,42 @@ classvars:
 properties:
    
 messages:
+   
+   AttributeDesc()
+   {
+      AppendTempString("An attached ");
+      AppendTempString(Send(self,@GetName));
+      AppendTempString(" adds ");
+      
+      if viResistanceType <> 0
+      {
+         AppendTempString(viResistanceStrength);
+         AppendTempString("\% ");
+         AppendTempString(Send(SYS,@GetResistanceName,#type=viResistanceType));
+      }
+
+      AppendTempString(", ");
+      
+      if viEmpowermentType <> 0
+      {
+         AppendTempString(viEmpowermentStrength);
+         AppendTempString("\% ");
+         AppendTempString(Send(SYS,@GetEmpowermentName,
+                          #type=viEmpowermentType));
+      }
+
+      AppendTempString(", and ");
+
+      if viMaxHealthIncrease <> 0
+      {
+         AppendTempString(viMaxHealthIncrease);
+         AppendTempString(" max health");
+      }
+      
+      AppendTempString(". ");
+      
+      return;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

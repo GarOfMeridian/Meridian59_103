@@ -32,6 +32,23 @@ classvars:
 properties:
    
 messages:
+   
+   AttributeDesc()
+   {
+      AppendTempString("An attached ");
+      AppendTempString(Send(self,@GetName));
+      AppendTempString(" adds ");
+      
+      if viAllSchoolBonus <> 0
+      {
+         AppendTempString(viAllSchoolBonus);
+         AppendTempString(" general spellpower");
+      }
+
+      AppendTempString(". ");
+      
+      return;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

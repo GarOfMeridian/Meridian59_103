@@ -310,6 +310,20 @@ messages:
 
       iCasterBindDampening = Send(what,@GetBindDampening);
       iTargetBindDampening = Send(oTarget,@GetBindDampening);
+      
+      if iTargetBindDampening >= 100
+      {
+         Send(what,@MsgSendUser,#message_rsc=hold_immune,
+                               #parm1=Send(target,@GetDef),
+                               #parm2=Send(target,@GetName));
+         return FALSE;
+      }
+      
+      if iCasterBindDampening >= 100
+      {
+         Send(what,@MsgSendUser,#messsage_rsc=hold_you_are_immune);
+         return FALSE;
+      }
 
       if iCasterBindDampening <> 0
          OR iTargetBindDampening <> 0

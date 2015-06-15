@@ -33,6 +33,23 @@ classvars:
 properties:
    
 messages:
+   
+   AttributeDesc()
+   {
+      AppendTempString("An attached ");
+      AppendTempString(Send(self,@GetName));
+      AppendTempString(" adds ");
+      
+      if viVisualDampening <> 0
+      {
+         AppendTempString(viVisualDampening);
+         AppendTempString("\% visual dampening");
+      }
+
+      AppendTempString(". ");
+      
+      return;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

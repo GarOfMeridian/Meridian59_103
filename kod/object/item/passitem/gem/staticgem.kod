@@ -80,7 +80,7 @@ properties:
 
    
 messages:
-   
+
    ModifyDamage(damage=$,atype=0,aspell=0)
    {
       return damage;

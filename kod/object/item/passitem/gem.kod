@@ -30,13 +30,12 @@ classvars:
 
    viUse_type = ITEM_SINGLE_USE
    viItem_type = ITEMTYPE_GEM
-   viObject_flags = OF_GETTABLE
    
 properties:
 
    poSocketedObject = $
 
-   viObject_flags = OF_APPLYABLE
+   viObject_flags = OF_APPLYABLE | OF_GETTABLE
 
 messages:
    

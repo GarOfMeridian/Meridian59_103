@@ -35,6 +35,39 @@ classvars:
 properties:
    
 messages:
+   
+   AttributeDesc()
+   {
+      AppendTempString("An attached ");
+      AppendTempString(Send(self,@GetName));
+      AppendTempString(" adds ");
+      
+      if viMaxHealthIncrease <> 0
+      {
+         AppendTempString(viMaxHealthIncrease);
+         AppendTempString(" max health");
+      }
+
+      AppendTempString(", ");
+      
+      if viMaxManaIncrease <> 0
+      {
+         AppendTempString(viMaxManaIncrease);
+         AppendTempString(" max mana");
+      }
+
+      AppendTempString(", and ");
+
+      if viStaminaIncrease <> 0
+      {
+         AppendTempString(viStaminaIncrease);
+         AppendTempString(" Stamina");
+      }
+      
+      AppendTempString(". ");
+      
+      return;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

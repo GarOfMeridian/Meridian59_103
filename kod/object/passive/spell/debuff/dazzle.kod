@@ -199,7 +199,20 @@ messages:
 
       iCasterVisualDampening = Send(what,@GetVisualDampening);
       iTargetVisualDampening = Send(oTarget,@GetVisualDampening);
-
+      
+      if iTargetVisualDampening >= 100
+      {
+         Send(what,@MsgSendUser,#message_rsc=dazzle_immune,
+                               #parm1=Send(target,@GetDef),
+                               #parm2=Send(target,@GetName));
+         return FALSE;
+      }
+      
+      if iCasterVisualDampening >= 100
+      {
+         Send(what,@MsgSendUser,#messsage_rsc=dazzle_you_are_immune);
+         return FALSE;
+      }
 
       if iCasterVisualDampening <> 0
          OR iTargetVisualDampening <> 0
