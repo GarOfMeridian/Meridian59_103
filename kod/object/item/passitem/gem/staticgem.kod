@@ -75,6 +75,9 @@ classvars:
 
    viVisualDampening = 0
    viBindDampening = 0
+   
+   viOffenseBonus = 0
+   viDefenseBonus = 0
 
 properties:
 
@@ -293,6 +296,16 @@ messages:
    ModifyBindDampening(bind_dampening=0)
    {
       return bind_dampening + viBindDampening;
+   }
+   
+   ModifyHitRoll(hit_roll=0)
+   {
+      return hit_roll + viOffenseBonus;
+   }
+   
+   ModifyDefensePower(defense_power=0
+   {
+      return defense_power + viDefenseBonus;
    }
    
    GetRarity()
