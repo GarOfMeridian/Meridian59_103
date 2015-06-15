@@ -105,7 +105,7 @@ messages:
       propagate;
    }
    
-   ModifyDamage(damage=$,atype=0,aspell=0)
+   ModifyDamage(damage=0,who=$,target=$)
    {
       return damage;
    }

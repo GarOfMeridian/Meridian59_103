@@ -36,10 +36,15 @@ classvars:
    % Compared to mob level
    viRarity = 50
 
+   % In which types of gear can this gem be inserted?
+   % Most go in body armors, shields, helms, etc.
+   viArmorGem = TRUE
+   viWeaponGem = FALSE
+
    % Percentage resistance increase for a specific element
    viResistanceType = 0
    viResistanceStrength = 0
-   
+
    viSecondaryResistanceType = 0
    viSecondaryResistanceStrength = 0
    
@@ -75,7 +80,8 @@ classvars:
 
    viVisualDampening = 0
    viBindDampening = 0
-   
+
+   viDamageBonus = 0
    viOffenseBonus = 0
    viDefenseBonus = 0
 
@@ -84,9 +90,14 @@ properties:
    
 messages:
 
-   ModifyDamage(damage=$,atype=0,aspell=0)
+   ModifyDamage(damage=0,who=$,target=$)
    {
-      return damage;
+      return damage + viDamageBonus;
+   }
+   
+   GetDamageBonus()
+   {
+      return Send(self,@ModifyDamage);
    }
    
    GetResistanceModifiers()
@@ -157,6 +168,16 @@ messages:
    GetBindDampening()
    {
       return Send(self,@ModifyBindDampening);
+   }
+
+   GetHitBonus()
+   {
+      return Send(self,@ModifyHitRoll);
+   }
+
+   GetDefenseBonus()
+   {
+      return Send(self,@ModifyDefensePower);
    }
 
    ModifyResistance(resistance_list=$)

@@ -204,15 +204,15 @@ messages:
       return;
    }
 
-   ModifyDamage(damage=$,atype=0,aspell=0)
+   ModifyDamage(damage=0,who=$,target=$)
    {
       local i;
 
       for i in plSocketed
       {
          damage = Send(i,@ModifyDamage,#damage=damage,
-                                       #atype=atype,
-                                       #aspell=aspell);
+                                       #who=who,
+                                       #target=target);
       }
 
       return damage;

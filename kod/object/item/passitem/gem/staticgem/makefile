@@ -7,6 +7,6 @@
 DEPEND = ..\staticgem.bof
 BOFS = starfirediamond.bof sapphireteardrop.bof emeraldleaf.bof amberdisc.bof \
        blackpearl.bof jadeprism.bof blazingtourmaline.bof \
-       quicksilvernodule.bof
+       quicksilvernodule.bof azuritebijou.bof
 
 !include $(KODDIR)\kod.mak

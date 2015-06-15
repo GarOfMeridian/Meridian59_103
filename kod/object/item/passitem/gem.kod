@@ -92,7 +92,7 @@ messages:
       return;
    }
    
-   ModifyDamage(damage=$)
+   ModifyDamage(damage=0)
    {
       return damage;
    }
