@@ -225,6 +225,8 @@ properties:
    pbDirectArmorEnabled = TRUE
    % If Imbue Gems is true, imbue gems will drop from mobs.
    pbImbueGemsEnabled = FALSE
+   % If Generate Loot Sockets is enabled, defense gear dropped by mobs will try to generate sockets
+   pbGenerateLootSocketsEnabled = FALSE
 
    % Percent of mana required/used for broadcasting. Default 0 (no cost).
    piBroadcastManaPercent = 0
@@ -583,6 +585,11 @@ messages:
    GetImbueGemsEnabled()
    {
       return pbImbueGemsEnabled;
+   }
+   
+   GetGenerateLootSocketsEnabled()
+   {
+      return pbGenerateLootSocketsEnabled;
    }
 
 end

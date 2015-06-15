@@ -327,6 +327,11 @@ messages:
             else
             {
                oObj = Create(First(lItem_info),#corpse=corpse);
+               if Send(Send(SYS,@GetSettings),@GetGenerateLootSocketsEnabled)
+                  AND IsClass(oObj,&DefenseModifier)
+               {
+                  Send(self,@GenerateSockets,#oDefenseModifier=oObj);
+               }
             }
             
             if IsClass(oObj,&Money)
