@@ -110,17 +110,17 @@ messages:
       return damage;
    }
    
-   ModifyHitRoll(hit_roll=$)
+   ModifyHitRoll(hit_roll=0)
    {
       return hit_roll;
    }
    
-   ModifyDefenseDamage(damage=$)
+   ModifyDefenseDamage(damage=0)
    {
       return damage;
    }
    
-   ModifyDefensePower(defense_power=$)
+   ModifyDefensePower(defense_power=0)
    {
       return defense_power;
    }

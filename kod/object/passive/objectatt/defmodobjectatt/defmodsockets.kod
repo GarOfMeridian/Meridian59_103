@@ -218,7 +218,7 @@ messages:
       return damage;
    }
 
-   ModifyHitRoll(hit_roll=$)
+   ModifyHitRoll(hit_roll=0)
    {
       local i;
 
@@ -230,7 +230,7 @@ messages:
       return hit_roll;
    }
 
-   ModifyDefenseDamage(damage=$)
+   ModifyDefenseDamage(damage=0)
    {
       local i;
 
@@ -242,7 +242,7 @@ messages:
       return damage;
    }
 
-   ModifyDefensePower(defense_power=$)
+   ModifyDefensePower(defense_power=0)
    {
       local i;
 

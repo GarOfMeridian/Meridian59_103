@@ -324,7 +324,7 @@ messages:
       return hit_roll + viOffenseBonus;
    }
    
-   ModifyDefensePower(defense_power=0
+   ModifyDefensePower(defense_power=0)
    {
       return defense_power + viDefenseBonus;
    }

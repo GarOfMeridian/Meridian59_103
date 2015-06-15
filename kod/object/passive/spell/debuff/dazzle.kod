@@ -203,8 +203,8 @@ messages:
       if iTargetVisualDampening >= 100
       {
          Send(what,@MsgSendUser,#message_rsc=dazzle_immune,
-                               #parm1=Send(target,@GetDef),
-                               #parm2=Send(target,@GetName));
+                               #parm1=Send(oTarget,@GetDef),
+                               #parm2=Send(oTarget,@GetName));
          return FALSE;
       }
       

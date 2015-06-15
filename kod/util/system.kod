@@ -5291,6 +5291,7 @@ messages:
       plItemTemplates = cons(create(&BlazingTourmaline),plItemTemplates);
       plItemTemplates = cons(create(&QuicksilverNodule),plItemTemplates);
       plItemTemplates = cons(create(&AzuriteBijou),plItemTemplates);
+      plItemTemplates = cons(create(&GlimmeringMoonstone),plItemTemplates);
 
       % God Gifts
       plItemTemplates = cons(create(&SpecialGiftTwo),plItemTemplates);
