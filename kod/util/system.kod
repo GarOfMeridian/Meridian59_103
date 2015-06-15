@@ -7752,6 +7752,22 @@ messages:
       
       return $;
    }
+   
+   FindAllItemsOfClass(cClass=$)
+   {
+      local i, lItems;
+
+      lItems = $;
+      for i in plItemTemplates
+      {
+         if IsClass(i,cClass)
+         {
+            lItems = Cons(i,lItems);
+         }
+      }
+      
+      return lItems;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

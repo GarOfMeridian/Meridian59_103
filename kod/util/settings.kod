@@ -224,7 +224,7 @@ properties:
    % If Direct Armor is true, old rules are used. Turn it off to switch to new system of resists only.
    pbDirectArmorEnabled = TRUE
    % If Imbue Gems is true, imbue gems will drop from mobs.
-   pbImbueGemsEnabled = FALSE
+   pbImbueGemDropsEnabled = FALSE
    % If Generate Loot Sockets is enabled, defense gear dropped by mobs will try to generate sockets
    pbGenerateLootSocketsEnabled = FALSE
 
@@ -582,9 +582,9 @@ messages:
       return pbDirectArmorEnabled;
    }
    
-   GetImbueGemsEnabled()
+   GetImbueGemDropsEnabled()
    {
-      return pbImbueGemsEnabled;
+      return pbImbueGemDropsEnabled;
    }
    
    GetGenerateLootSocketsEnabled()
