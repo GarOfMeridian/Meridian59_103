@@ -4992,7 +4992,7 @@ messages:
    GetOffense(what = $, stroke_obj=$)
    {
       local i, oWeapon, iStroke, iProficiency, iAim, iOffense,
-            oMonster, lRadiusState;
+            oMonster, lRadiusState, lEquipment;
 
       oWeapon = $;
 
@@ -5033,11 +5033,22 @@ messages:
          }
       }
 
+      lEquipment = Send(self,@GetEquippedItems);
+      for i in lEquipment
+      {
+         iOffense = Send(i,@ModifyHitRoll,
+                           #hit_roll=iOffense);
+      }
+
       % List of items and spells that affect chance-to-hit
       for i in plAttack_modifiers
       {
-         iOffense = Send(i,@ModifyHitRoll,#who=self,#what=what,
+         if lEquipment = $
+            OR FindListElem(lEquipment,i) = 0
+         {
+            iOffense = Send(i,@ModifyHitRoll,#who=self,#what=what,
                         #hit_roll=iOffense,#stroke_obj=stroke_obj);
+         }
       }
 
       if Send(self,@IsAffectedByRadiusEnchantment,#byClass=&Mirth)
@@ -5082,7 +5093,7 @@ messages:
    "Ranges from 1 to 2000."
    {
       local i, oWeapon, oShield, iParry, iDodge, iBlock, iAgility,
-            iDefense, iHealth, oMonster;
+            iDefense, iHealth, oMonster, lEquipment;
 
       % Morphed?
       oMonster = Send(self,@GetIllusionForm);
@@ -5117,10 +5128,21 @@ messages:
                      + (200 * iHealth)/(100 + Send(self,@GetStamina));
       }
 
+      lEquipment = Send(self,@GetEquippedItems);
+      for i in lEquipment
+      {
+         iDefense = Send(i,@ModifyDefensePower,
+                           #defense_power=iDefense);
+      }
+
       for i in plDefense_modifiers
       {
-         iDefense = Send(i,@ModifyDefensePower,#who=self,
+         if lEquipment = $
+            OR FindListElem(lEquipment,i) = 0
+         {
+            iDefense = Send(i,@ModifyDefensePower,#who=self,
                            #what=what,#defense_power=iDefense);
+         }
       }
 
       for i in plRadiusEnchantments
