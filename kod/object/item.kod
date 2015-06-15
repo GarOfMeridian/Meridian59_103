@@ -847,6 +847,11 @@ messages:
       return 0;
    }
    
+   ModifyHitRoll(hit_roll=0)
+   {
+      return hit_roll;
+   }
+   
    GetDefenseBonus()
    {
       return 0;
