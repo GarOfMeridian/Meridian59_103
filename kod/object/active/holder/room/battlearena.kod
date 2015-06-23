@@ -115,6 +115,8 @@ classvars:
    viControlCenterSouth_row = 39
    viControlCenterSouth_col = 28
 
+   viPermanent_flags = ROOM_SAFELOGOFF
+
 properties:
 
    prMusic = battlearena_music
