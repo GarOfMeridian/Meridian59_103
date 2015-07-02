@@ -768,8 +768,6 @@
 
    RID_NEWB_MAX = 1018
 
-   RID_BATTLE_ARENA = 1019
-
    % Settlement and Island 2000-2499
    % Needs to be seperate so it counts as a different 'zone'
    RID_KOCATAN = 2000
@@ -880,9 +878,11 @@
    RID_DESERTRIVER2 = 9021
    RID_DESERTBRIDGE = 9022
 
-   % Survival Rooms 9500 - 9999
+   % Survival Rooms 9500 - 9599
    RID_SURVIVAL_START = 9500
-   RID_SURVIVAL_END = 9999
+   RID_SURVIVAL_END = 9599
+
+   RID_BATTLE_ARENA = 9600
 
    % Rentable Rooms 10000+
    RID_RENTABLE_START = 10000
