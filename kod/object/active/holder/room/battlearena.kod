@@ -303,13 +303,21 @@ messages:
 
    ContinuousControlUpdate()
    {
-      local i, iTotemOneChange, iTotemTwoChange, iTotemThreeChange;
-      
+      local i, iTotemOneChange, iTotemTwoChange, iTotemThreeChange,
+            bOneHasZaphod, bOneHasZandramas, bTwoHasZaphod, bTwoHasZandramas,
+            bThreeHasZaphod, bThreeHasZandramas;
+
       ptContinuousControlTimer = $;
 
       iTotemOneChange = 0;
       iTotemTwoChange = 0;
       iTotemThreeChange = 0;
+      bOneHasZaphod = FALSE;
+      bOneHasZandramas = FALSE;
+      bTwoHasZaphod = FALSE;
+      bTwoHasZandramas = FALSE;
+      bThreeHasZaphod = FALSE;
+      bThreeHasZandramas = FALSE;
       
       if piTotemOneControl = 1
       {
@@ -348,18 +356,21 @@ messages:
                    #byClass=&BattleControl)
          {
             iTotemOneChange = iTotemOneChange - 5;
+            bOneHasZaphod = TRUE;
          }
          if Send(i,@IsAffectedByRadiusEnchantment,
                    #caster=poTotemTwo,
                    #byClass=&BattleControl)
          {
             iTotemTwoChange = iTotemTwoChange - 5;
+            bTwoHasZaphod = TRUE;
          }
          if Send(i,@IsAffectedByRadiusEnchantment,
                    #caster=poTotemThree,
                    #byClass=&BattleControl)
          {
             iTotemThreeChange = iTotemThreeChange - 5;
+            bThreeHasZaphod = TRUE;
          }
       }
       
@@ -370,19 +381,37 @@ messages:
                    #byClass=&BattleControl)
          {
             iTotemOneChange = iTotemOneChange + 5;
+            bOneHasZandramas = TRUE;
          }
          if Send(i,@IsAffectedByRadiusEnchantment,
                    #caster=poTotemTwo,
                    #byClass=&BattleControl)
          {
             iTotemTwoChange = iTotemTwoChange + 5;
+            bTwoHasZandramas = TRUE;
          }
          if Send(i,@IsAffectedByRadiusEnchantment,
                    #caster=poTotemThree,
                    #byClass=&BattleControl)
          {
             iTotemThreeChange = iTotemThreeChange + 5;
+            bThreeHasZandramas = TRUE;
          }
+      }
+
+      if bOneHasZaphod and bOneHasZandramas
+      {
+         iTotemOneChange = 0;
+      }
+
+      if bTwoHasZaphod and bTwoHasZandramas
+      {
+         iTotemTwoChange = 0;
+      }
+
+      if bThreeHasZaphod and bThreeHasZandramas
+      {
+         iTotemThreeChange = 0;
       }
 
       piTotemOneValue = bound(piTotemOneValue+iTotemOneChange,-100,100);
@@ -642,6 +671,10 @@ messages:
       Send(self,@ChangeTexture,#id=1,#new_texture=08915,#flags=CTF_FLOOR);
       Send(self,@ChangeTexture,#id=2,#new_texture=08915,#flags=CTF_FLOOR);
       Send(self,@ChangeTexture,#id=3,#new_texture=08915,#flags=CTF_FLOOR);
+
+      Send(self,@SomethingChanged,#what=poTotemOne);
+      Send(self,@SomethingChanged,#what=poTotemTwo);
+      Send(self,@SomethingChanged,#what=poTotemThree);
       
       Send(self,@SomethingWaveRoom,#wave_rsc=battle_end_wav);
 
