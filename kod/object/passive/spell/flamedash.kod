@@ -1,0 +1,322 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FlameDash is Spell
+
+constants:
+   include blakston.khd
+
+resources:
+
+   flame_dash_name_rsc = "flame dash"
+   flame_dash_icon_rsc = fireball.bgf
+   flame_dash_desc_rsc = \
+     "Teleports you forward, leaving flames in your wake. "
+     "Repeated use of this spell can exhaust even the strongest mage."
+
+   flame_dash_max_cooldowns = \
+      "You need to rest for a moment before dashing again."
+   flame_dash_not_here = \
+      "You can't dash here!"
+   flame_dash_too_short = \
+      "You don't have enough power to dash even a step!"
+   flame_dash_dashed = \
+      "You dash %i steps!"
+   flame_dash_failed = \
+      "Tried to dash %i. %i XPerc, %i YPerc, %i XSign, %i YSign."
+   flame_dash_no_space = \
+      "You don't have enough space to dash!"
+
+classvars:
+
+   vrName = flame_dash_name_rsc
+   vrIcon = flame_dash_icon_rsc
+   vrDesc = flame_dash_desc_rsc
+
+   viCast_time = 0
+
+   viSpell_num = SID_FLAME_DASH
+   viSpell_level = 6
+   viSchool = SS_FAREN
+   viMana = 8
+   viSpellExertion = 10
+   viChance_To_Increase = 15
+   viMeditate_ratio = 20
+
+properties:
+
+   % This spell keeps track of player cooldowns.
+   plCooldowns = $
+
+   % A player can use the spell this many times in a row.
+   piMaxUses = 3
+
+   % It takes this long for one cooldown to lift.
+   piCooldownTime = 10000
+
+messages:
+
+   ResetReagents()
+   {
+      plReagents = $;
+
+      return;
+   }
+
+   GetNumSpellTargets()
+   {
+      return 0;
+   }
+
+   CanPayCosts(who=$,lTargets=$,bItemCast=FALSE)
+   {
+      local oRoom;
+      
+      oRoom = Send(who,@GetOwner);
+
+      if oRoom <> $
+         AND IsClass(oRoom,&Room)
+         AND Send(oRoom,@CheckRoomFlag,#flag=ROOM_NO_COMBAT)
+      {
+         Send(who,@MsgSendUser,#message_rsc=flame_dash_not_here);
+         return FALSE;
+      }
+
+      % If you're at or beyond max cooldowns, can't use the spell.
+      if Send(self,@GetCooldown,#who=who) >= piMaxUses
+      {
+         Send(who,@MsgSendUser,#message_rsc=flame_dash_max_cooldowns);
+         return FALSE;
+      }
+
+      propagate;
+   }
+
+   CastSpell(who = $, iSpellPower=0)
+   {
+      local oRoom, iX, iY, iRot, iFineX, iFineY, iDist,
+                   iNewX, iNewY, iNewFineX, iNewFineY,
+                   iXPercentage, iYPercentage, iXSign, iYSign,
+                   iXDist, iYDist, oRoomData, iSteps,
+                   iXSuccess,iYSuccess,iFineXSuccess,iFineYSuccess,
+                   oElement;
+
+      oRoom = Send(who,@GetOwner);
+      if oRoom = $
+      {
+         return FALSE;
+      }
+      oRoomData = Send(oRoom,@GetRoomData);
+
+      % Can go up to 5 rows/cols (expressed in *64 fine)
+      iDist = ((iSpellPower+1)*64)/20;
+      
+      if iDist < 64
+      {
+         Send(who,@MsgSendUser,#message_rsc=flame_dash_too_short);
+         propagate;
+      }
+
+      % This spell calculates your intended destination without trigonometry.
+      % The diff you travel is split into percentages of X and Y distance.
+      % The spell then attempts to teleport you by checking with
+      % CanMoveInRoomHighRes().
+      
+      iX = Send(who,@GetCol);
+      iY = Send(who,@GetRow);
+      iFineX = Send(who,@GetFineCol);
+      iFineY = Send(who,@GetFineRow);
+      iRot = Send(who,@GetAngle);
+      iXPercentage = 100;
+      iYPercentage = 0;
+      iXSign = 1;
+      iYSign = 1;
+      
+      % iRot 0 - 4100
+      
+      if iRot >= 0
+         AND iRot <= 1025
+      {
+         iXPercentage = 100 - (100*iRot)/1025;
+         iYPercentage = (100*iRot)/1025;
+         iXSign = 1;
+         iYSign = 1;
+      }
+      
+      if iRot > 1025
+         AND iRot <= 2050
+      {
+         iXPercentage = (100*(iRot-1025))/1025;
+         iYPercentage = 100 - (100*(iRot-1025))/1025;
+         iXSign = -1;
+         iYSign = 1;
+      }
+      
+      if iRot > 2050
+         AND iRot <= 3175
+      {
+         iXPercentage = 100 - (100*(iRot-2050))/1025;
+         iYPercentage = (100*(iRot-2050))/1025;
+         iXSign = -1;
+         iYSign = -1;
+      }
+      
+      if iRot > 3175
+         AND iRot < 4100
+      {
+         iXPercentage = (100*(iRot-3175))/1025;
+         iYPercentage = 100 - (100*(iRot-3175))/1025;
+         iXSign = 1;
+         iYSign = -1;
+      }
+
+      iSteps = 0;  
+      iXDist = ((iDist*iXPercentage)/100)*iXSign;
+      iYDist = ((iDist*iYPercentage)/100)*iYSign;
+         
+      iNewX = Send(who,@GetCol) + (iXDist/FINENESS);
+      iNewY = Send(who,@GetRow) + (iYDist/FINENESS);
+      iNewFineX = iXDist - (iXDist/FINENESS);
+      iNewFineY = iYDist - (iYDist/FINENESS);
+         
+      if CanMoveInRoomHighRes(oRoomData,iX,iY,
+                              iFineX,iFineY,
+                              iNewX,iNewY,iNewFineX,iNewFineY)
+      {
+         iXSuccess = iNewX;
+         iYSuccess = iNewY;
+         iFineXSuccess = iNewFineX;
+         iFineYSuccess = iNewFineY;
+         iSteps = iSteps + 1;
+      }
+      else
+      {
+         Send(who,@MsgSendUser,#message_rsc=flame_dash_no_space);
+      }
+      
+      if iSteps > 0
+      {
+         Send(SYS,@UtilGoNearSquare,#what=who,#where=oRoom,
+                     #new_row=iYSuccess,#new_col=iXSuccess,
+                     #fine_row=iFineYSuccess,#fine_col=iFineXSuccess);
+         Send(who,@MsgSendUser,#message_rsc=flame_dash_dashed,
+                               #parm1=iSteps);
+         Send(self,@AddCooldown,#who=who);
+
+         oElement = Create(&WallOfFire,#MaxDamage=iSpellPower/6,#Caster=who,
+                        #Duration=(iSpellPower+1)/20,#Illusionary=FALSE);
+         Send(oRoom,@NewHold,#what=oElement,
+              #new_row=iY,#new_col=iX,
+              #fine_row=iFineY,#fine_col=iFineX);
+      }
+         Send(who,@MsgSendUser,#message_rsc=flame_dash_failed,
+                               #parm1=iDist,
+                               #parm2=iXPercentage,
+                               #parm3=iYPercentage,
+                               #parm4=iXSign,
+                               #parm5=iYSign);
+      
+
+      propagate;
+   }
+
+   SuccessChance(who=$)
+   {
+      return TRUE;
+   }
+   
+   GetCooldown(who=$)
+   {
+      local i;
+      
+      for i in plCooldowns
+      {
+         if Nth(i,1) = who
+         {
+            return Nth(i,2);
+         }
+      }
+      
+      return 0;
+   }
+
+   AddCooldown(who=$)
+   {
+      local i;
+
+      if who = $
+      {
+         return;
+      }
+
+      for i in plCooldowns
+      {
+         if Nth(i,1) = who
+         {
+            SetNth(i,2,Nth(i,2)+1);
+            return;
+         }
+      }
+      
+      plCooldowns = Cons([who,1,
+                          CreateTimer(self,@ClearCooldown,piCooldownTime)],
+                          plCooldowns);
+
+      return;
+   }
+
+   ClearCooldown(timer=$)
+   {
+      local i;
+      
+      for i in plCooldowns
+      {
+         if Nth(i,3) = timer
+         {
+            SetNth(i,2,Nth(i,2)-1);
+            if Nth(i,2) <= 0
+            {
+               SetNth(i,1,$);
+               SetNth(i,2,0);
+               SetNth(i,3,$);
+               plCooldowns = DelListElem(plCooldowns,i);
+            }
+            else
+            {
+               SetNth(i,3,CreateTimer(self,@ClearCooldown,piCooldownTime));
+            }
+         }
+      }
+      
+      return;
+   }
+   
+   Delete()
+   {
+      local i;
+      
+      for i in plCooldowns
+      {
+         if Nth(i,3) <> $
+         {
+            DeleteTimer(Nth(i,3));
+            SetNth(i,3,$);
+            SetNth(i,2,0);
+            SetNth(i,1,$);
+            plCooldowns = DelListElem(plCooldowns,i);
+         }
+      }
+      plCooldowns = $;
+      
+      propagate;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

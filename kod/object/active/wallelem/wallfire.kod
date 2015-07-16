@@ -69,9 +69,7 @@ messages:
    {
       local iDuration;
 
-      iDuration = Random(duration-20,duration+20);
       iDuration = iDuration * 1000;
-      iDuration = bound(iDuration,30000,200000);
 
       return iDuration;
    }
