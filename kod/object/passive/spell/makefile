@@ -59,6 +59,7 @@ BOFS = animate.bof \
        teleportspell.bof \
        utility.bof \
        walspell.bof \
-       flamedash.bof
+       flamedash.bof \
+       lightningstrike.bof
 
 !include $(KODDIR)\kod.mak
