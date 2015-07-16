@@ -60,6 +60,7 @@ BOFS = animate.bof \
        utility.bof \
        walspell.bof \
        flamedash.bof \
-       lightningstrike.bof
+       lightningstrike.bof \
+       iceguard.bof
 
 !include $(KODDIR)\kod.mak
