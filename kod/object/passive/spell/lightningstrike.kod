@@ -13,6 +13,9 @@ LightningStrike is Spell
 constants:
    include blakston.khd
 
+   % What change in elevation will stop lightning strike?
+   ELEVATION_RISE_MAX = 15
+
 resources:
 
    lightning_strike_name_rsc = "lightning strike"
@@ -110,7 +113,8 @@ messages:
                    iRowPercentage, iColPercentage, iRowSign, iColSign,
                    iRowDist, iColDist, oRoomData, iSteps,
                    iRowSuccess, iColSuccess, iFineRowSuccess, iFineColSuccess,
-                   oElement, iRot, iCurDist, oTarget, iTargetAngle;
+                   oElement, iRot, iCurDist, oTarget, iTargetAngle,
+                   iStartHeight, iNextHeight;
 
       oTarget = First(lTargets);
       
@@ -140,6 +144,8 @@ messages:
       iFineRow = Send(oTarget,@GetFineRow);
       iTargetAngle = Send(oTarget,@GetAngle);
       iRot = iTargetAngle + 2050;
+      
+      iStartHeight = GetHeight(oRoomData,iRow,iCol,iFineRow,iFineCol);
 
       if iRot > 4100
       {
@@ -227,6 +233,8 @@ messages:
                                 #col_end=iNewCol,
                                 #fine_row_end=iNewFineRow,
                                 #fine_col_end=iNewFineCol)
+            AND GetHeight(oRoomData,iNewRow,iNewCol,iNewFineRow,iNewFineCol) <=
+                   iStartHeight + ELEVATION_RISE_MAX
          {
             oElement = Create(&WallOfLightning,#MaxDamage=(iSpellPower+1)/4,#Caster=who,
                         #duration=800,#bMS=TRUE);

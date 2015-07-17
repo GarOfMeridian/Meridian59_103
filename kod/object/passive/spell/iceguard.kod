@@ -13,6 +13,9 @@ IceGuard is Spell
 constants:
    include blakston.khd
 
+   % What change in elevation will stop ice guard?
+   ELEVATION_RISE_MAX = 100
+
 resources:
 
    ice_guard_name_rsc = "ice guard"
@@ -112,7 +115,7 @@ messages:
                    iRowPercentage, iColPercentage, iRowSign, iColSign,
                    iRowDist, iColDist, oRoomData, iSteps,
                    iRowSuccess, iColSuccess, iFineRowSuccess, iFineColSuccess,
-                   oElement, iRot, iCurDist;
+                   oElement, iRot, iCurDist, iStartHeight, iNextHeight;
 
       oRoom = Send(who,@GetOwner);
       if oRoom = $
@@ -140,6 +143,8 @@ messages:
       iFineCol = Send(who,@GetFineCol);
       iFineRow = Send(who,@GetFineRow);
       iRot = Send(who,@GetAngle) + 2050;
+      
+      iStartHeight = GetHeight(oRoomData,iRow,iCol,iFineRow,iFineCol);
 
       if iRot > 4100
       {
@@ -227,6 +232,8 @@ messages:
                                 #col_end=iNewCol,
                                 #fine_row_end=iNewFineRow,
                                 #fine_col_end=iNewFineCol)
+            AND GetHeight(oRoomData,iNewRow,iNewCol,iNewFineRow,iNewFineCol) <=
+                   iStartHeight + ELEVATION_RISE_MAX
          {
             oElement = Create(&FogIce,#MaxDamage=iSpellPower/6,#Caster=who,
                         #duration=3000+((iSpellPower+1)/25)*1000,#bMS=TRUE);

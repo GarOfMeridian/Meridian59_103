@@ -13,6 +13,9 @@ FlameDash is Spell
 constants:
    include blakston.khd
 
+   % What change in elevation will stop flame dash?
+   ELEVATION_RISE_MAX = 30
+
 resources:
 
    flame_dash_name_rsc = "flame dash"
@@ -108,7 +111,7 @@ messages:
                    iRowPercentage, iColPercentage, iRowSign, iColSign,
                    iRowDist, iColDist, oRoomData, iSteps,
                    iRowSuccess, iColSuccess, iFineRowSuccess, iFineColSuccess,
-                   oElement, iRot, iCurDist;
+                   oElement, iRot, iCurDist, iStartHeight, iNextHeight;
 
       oRoom = Send(who,@GetOwner);
       if oRoom = $
@@ -140,6 +143,8 @@ messages:
       iRowPercentage = 0;
       iColSign = 1;
       iRowSign = 1;
+      
+      iStartHeight = GetHeight(oRoomData,iRow,iCol,iFineRow,iFineCol);
       
       % iRot 0 - 4100
       
@@ -217,6 +222,8 @@ messages:
                                 #col_end=iNewCol,
                                 #fine_row_end=iNewFineRow,
                                 #fine_col_end=iNewFineCol)
+            AND GetHeight(oRoomData,iNewRow,iNewCol,iNewFineRow,iNewFineCol) <=
+                   iStartHeight + ELEVATION_RISE_MAX
          {
             oElement = Create(&WallOfFire,#MaxDamage=iSpellPower/6,#Caster=who,
                         #duration=iSteps*200,#bMS=TRUE);
