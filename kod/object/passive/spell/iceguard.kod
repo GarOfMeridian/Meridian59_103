@@ -103,21 +103,14 @@ messages:
       propagate;
    }
 
-   CastSpell(who = $, lTargets = $, iSpellPower=0)
+   CastSpell(who = $, iSpellPower=0)
    {                   
       local oRoom, iRow, iCol, iFineRow, iFineCol, iDist,
                    iNewRow, iNewCol, iNewFineRow, iNewFineCol,
                    iRowPercentage, iColPercentage, iRowSign, iColSign,
                    iRowDist, iColDist, oRoomData, iSteps,
                    iRowSuccess, iColSuccess, iFineRowSuccess, iFineColSuccess,
-                   oElement, iRot, iCurDist, oTarget, iTargetAngle;
-
-      oTarget = First(lTargets);
-      
-      if oTarget = $
-      {
-         return FALSE;
-      }
+                   oElement, iRot, iCurDist;
 
       oRoom = Send(who,@GetOwner);
       if oRoom = $
@@ -251,13 +244,10 @@ messages:
       {
          Send(SYS,@UtilGoNearSquare,#what=who,#where=oRoom,
                      #new_row=iRowSuccess,#new_col=iColSuccess,
-                     #fine_row=iFineRowSuccess,#fine_col=iFineColSuccess,
-                     #new_angle=iTargetAngle);
+                     #fine_row=iFineRowSuccess,#fine_col=iFineColSuccess);
          Send(who,@MsgSendUser,#message_rsc=ice_guard_dashed,
                                #parm1=iSteps);
          Send(self,@AddCooldown,#who=who);
-         Post(who,@ClearAttackTimer);
-         Post(who,@UserAttack,#what=oTarget);
       }
       else
       {
