@@ -119,8 +119,13 @@ messages:
       }
       oRoomData = Send(oRoom,@GetRoomData);
 
-      % 1 full unit behind target
-      iDist = 64;
+      iDist = ((iSpellPower+1)*64)/10;
+      
+      if iDist < 64
+      {
+         Send(who,@MsgSendUser,#message_rsc=ice_guard_too_short);
+         propagate;
+      }
 
       % This spell calculates your intended destination without trigonometry.
       % The diff you travel is split into percentages of X and Y distance.
