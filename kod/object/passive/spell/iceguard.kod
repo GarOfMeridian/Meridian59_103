@@ -18,7 +18,7 @@ resources:
    ice_guard_name_rsc = "ice guard"
    ice_guard_icon_rsc = iexfrost.bgf
    ice_guard_desc_rsc = \
-     "Jumps backwards, away from combat, and protects the caster. "
+     "Teleports you backward, leaving freezing fog in your wake. "
      "Repeated use of this spell can exhaust even the strongest mage."
 
    ice_guard_max_cooldowns = \
@@ -26,23 +26,25 @@ resources:
    ice_guard_not_here = \
       "You can't guard here!"
    ice_guard_too_short = \
-      "You don't have enough power to guard!"
+      "You don't have enough power to guard even a step!"
    ice_guard_dashed = \
       "You guard %i steps!"
    ice_guard_no_space = \
-      "You don't have enough space behind you!"
+      "You don't have enough space to guard!"
    ice_guard_no_longer = \
       "You are exhausted, and cannot guard again for %i seconds."
    ice_guard_can_do_now = \
       "You feel that you can guard again."
-   ice_guard_sound = iexfrost.wav
+
+   IceGuard_sound = ficefing.wav
 
 classvars:
 
    vrName = ice_guard_name_rsc
    vrIcon = ice_guard_icon_rsc
    vrDesc = ice_guard_desc_rsc
-   vrSucceed_wav = ice_guard_sound
+
+   vrSucceed_wav = IceGuard_sound
 
    viCast_time = 0
 
@@ -119,6 +121,7 @@ messages:
       }
       oRoomData = Send(oRoom,@GetRoomData);
 
+      % Can go up to 10 rows/cols (expressed in *64 fine)
       iDist = ((iSpellPower+1)*64)/10;
       
       if iDist < 64
@@ -219,14 +222,8 @@ messages:
                                 #fine_row_end=iNewFineRow,
                                 #fine_col_end=iNewFineCol)
          {
-            oElement = Create(&FogIce,#MaxDamage=(iSpellPower+1)/4,#Caster=who,
-                        #duration=6000,#bMS=TRUE);
-            Send(oRoom,@NewHold,#what=oElement,
-                 #new_row=Send(who,@GetRow),#new_col=Send(who,@GetCol),
-                 #fine_row=Send(who,@GetFineRow),#fine_col=Send(who,@GetFineCol));
-
-            oElement = Create(&FogIce,#MaxDamage=(iSpellPower+1)/4,#Caster=who,
-                        #duration=6000,#bMS=TRUE);
+            oElement = Create(&FogIce,#MaxDamage=iSpellPower/6,#Caster=who,
+                        #duration=3000+((iSpellPower+1)/25)*1000,#bMS=TRUE);
             Send(oRoom,@NewHold,#what=oElement,
                  #new_row=iRowSuccess,#new_col=iColSuccess,
                  #fine_row=iFineRowSuccess,#fine_col=iFineColSuccess);
