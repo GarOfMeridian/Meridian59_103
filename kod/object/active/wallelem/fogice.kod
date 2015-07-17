@@ -52,11 +52,7 @@ messages:
 
    Constructor(caster=$,duration=$,range=$)
    {
-      if range <> $
-      {
-         piRange = range;
-         piBonus = range;
-      }
+      range = 1;
 
       propagate;
    }
