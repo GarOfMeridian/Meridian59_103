@@ -139,7 +139,13 @@ messages:
       iRow = Send(who,@GetRow);
       iFineCol = Send(who,@GetFineCol);
       iFineRow = Send(who,@GetFineRow);
-      iRot = abs(Send(who,@GetAngle)-2050);
+      iRot = Send(who,@GetAngle) + 2050;
+
+      if iRot > 4100
+      {
+         iRot = iRot - 4100;
+      }
+
       iColPercentage = 100;
       iRowPercentage = 0;
       iColSign = 1;
