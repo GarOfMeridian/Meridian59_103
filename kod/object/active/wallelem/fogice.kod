@@ -15,7 +15,7 @@ constants:
    include blakston.khd
 
    % What's the base duration for the hold effect?
-   BASE_HOLD_DURATION = 1
+   BASE_HOLD_DURATION = 3
 
 resources:
 
