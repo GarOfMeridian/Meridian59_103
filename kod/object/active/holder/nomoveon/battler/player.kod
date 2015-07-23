@@ -5608,6 +5608,20 @@ messages:
          }
       }
 
+      if NOT bShielded
+         AND what <> $
+         AND IsClass(what,&Player)
+      {
+         for oRod in Send(what,@GetHolderPassive)
+         {
+            if IsClass(oRod,&ShieldRod)
+               AND Send(oRod,@IsActive)
+            {
+               bShielded = TRUE;
+            }
+         }
+      }
+
       if bShielded
       {
          if precision
