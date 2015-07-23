@@ -54,7 +54,6 @@ classvars:
 
    vbDurationEffect = TRUE
    viEffectDuration = 5000
-   viRodUseDelay = 2000 % Milliseconds
 
 properties:
 
