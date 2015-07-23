@@ -214,7 +214,7 @@ messages:
                 @SecondaryDurationEffectExpire,piSecondaryEffectDuration);
       }
       
-      if piEffectDuration > 0
+      if vbDurationEffect
       {
          Send(poOwner,@AddRodCooldown,#what=self,#time=piEffectDuration);
       }
