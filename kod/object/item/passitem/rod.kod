@@ -214,7 +214,10 @@ messages:
                 @SecondaryDurationEffectExpire,piSecondaryEffectDuration);
       }
       
-      Send(poOwner,@AddRodCooldown,#what=self,#time=piEffectDuration);
+      if piEffectDuration > 0
+      {
+         Send(poOwner,@AddRodCooldown,#what=self,#time=piEffectDuration);
+      }
 
       Send(poOwner,@MsgSendUser,#message_rsc=use_success_msg);
       Send(Send(poOwner,@GetOwner),@SomethingWaveRoom,#what=poOwner,
