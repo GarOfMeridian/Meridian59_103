@@ -44,6 +44,8 @@ resources:
       "Your rod's secondary effect has expired."
 
    rod_cant_use_yet = "You cannot use that item yet."
+   rod_cooldown = \
+      "You've used a %s too recently!"
 
 classvars:
 
@@ -153,6 +155,13 @@ messages:
          return FALSE;
       }
       
+      if NOT Send(what,@ReqRodCooldown,#what=self)
+      {
+         Send(what,@MsgSendUser,#message_rsc=rod_cooldown,
+                                #parm1=Send(self,@GetName));
+         return FALSE;
+      }
+      
       if NOT Send(what,@IsOkayAttackTime,#time=piRodUseDelay)
       {
          Send(what,@MsgSendUser,#message_rsc=rod_cant_use_yet);
@@ -204,6 +213,8 @@ messages:
          ptSecondaryActiveTimer = CreateTimer(self,
                 @SecondaryDurationEffectExpire,piSecondaryEffectDuration);
       }
+      
+      Send(poOwner,@AddRodCooldown,#what=self,#time=piEffectDuration);
 
       Send(poOwner,@MsgSendUser,#message_rsc=use_success_msg);
       Send(Send(poOwner,@GetOwner),@SomethingWaveRoom,#what=poOwner,
