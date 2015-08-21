@@ -23,7 +23,7 @@ resources:
    barbs_start = "Ethereal barbs jab into your spirit!"
    barbs_stop  = "The phantom barbs jabbing your spirit disappear."
    has_been_hexed_barbs = \
-      "%s%s has become the focal point of a thousand ethereal barbs!"
+      "%s%s becomes the focal point of a thousand ethereal barbs!"
 
    barbs_name_rsc = "barbs"
    barbs_icon_rsc = ienfeebl.bgf

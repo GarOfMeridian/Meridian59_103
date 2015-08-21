@@ -11,6 +11,10 @@ BOFS = vulnerability.bof \
        corruption.bof \
        leeches.bof \
        barbs.bof \
-       slow.bof
+       slow.bof \
+       flammability.bof \
+       conductivity.bof \
+       algidity.bof \
+       corrosion.bof
 
 !include $(KODDIR)\kod.mak
