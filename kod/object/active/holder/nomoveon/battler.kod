@@ -192,7 +192,10 @@ properties:
    
    % Reputation hashtable for monster territory/influence system
    phReputation = $
-   
+
+   % Negative values mean more vulnerable to hexes, positive values resist
+   piHexResistance = 0
+
 messages:
 
    % The first lump of code here deals with resistances and immunities/etc.
@@ -1819,6 +1822,57 @@ messages:
    GetBoostedLevel()
    {
       return 0;
+   }
+   
+   RemoveRandomHex()
+   {
+      local lHexes, oEnch, iNumHexes, iRemove;
+
+      iNumHexes = 0;
+      foreach oEnch in plEnchantments
+      {
+         if IsClass(Nth(oEnch,2),&Hex)
+         {
+            iNumHexes = iNumHexes + 1;
+         }
+      }
+      
+      if iNumHexes > 0
+      {
+         iNumHexes = 0;
+         iRemove = Random(1,iNumHexes);
+         
+         foreach oEnch in plEnchantments
+         {
+            if IsClass(Nth(oEnch,2),&Hex)
+            {
+               iNumHexes = iNumHexes + 1;
+               if iNumHexes = iRemove
+               {
+                  if Nth(oEnch,1) <> $
+                  {
+                     DeleteTimer(Nth(oEnch,1));
+                     SetNth(oEnch,1,$);
+                  }
+                  Send(Nth(oEnch,2),@EndEnchantment,#who=who);
+                  plEnchantments = DelListElem(lEnchantments,oEnch);
+                  return;
+               }
+            }
+         }
+      }
+      
+      return;
+   }
+   
+   GetHexResistance()
+   {
+      return bound(piHexResistance,-100,100);
+   }
+   
+   GetHexIncEffect(iSpellPower=0)
+   {
+      return iSpellPower+1;
    }
 
    CreateReputationHash()

@@ -1,0 +1,62 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+WitcherySettings is ExpansionSettings
+
+% This class keeps settings for the Witchery school.
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+classvars:
+
+properties:
+
+   % Witchery does not start available. It must be made active via quests 
+   %    done by players.
+   pbWitcheryActive = FALSE
+   
+   % If this is set to FALSE, Witchery school is turned off for this server.
+   pbWitcheryAccessible = TRUE
+
+   % How many hexes can any given battler have at once?
+   piHexesMax = 1
+
+   % If this is FALSE, hexes that would go over the hex limit don't
+   %    replace previous hexes, and instead fail
+   pbHexesReplace = TRUE
+
+messages:
+
+   GetWitcheryActive()
+   {
+      return bound(pbWitcheryActive,0,1);
+   }
+   
+   GetWitcheryAccessible()
+   {
+      return bound(pbWitcheryAccessible,0,1);
+   }
+
+   GetHexesMax()
+   {
+      return piHexesMax;
+   }
+   
+   GetHexesReplace()
+   {
+      return pbHexesReplace;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

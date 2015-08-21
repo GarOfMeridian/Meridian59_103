@@ -1,0 +1,89 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Leeches is Hex
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   leeches_cast_rsc = "Phantom leeches begin crawling upon %s%s."
+   leeches_already_enchanted = \
+      "That poor soul is already afflicted by leeches."
+   leeches_start = "Phantom leeches appear on your skin!"
+   leeches_stop  = "The phantom leeches crawling upon you disappear."
+
+   leeches_name_rsc = "leeches"
+   leeches_icon_rsc = ienfeebl.bgf
+   leeches_desc_rsc = \
+      "Afflicts your victim with phantom leeches that grant all who strike them "
+      "a bit of sapped health."
+      "This hex requires two orc teeth to cast."
+
+   leeches_sound = qenfeebl.wav
+
+classvars:
+
+   vrName = leeches_name_rsc
+   vrIcon = leeches_icon_rsc
+   vrDesc = leeches_desc_rsc
+
+   vrAlreadyEnchanted = leeches_already_enchanted
+   vrEnchantment_On = leeches_start
+   vrEnchantment_Off = leeches_stop
+   vrSuccess = leeches_cast_rsc
+
+   viSpell_num = SID_HEX_LEECHES
+   viSchool = SS_WITCHERY
+   viSpell_level = 5
+   viMana = 14
+   viSpell_Exertion = 10
+
+   viFlash = FLASH_BAD
+
+   vrSucceed_wav = leeches_sound
+   viChance_To_Increase = 10
+   viMeditate_ratio = 70
+
+properties:
+
+   % Take and give this much health when struck
+   piBaseEffect = 1500
+
+   piFlatDuration = 25000
+
+messages:
+
+   ResetReagents()
+   {
+      plReagents = $;
+      plReagents = Cons([&OrcTooth,3],plReagents);
+
+      return;
+   }
+   
+   StealHealth(who=$,what=$,atype=0,aspell=0,iHexEffect=0)
+   {
+      local iStealAmount;
+      
+      iStealAmount = piBaseEffect * iHexEffect;
+      if Send(what,@GetHealth) > iStealAmount
+      {
+         Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);
+         Send(who,@GainHealth,#amount=iStealAmount,#precision=TRUE);
+      }
+
+      return;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -24,10 +24,10 @@ properties:
 
    % Imbues default active. Turning this to zero will temporarily disable them.
    %    They will remain in weapons and armor until turned on again.
-   piImbuesActive = 1
+   pbImbuesActive = 1
 
    % Base drop rate is one hundred percent. Zero turns off drops completely.
-   piBaseDropRate = 100
+   ppBaseDropRate = 100
 
    % Can imbues be recovered from armor and weapons?
    % Default FALSE. If TRUE, players can recover imbues and re-use elsewhere.
@@ -38,23 +38,23 @@ properties:
    %   armor to armor and character to character, which will significantly
    %   shorten the content system and greatly increase average player power.
    %
-   piImbuesRecoverable = FALSE
+   pbImbuesRecoverable = FALSE
 
 messages:
 
    GetImbuesActive()
    {
-      return bound(piImbuesActive,0,1);
+      return bound(pbImbuesActive,0,1);
    }
 
    GetBaseDropRate()
    {
-      return bound(piBaseDropRate,0,$);
+      return bound(ppBaseDropRate,0,$);
    }
 
    GetImbuesRecoverable()
    {
-      return bound(piImbuesRecoverable,0,1);
+      return bound(pbImbuesRecoverable,0,1);
    }
 
 end

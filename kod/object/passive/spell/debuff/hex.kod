@@ -1,0 +1,227 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Hex is Debuff
+
+   % Hexes are debuffs that do not do anything themselves.
+   %    Instead, they react to other conditions on the afflicted target.
+   %    For example, they may increase fire damage taken, or reduce
+   %    outgoing damage from melee weapons.
+   
+   % Hexes have an inherent 'limit' in number. Default is one,
+   %    meaning a player or monster that already has a hex will lose
+   %    a random hex if another is cast on him, in order to make room.
+   %    max number of hexes and replacement behavior can be modified in 
+   %    Witchery settings.
+   
+   % Hexes tend to have a high casting cost, and long but flat duration.
+   
+   % Hexes all scale in effect based on caster ability and bonuses,
+   %    as well as target Hex Resistance.
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   hex_replacing_msg = \
+      "Your %s hex replaces a %s curse already affecting your target."
+   hex_cannot_replace = \
+      "Your target is already affected by the maximum number of hexes!"
+   hex_on_default = \
+      "You feel hexy."
+   hex_off_default = \
+      "You feel less hexy."
+
+   target_is_hex_immune_msg = \
+      "Your paltry hex has no effect!"
+      
+   hex_success_caster_default = \
+      "%s%s is now hexed!"
+   already_hexed = "%s%s is already cursed by that hex!"
+
+classvars:
+
+   vrAlreadyEnchanted = already_hexed
+   vrEnchantment_On = hex_on_default
+   vrEnchantment_Off = hex_off_default
+   vrSuccess = hex_success_caster_default
+
+   randomly_removed_msg = default_randomly_removed_msg
+   viSchool = SS_WITCHERY
+
+properties:
+
+   piFlatDuration = 9000
+
+messages:
+
+   CanPayCosts(who=$,lTargets=$,iSpellPower=0,bItemCast=FALSE)
+   {
+      local oTarget, iHexesMax, bHexesReplace, lEnchantments, oEnch,
+         iNumTargetHexes, oWitcherySettings;
+
+      if Length(lTargets) <> 1
+      {
+         return FALSE;
+      }
+
+      oTarget = First(lTargets);
+      if NOT IsClass(oTarget,&Battler)
+      {
+         return FALSE;
+      }
+
+      % Let's count existing Hexes on the target.
+      iNumTargetHexes = 0;
+      lEnchantments = Send(oTarget,@GetEnchantmentList);
+      if lEnchantments <> $
+      {
+         foreach oEnch in lEnchantments
+         {
+            if IsClass(Nth(oEnch,2),&Hex)
+            {
+               iNumTargetHexes = iNumTargetHexes + 1;
+            }
+         }
+      }
+      
+      oWitcherySettings = Send(SYS,@GetExpansionSettings,
+                                    #find_class=&WitcherySettings);
+      iHexesMax = Send(oWitcherySettings,@GetHexesMax);
+      bHexesReplace = Send(oWitcherySettings,@GetHexesReplace);
+      
+      if iNumTargetHexes >= iHexesMax
+      {
+         if NOT bHexesReplace
+         {
+            Send(who,@MsgSendUser,#message_rsc=hex_cannot_replace);
+            return FALSE;
+         }
+      }
+      
+      propagate;
+   }
+
+   CastSpell(who=$,lTargets=$,iSpellPower=0)
+   {
+      local oTarget, iHexesMax, lEnchantments, oEnch, iNumTargetHexes, 
+         oWitcherySettings;
+
+      oTarget = First(lTargets);
+
+      % Let's count existing Hexes on the target.
+      iNumTargetHexes = 0;
+      lEnchantments = Send(oTarget,@GetEnchantmentList);
+      if lEnchantments <> $
+      {
+         foreach oEnch in lEnchantments
+         {
+            if IsClass(Nth(oEnch,2),&Hex)
+            {
+               iNumTargetHexes = iNumTargetHexes + 1;
+            }
+         }
+      }
+      
+      oWitcherySettings = Send(SYS,@GetExpansionSettings,
+                                    #find_class=&WitcherySettings);
+      iHexesMax = Send(oWitcherySettings,@GetHexesMax);
+
+      % Equal to or greater than number of hexes on target, start replacing
+      %    at random. This allows special casters - like a monster that can
+      %    triple hex you - to have assistance from monsters that can't.
+      if iNumTargetHexes >= iHexesMax
+      {
+         Send(oTarget,@RemoveRandomHex);
+      }
+
+      % Spell effects
+      Send(self,@DoSpell,#what=who,#oTarget=oTarget,
+            #iDuration=Send(self,@GetDuration,#iSpellPower=iSpellPower),
+            #iSpellPower=iSpellPower);
+      
+      propagate;
+   }
+
+   DoSpell(what=$,oTarget=$,iDuration=0,iSpellPower=0)
+   {
+      local iCasterIncHexEffect, iTargetHexResistance, iHexEffect;
+
+      iCasterIncHexEffect = Send(oTarget,@GetHexIncEffect,
+                                         #iSpellPower=iSpellPower,#what=self);
+      iTargetHexResistance = Send(oTarget,@GetHexResistance);
+      
+      iHexEffect = 100 + iCasterIncHexEffect - iTargetHexResistance;
+      
+      if iHexEffect = 0
+      {
+         if IsClass(what,&User)
+         {
+            Send(what,@MsgSendUser,#message_rsc=target_is_hex_immune_msg);
+         }
+         return;
+      }
+
+      if IsClass(oTarget,&Player)
+      {
+         if NOT (IsClass(oTarget,&DM) AND Send(oTarget,@PlayerIsImmortal))
+         {
+            Send(oTarget,@MsgSendUser,#message_rsc=vrEnchantment_On);
+         }
+      }
+
+      Send(what,@MsgSendUser,#message_rsc=vrSuccess,
+            #parm1=Send(oTarget,@GetCapDef),#parm2=Send(oTarget,@GetName));
+      Send(oTarget,@StartEnchantment,#what=self,#time=iDuration,
+                   #state=iHexEffect);
+
+      propagate;
+   }
+
+   GetDuration(iSpellPower=0)
+   {
+      return piFlatDuration;
+   }
+
+   EndEnchantment(who=$,report=TRUE)
+   {
+      if IsClass(who,&Player)
+      {
+         if report
+         {
+            Send(who,@MsgSendUser,#message_rsc=vrEnchantment_Off);
+         }
+      }
+
+      return;
+   }
+
+   RestartEnchantmentEffect(who=$,state=$)
+   {
+      Send(who,@MsgSendUser,#message_rsc=vrEnchantment_On);
+
+      return;
+   }
+   
+   ModifyDefenseDamage(who=$,what=$,damage=$,atype=0,aspell=0)
+   {
+      return damage;
+   }
+   
+   ModifyPostcastDelay(who=$,what=$,iDelay=$,atype=0,aspell=0,iHexEffect=0)
+   {
+      return iDelay;
+   }
+
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

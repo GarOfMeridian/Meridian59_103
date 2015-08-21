@@ -3416,6 +3416,11 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_LOADOUT,#class=&Loadout);
       Send(self,@CreateOneSpellIfNew,#num=SID_CONVEYANCE,#class=&Conveyance);
       Send(self,@CreateOneSpellIfNew,#num=SID_PHASE,#class=&Phase);
+      
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_VULNERABILITY,#class=&Vulnerability);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_SLOW,#class=&Slow);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_LEECHES,#class=&Leeches);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_FRAILTY,#class=&Frailty);
 
       % Trance may be searched for frequently, leave at end of list
       Send(self,@CreateOneSpellIfNew,#num=SID_TRANCE,#class=&Trance);
