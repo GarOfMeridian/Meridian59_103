@@ -50,6 +50,11 @@ properties:
 
 messages:
 
+   Constructor(server_num = $)
+   {
+      return;
+   }
+
    GetBiskalaneActive()
    {
       return bound(pbBiskalaneActive,0,1);

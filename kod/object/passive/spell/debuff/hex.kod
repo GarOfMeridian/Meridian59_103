@@ -224,6 +224,11 @@ messages:
             Send(who,@MsgSendUser,#message_rsc=vrEnchantment_Off);
          }
       }
+      
+      if viResistanceType <> 0
+      {
+         Post(who,@DrawResistances);
+      }
 
       return;
    }

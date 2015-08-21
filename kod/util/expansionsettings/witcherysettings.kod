@@ -38,6 +38,11 @@ properties:
 
 messages:
 
+   Constructor(server_num = $)
+   {
+      return;
+   }
+
    GetWitcheryActive()
    {
       return bound(pbWitcheryActive,0,1);

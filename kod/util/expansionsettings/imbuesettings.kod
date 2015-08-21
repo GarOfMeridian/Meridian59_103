@@ -42,6 +42,11 @@ properties:
 
 messages:
 
+   Constructor(server_num = $)
+   {
+      return;
+   }
+
    GetImbuesActive()
    {
       return bound(pbImbuesActive,0,1);

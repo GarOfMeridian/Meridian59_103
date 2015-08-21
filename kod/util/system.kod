@@ -3016,6 +3016,7 @@ messages:
       poExpansionSettings = Cons(Create(&ImbueSettings),poExpansionSettings);
       poExpansionSettings = Cons(Create(&DesertSettings),poExpansionSettings);
       poExpansionSettings = Cons(Create(&EquipmentSettings),poExpansionSettings);
+      poExpansionSettings = Cons(Create(&WitcherySettings),poExpansionSettings);
       return;
    }
 

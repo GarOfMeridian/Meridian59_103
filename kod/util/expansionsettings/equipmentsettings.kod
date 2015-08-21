@@ -45,6 +45,11 @@ properties:
 
 messages:
 
+   Constructor(server_num = $)
+   {
+      return;
+   }
+
    GetArmorSystem()
    {
       return piArmorSystem;
