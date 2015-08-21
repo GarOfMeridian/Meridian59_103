@@ -25,6 +25,8 @@ Hex is Debuff
    
    % Hexes all scale in effect based on caster ability and bonuses,
    %    as well as target Hex Resistance.
+   
+   % Hexes inform the whole room when they are cast.
 
 constants:
 
@@ -48,19 +50,25 @@ resources:
       "%s%s is now hexed!"
    already_hexed = "%s%s is already cursed by that hex!"
 
+   has_been_hexed_default = "%s%s has been hexed!"
+
 classvars:
 
    vrAlreadyEnchanted = already_hexed
    vrEnchantment_On = hex_on_default
    vrEnchantment_Off = hex_off_default
    vrSuccess = hex_success_caster_default
+   vrInformRoom = has_been_hexed_default
 
    randomly_removed_msg = default_randomly_removed_msg
    viSchool = SS_WITCHERY
+   
+   viResistanceType = 0
 
 properties:
 
-   piFlatDuration = 9000
+   piFlatDuration = 10000
+   piBaseEffect = 0
 
 messages:
 
@@ -114,7 +122,7 @@ messages:
    CastSpell(who=$,lTargets=$,iSpellPower=0)
    {
       local oTarget, iHexesMax, lEnchantments, oEnch, iNumTargetHexes, 
-         oWitcherySettings;
+         oWitcherySettings, oPlayer;
 
       oTarget = First(lTargets);
 
@@ -143,6 +151,8 @@ messages:
       {
          Send(oTarget,@RemoveRandomHex);
       }
+      
+      foreach oPlayer in Send(oTarget,@GetOwner)
 
       % Spell effects
       Send(self,@DoSpell,#what=who,#oTarget=oTarget,
@@ -222,6 +232,20 @@ messages:
       return iDelay;
    }
 
+   ModifyResistance(resistance_list=$,iState=0)
+   {
+      local iChange;
+      
+      if viResistanceType <> 0
+      {
+         iChange = piBaseEffect * iState / 100;
+      
+         resistance_list = Send(SYS,@AddResistance,#what=viResistanceType,
+                             #value=-iChange,#resistance_list=resistance_list);
+      }
+
+      return resistance_list;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
