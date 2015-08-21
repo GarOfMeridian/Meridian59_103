@@ -62,7 +62,7 @@ classvars:
 properties:
 
    % Effectively reduces acid resistance by this percent base
-   piBaseEffect = 20
+   piBaseEffect = 15
 
    piFlatDuration = 18000
 

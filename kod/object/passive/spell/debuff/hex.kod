@@ -27,6 +27,38 @@ Hex is Debuff
    %    as well as target Hex Resistance.
    
    % Hexes inform the whole room when they are cast.
+   
+   % Most Hexes are in the Witchery school of spells.
+   %
+   % Level 1:
+   %
+   % Barbs - steals mana from afflicted target when hit.
+   % 
+   %
+   % Level 2:
+   %
+   % Leeches - steals health from afflicted target when hit.
+   % Corrosion - reduces victim's acid resistance.
+   %
+   % Level 3:
+   %
+   % Humility - reduces victim's holy resistance.
+   % Corruption - reduces victim's unholy resistance.
+   %
+   % Level 4:
+   %
+   % Flammability - reduces victim's fire resistance.
+   % Conductivity - reduces victim's shock resistance.
+   % Algidity - reduces victim's cold resistance.
+   %
+   % Level 5:
+   %
+   % Frailty - reduces target's weapon resistance.
+   % Vulnerability - reduces target's magic resistance.
+   % Slow - target's postcast delays increase.
+   %
+   %
+   %
 
 constants:
 
