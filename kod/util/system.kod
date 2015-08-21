@@ -3023,7 +3023,7 @@ messages:
    {
       local i;
 
-      if class <> $
+      if find_class <> $
          AND poExpansionSettings <> $
       {
          foreach i in poExpansionSettings

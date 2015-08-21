@@ -60,7 +60,6 @@ classvars:
    vrSuccess = hex_success_caster_default
    vrInformRoom = has_been_hexed_default
 
-   randomly_removed_msg = default_randomly_removed_msg
    viSchool = SS_WITCHERY
    
    viResistanceType = 0
@@ -152,7 +151,8 @@ messages:
          Send(oTarget,@RemoveRandomHex);
       }
       
-      foreach oPlayer in Send(oTarget,@GetOwner)
+      % TODO: INFORM ROOM
+      %foreach oPlayer in Send(oTarget,@GetOwner)
 
       % Spell effects
       Send(self,@DoSpell,#what=who,#oTarget=oTarget,

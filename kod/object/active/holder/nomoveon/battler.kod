@@ -365,7 +365,7 @@ messages:
       
       iWeaponResist = 0;
       iMagicResist = 0;
-      for j in resistance_list
+      foreach j in resistance_list
       {
          iResType = Nth(j,1);
          if iResType > 0
@@ -1854,8 +1854,8 @@ messages:
                      DeleteTimer(Nth(oEnch,1));
                      SetNth(oEnch,1,$);
                   }
-                  Send(Nth(oEnch,2),@EndEnchantment,#who=who);
-                  plEnchantments = DelListElem(lEnchantments,oEnch);
+                  Send(Nth(oEnch,2),@EndEnchantment,#who=self);
+                  plEnchantments = DelListElem(plEnchantments,oEnch);
                   return;
                }
             }
