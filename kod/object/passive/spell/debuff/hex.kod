@@ -121,7 +121,7 @@ messages:
    CastSpell(who=$,lTargets=$,iSpellPower=0)
    {
       local oTarget, iHexesMax, lEnchantments, oEnch, iNumTargetHexes, 
-         oWitcherySettings, oPlayer;
+         oWitcherySettings, oPlayer, oRoom, each_obj;
 
       oTarget = First(lTargets);
 
@@ -150,9 +150,22 @@ messages:
       {
          Send(oTarget,@RemoveRandomHex);
       }
-      
-      % TODO: INFORM ROOM
-      %foreach oPlayer in Send(oTarget,@GetOwner)
+
+      oRoom = Send(oTarget,@GetOwner);
+      if oRoom <> $
+         AND IsClass(oRoom,&Room)
+      {
+         foreach oPlayer in Send(oRoom,@GetHolderActive)
+         {
+            each_obj = Send(oRoom,@HolderExtractObject,#data=oPlayer);
+            if IsClass(each_obj,&Player)
+            {
+               Send(each_obj,@MsgSendUser,#message_rsc=vrInformRoom,
+                             #parm1=Send(oTarget,@GetCapDef),
+                             #parm2=Send(oTarget,@GetName));
+            }
+         }
+      }
 
       % Spell effects
       Send(self,@DoSpell,#what=who,#oTarget=oTarget,

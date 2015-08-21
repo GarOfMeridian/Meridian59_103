@@ -16,11 +16,13 @@ constants:
 
 resources:
 
-   leeches_cast_rsc = "Phantom leeches begin crawling upon %s%s."
+   leeches_cast_rsc = "%s%s becomes infested with phantom leeches."
    leeches_already_enchanted = \
       "That poor soul is already afflicted by leeches."
    leeches_start = "Phantom leeches appear on your skin!"
    leeches_stop  = "The phantom leeches crawling upon you disappear."
+   has_been_hexed_leeches = \
+      "%s%s has become infested with phantom leeches!"
 
    leeches_name_rsc = "leeches"
    leeches_icon_rsc = ienfeebl.bgf
@@ -41,6 +43,7 @@ classvars:
    vrEnchantment_On = leeches_start
    vrEnchantment_Off = leeches_stop
    vrSuccess = leeches_cast_rsc
+   vrInformRoom = has_been_hexed_leeches
 
    viSpell_num = SID_HEX_LEECHES
    viSchool = SS_WITCHERY

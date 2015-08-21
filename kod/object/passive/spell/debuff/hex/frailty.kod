@@ -22,6 +22,8 @@ resources:
       "That poor soul is already afflicted by frailty."
    frailty_start = "You suddenly feel frail."
    frailty_stop  = "The feeling of frailty passes."
+   has_been_hexed_frailty = \
+      "%s%s suddenly seems more frail somehow."
 
    frailty_name_rsc = "frailty"
    frailty_icon_rsc = ienfeebl.bgf
@@ -42,6 +44,7 @@ classvars:
    vrEnchantment_On = frailty_start
    vrEnchantment_Off = frailty_stop
    vrSuccess = frailty_cast_rsc
+   vrInformRoom = has_been_hexed_frailty
 
    viSpell_num = SID_HEX_FRAILTY
    viSchool = SS_WITCHERY

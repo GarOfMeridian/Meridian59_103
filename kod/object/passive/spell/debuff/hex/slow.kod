@@ -20,6 +20,8 @@ resources:
    slow_already_enchanted = "That poor soul is already slowed."
    slow_start = "The world speeds up around you."
    slow_stop  = "The world around you slows to a normal pace."
+   has_been_hexed_slow = \
+      "%s%s begins moving more slowly."
 
    slow_name_rsc = "slow"
    slow_icon_rsc = ienfeebl.bgf
@@ -39,6 +41,7 @@ classvars:
    vrEnchantment_On = slow_start
    vrEnchantment_Off = slow_stop
    vrSuccess = slow_cast_rsc
+   vrInformRoom = has_been_hexed_slow
 
    viSpell_num = SID_HEX_SLOW
    viSchool = SS_WITCHERY
