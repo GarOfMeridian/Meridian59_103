@@ -1,0 +1,94 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Barbs is Hex
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   barbs_cast_rsc = \
+      "%s%s becomes the focal point of a thousand ethereal barbs."
+   barbs_already_enchanted = \
+      "That poor soul is already afflicted by barbs."
+   barbs_start = "Ethereal barbs jab into your spirit!"
+   barbs_stop  = "The phantom barbs jabbing your spirit disappear."
+   has_been_hexed_barbs = \
+      "%s%s has become the focal point of a thousand ethereal barbs!"
+
+   barbs_name_rsc = "barbs"
+   barbs_icon_rsc = ienfeebl.bgf
+   barbs_desc_rsc = \
+      "Afflicts your victim's spirit with ethereal barbs that grant all "
+      "who strike them a bit of sapped mana."
+      "This hex requires two orc teeth to cast."
+
+   barbs_sound = qenfeebl.wav
+
+classvars:
+
+   vrName = barbs_name_rsc
+   vrIcon = barbs_icon_rsc
+   vrDesc = barbs_desc_rsc
+
+   vrAlreadyEnchanted = barbs_already_enchanted
+   vrEnchantment_On = barbs_start
+   vrEnchantment_Off = barbs_stop
+   vrSuccess = barbs_cast_rsc
+   vrInformRoom = has_been_hexed_barbs
+
+   viSpell_num = SID_HEX_BARBS
+   viSchool = SS_WITCHERY
+   viSpell_level = 1
+   viMana = 0
+   viSpell_Exertion = 30
+
+   viFlash = FLASH_BAD
+
+   vrSucceed_wav = barbs_sound
+   viChance_To_Increase = 25
+   viMeditate_ratio = 30
+
+properties:
+
+   % Take and give this much health when struck
+   piBaseEffect = 3000
+
+   piFlatDuration = 25000
+
+messages:
+
+   ResetReagents()
+   {
+      plReagents = $;
+      plReagents = Cons([&OrcTooth,3],plReagents);
+
+      return;
+   }
+   
+   StealHealth(who=$,what=$,atype=0,aspell=0,iHexEffect=0)
+   {
+      local iStealAmount;
+      
+      iStealAmount = piBaseEffect * iHexEffect;
+      if Send(what,@GetMana) > iStealAmount
+         AND IsClass(who,&Player)
+      {
+         Send(what,@LoseMana,#amount=iStealAmount,#precision=TRUE);
+         Send(who,@GainMana,#amount=iStealAmount,#precision=TRUE);
+      }
+
+      return;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

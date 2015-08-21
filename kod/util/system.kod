@@ -3421,6 +3421,8 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_SLOW,#class=&Slow);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_LEECHES,#class=&Leeches);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_FRAILTY,#class=&Frailty);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_HUMILITY,#class=&Humility);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_CORRUPTION,#class=&Corruption);
 
       % Trance may be searched for frequently, leave at end of list
       Send(self,@CreateOneSpellIfNew,#num=SID_TRANCE,#class=&Trance);

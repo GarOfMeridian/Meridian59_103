@@ -62,7 +62,7 @@ classvars:
 
 properties:
 
-   % Effectively reduces weapon resistance by this percent
+   % Effectively reduces weapon resistance by this percent base
    piBaseEffect = 10
 
    piFlatDuration = 12000
@@ -75,17 +75,6 @@ messages:
       plReagents = Cons([&OrcTooth,3],plReagents);
 
       return;
-   }
-
-   ModifyResistance(resistance_list=$,iState=0)
-   {
-      local iChange;
-      
-      iChange = piBaseEffect * iState / 100;
-      
-      resistance_list = Send(SYS,@AddResistance,#what=viResistanceType,
-                              #value=-iChange,#resistance_list=resistance_list);
-      return resistance_list;
    }
 
 end
