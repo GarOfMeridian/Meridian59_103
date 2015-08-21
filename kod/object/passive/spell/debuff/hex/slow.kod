@@ -45,6 +45,7 @@ classvars:
 
    viSpell_num = SID_HEX_SLOW
    viSchool = SS_WITCHERY
+   viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 5
    viMana = 24
    viSpell_Exertion = 20

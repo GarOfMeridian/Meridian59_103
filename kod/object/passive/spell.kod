@@ -90,6 +90,11 @@ resources:
 
    spell_fail_wav = spelfail.wav
    spell_desc_rsc = "SCHOOL : %s         LEVEL : %i \n\n%s%s%s%r%r%r"
+   spell_school_witchery = "Witchery"
+   spell_school_witchery_xaerdun = "Witchery, through Xaerdun"
+   spell_school_witchery_nequzon = "Witchery, through Nequzon"
+   spell_school_witchery_iwodach = "Witchery, through Iwodach"
+   spell_school_witchery_raumlar = "Witchery, through Raumlar"
    spell_school_riija = "Riija"
    spell_school_shalille = "Shal'ille"
    spell_school_qor = "Qor"
@@ -161,6 +166,7 @@ classvars:
 
    viSpell_Num = $
    viSchool = $
+   viSubSchool = $
    viSpell_level = 1
 
    viMana = 1
@@ -282,8 +288,27 @@ messages:
       {
          iSchool = viSchool;
       }
-
-      if iSchool = SS_RIIJA
+      
+      if iSchool = SS_WITCHERY
+      {
+         if viSubSchool = SSS_WITCHERY_XAERDUN
+         {
+            rSchool = spell_school_witchery_xaerdun;
+         }
+         if viSubSchool = SSS_WITCHERY_NEQUZON
+         {
+            rSchool = spell_school_witchery_nequzon;
+         }
+         if viSubSchool = SSS_WITCHERY_IWODACH
+         {
+            rSchool = spell_school_witchery_iwodach;
+         }
+         if viSubSchool = SSS_WITCHERY_RAUMLAR
+         {
+            rSchool = spell_school_witchery_raumlar;
+         }
+      }
+      else if iSchool = SS_RIIJA
       {
          rSchool = spell_school_riija;
       }

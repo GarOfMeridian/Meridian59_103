@@ -1839,8 +1839,8 @@ messages:
       
       if iNumHexes > 0
       {
-         iNumHexes = 0;
          iRemove = Random(1,iNumHexes);
+         iNumHexes = 0;
          
          foreach oEnch in plEnchantments
          {
@@ -1849,13 +1849,7 @@ messages:
                iNumHexes = iNumHexes + 1;
                if iNumHexes = iRemove
                {
-                  if Nth(oEnch,1) <> $
-                  {
-                     DeleteTimer(Nth(oEnch,1));
-                     SetNth(oEnch,1,$);
-                  }
-                  Send(Nth(oEnch,2),@EndEnchantment,#who=self);
-                  plEnchantments = DelListElem(plEnchantments,oEnch);
+                  Send(self,@RemoveEnchantment,#what=Nth(oEnch,2));
                   return;
                }
             }
