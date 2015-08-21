@@ -15,6 +15,9 @@ BOFS = vulnerability.bof \
        flammability.bof \
        conductivity.bof \
        algidity.bof \
-       corrosion.bof
+       corrosion.bof \
+       fester.bof \
+       mute.bof \
+       weaken.bof
 
 !include $(KODDIR)\kod.mak
