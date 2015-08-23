@@ -18,6 +18,7 @@ BOFS = vulnerability.bof \
        corrosion.bof \
        fester.bof \
        mute.bof \
-       weaken.bof
+       weaken.bof \
+       exhaustion.bof
 
 !include $(KODDIR)\kod.mak

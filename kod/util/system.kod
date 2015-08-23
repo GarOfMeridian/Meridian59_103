@@ -3654,6 +3654,14 @@ messages:
 
        Send(self,@CreateOneSKillIfNew,#num=SKID_SECOND_WIND,#class=&SecondWind);
        Send(self,@CreateOneSKillIfNew,#num=SKID_DISARM,#class=&Disarm);
+       
+       Send(self,@CreateOneSKillIfNew,#num=SKID_ARCANE_KNOWLEDGE,#class=&ArcaneKnowledge);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_ROTE_MEMORIZATION,#class=&RoteMemorization);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_EFFICIENT_CASTING,#class=&EfficientCasting);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_ANCIENT_PACT,#class=&AncientPact);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_UNHALLOWED_RUNES,#class=&UnhallowedRunes);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_BLOOD_RUNES,#class=&BloodRunes);
+
 
        return;
    }

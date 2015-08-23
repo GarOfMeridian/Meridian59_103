@@ -56,8 +56,6 @@ classvars:
    viSpellExertion = 3
 
    vrSucceed_wav = Dazzle_sound
-   
-   piUseHexBehavior = TRUE
 
 properties:
 
@@ -72,6 +70,8 @@ properties:
 
    % Duration of the red pain effect after spell wears off.
    piPainDuration = 8000 % Recommended value 1000
+   
+   piUseHexBehavior = TRUE
 
 messages:
 

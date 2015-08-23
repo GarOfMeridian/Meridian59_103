@@ -1928,6 +1928,14 @@
    SKID_PROFICIENCY_SHORT_SWORD = 457
    % Duplicate, for the easily confused.
    SKID_PROFICIENCY_SHORTSWORD = 457
+   
+   % Witchery skills
+   SKID_ARCANE_KNOWLEDGE = 458
+   SKID_ROTE_MEMORIZATION = 459
+   SKID_EFFICIENT_CASTING = 460
+   SKID_ANCIENT_PACT = 461
+   SKID_UNHALLOWED_RUNES = 462
+   SKID_BLOOD_RUNES = 463
 
    %%% Unique spell constants
 
@@ -2126,6 +2134,7 @@
    SID_HEX_FESTER = 221
    SID_HEX_MUTE = 222
    SID_HEX_WEAKEN = 223
+   SID_HEX_EXHAUSTION = 224
 
    % Depreciated spell IDs
    SID_LIGHTNING = 1                   % use SID_LIGHTNING_BOLT
