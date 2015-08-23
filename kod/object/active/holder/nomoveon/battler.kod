@@ -1823,37 +1823,56 @@ messages:
    {
       return 0;
    }
-   
-   RemoveRandomHex()
+
+   GetHexes()
    {
-      local lHexes, oEnch, iNumHexes, iRemove;
+      local oEnch, lHexes;
+
+      lHexes = $;
+      foreach oEnch in plEnchantments
+      {
+         if Send(Nth(oEnch,2),@UseHexBehavior)
+         {
+            lHexes = Cons(Nth(oEnch,2),lHexes);
+         }
+      }
+
+      return lHexes;
+   }
+
+   GetNumHexes()
+   {
+      local oEnch, iNumHexes;
 
       iNumHexes = 0;
       foreach oEnch in plEnchantments
       {
-         if IsClass(Nth(oEnch,2),&Hex)
+         if Send(Nth(oEnch,2),@UseHexBehavior)
          {
             iNumHexes = iNumHexes + 1;
          }
       }
-      
-      if iNumHexes > 0
+
+      return iNumHexes;
+   }
+
+   RemoveRandomHex(exempt=$)
+   {
+      local lHexes;
+
+      lHexes = Send(self,@GetHexes);
+      if exempt <> $
+         AND lHexes <> $
+         AND FindListElem(lHexes,exempt) <> 0
       {
-         iRemove = Random(1,iNumHexes);
-         iNumHexes = 0;
-         
-         foreach oEnch in plEnchantments
-         {
-            if IsClass(Nth(oEnch,2),&Hex)
-            {
-               iNumHexes = iNumHexes + 1;
-               if iNumHexes = iRemove
-               {
-                  Send(self,@RemoveEnchantment,#what=Nth(oEnch,2));
-                  return;
-               }
-            }
-         }
+         lHexes = DelListElem(lHexes,exempt);
+      }
+
+      if lHexes <> $
+         AND Length(lHexes) > 0
+      {
+         Send(self,@RemoveEnchantment,
+              #what=Nth(lHexes,Random(1,Length(lHexes))));
       }
       
       return;
@@ -1900,6 +1919,13 @@ messages:
       
       return;
    }
-   
+
+   GetCasterMaxHexes()
+   {
+      return Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&WitcherySettings),
+                  @GetHexesMax);
+   }
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

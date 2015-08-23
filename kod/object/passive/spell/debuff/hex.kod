@@ -157,51 +157,29 @@ properties:
 
    piFlatDuration = 10000
    piBaseEffect = 0
+   
+   piUseHexBehavior = TRUE
 
 messages:
 
    CanPayCosts(who=$,lTargets=$,iSpellPower=0,bItemCast=FALSE)
    {
-      local oTarget, iHexesMax, bHexesReplace, lEnchantments, oEnch,
-         iNumTargetHexes, oWitcherySettings;
+      local oWitcherySettings;
 
       if Length(lTargets) <> 1
       {
          return FALSE;
       }
-
-      oTarget = First(lTargets);
-      if NOT IsClass(oTarget,&Battler)
-      {
-         return FALSE;
-      }
-
-      % Let's count existing Hexes on the target.
-      iNumTargetHexes = 0;
-      lEnchantments = Send(oTarget,@GetEnchantmentList);
-      if lEnchantments <> $
-      {
-         foreach oEnch in lEnchantments
-         {
-            if IsClass(Nth(oEnch,2),&Hex)
-            {
-               iNumTargetHexes = iNumTargetHexes + 1;
-            }
-         }
-      }
       
       oWitcherySettings = Send(SYS,@GetExpansionSettings,
                                     #find_class=&WitcherySettings);
-      iHexesMax = Send(oWitcherySettings,@GetHexesMax);
-      bHexesReplace = Send(oWitcherySettings,@GetHexesReplace);
       
-      if iNumTargetHexes >= iHexesMax
+      if (Send(First(lTargets),@GetNumHexes) >= 
+            Send(oWitcherySettings,@GetHexesMax))
+         AND NOT Send(oWitcherySettings,@GetHexesReplace)
       {
-         if NOT bHexesReplace
-         {
-            Send(who,@MsgSendUser,#message_rsc=hex_cannot_replace);
-            return FALSE;
-         }
+         Send(who,@MsgSendUser,#message_rsc=hex_cannot_replace);
+         return FALSE;
       }
       
       propagate;
@@ -209,50 +187,23 @@ messages:
 
    CastSpell(who=$,lTargets=$,iSpellPower=0)
    {
-      local oTarget, iHexesMax, lEnchantments, oEnch, iNumTargetHexes, 
-         oWitcherySettings, oPlayer, oRoom, each_obj;
+      local oTarget, oPlayer, oRoom, each_obj;
 
       oTarget = First(lTargets);
-
-      % Let's count existing Hexes on the target.
-      iNumTargetHexes = 0;
-      lEnchantments = Send(oTarget,@GetEnchantmentList);
-      if lEnchantments <> $
-      {
-         foreach oEnch in lEnchantments
-         {
-            if IsClass(Nth(oEnch,2),&Hex)
-            {
-               iNumTargetHexes = iNumTargetHexes + 1;
-            }
-         }
-      }
-      
-      oWitcherySettings = Send(SYS,@GetExpansionSettings,
-                                    #find_class=&WitcherySettings);
-      iHexesMax = Send(oWitcherySettings,@GetHexesMax);
-
-      % Equal to or greater than number of hexes on target, start replacing
-      %    at random. This allows special casters - like a monster that can
-      %    triple hex you - to have assistance from monsters that can't.
-      if iNumTargetHexes >= iHexesMax
-      {
-         Send(oTarget,@RemoveRandomHex);
-      }
 
       oRoom = Send(oTarget,@GetOwner);
       if oRoom <> $
          AND IsClass(oRoom,&Room)
       {
-         foreach oPlayer in Send(oRoom,@GetHolderActive)
+         foreach each_obj in Send(oRoom,@GetHolderActive)
          {
-            each_obj = Send(oRoom,@HolderExtractObject,#data=oPlayer);
-            if IsClass(each_obj,&Player)
+            oPlayer = Send(oRoom,@HolderExtractObject,#data=each_obj);
+            if IsClass(oPlayer,&Player)
             {
-               if each_obj <> oTarget
-                  AND each_obj <> who
+               if oPlayer <> oTarget
+                  AND oPlayer <> who
                {
-                  Send(each_obj,@MsgSendUser,#message_rsc=vrInformRoom,
+                  Send(oPlayer,@MsgSendUser,#message_rsc=vrInformRoom,
                                #parm1=Send(oTarget,@GetCapDef),
                                 #parm2=Send(oTarget,@GetName));
                }

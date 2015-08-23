@@ -56,6 +56,8 @@ classvars:
    viSpellExertion = 3
 
    vrSucceed_wav = Dazzle_sound
+   
+   piUseHexBehavior = TRUE
 
 properties:
 

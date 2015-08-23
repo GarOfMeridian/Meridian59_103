@@ -244,6 +244,8 @@ properties:
    % to nerf spells that are being abused by under 30 HP mules.
    piMinHitPoints = 0
    piMeditate_ratio = 100
+   
+   piUseHexBehavior = FALSE
 
 messages:      
 
@@ -1474,6 +1476,17 @@ messages:
    {
       local oTarget, oRoom;
 
+      if piUseHexBehavior
+      {
+         foreach oTarget in lTargets
+         {
+            if Send(oTarget,@GetNumHexes) > Send(who,@GetCasterMaxHexes)
+            {
+               Post(oTarget,@RemoveRandomHex,#exempt=self);
+            }
+         }
+      }
+
       if IsClass(who,&DM)
       {
          ClearTempString();
@@ -2633,6 +2646,11 @@ messages:
    {
       % Spells can overwrite this to change resistances temporarily.
       return resistance_list;
+   }
+   
+   UseHexBehavior()
+   {
+      return piUseHexBehavior;
    }
 
 end
