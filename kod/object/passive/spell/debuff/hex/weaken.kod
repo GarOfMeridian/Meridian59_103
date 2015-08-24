@@ -51,8 +51,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_IWODACH
    viSpell_level = 1
-   viMana = 2
-   viSpell_Exertion = 2
+   viMana = 15
+   viSpell_Exertion = 5
 
    viFlash = FLASH_BAD
 
@@ -63,7 +63,7 @@ classvars:
 properties:
 
    % Weaken outgoing melee damage by up to this percent
-   piBaseEffect = 16
+   piBaseEffect = 25
 
    piFlatDuration = 25000
 

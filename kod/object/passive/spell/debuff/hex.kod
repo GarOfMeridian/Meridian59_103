@@ -17,7 +17,7 @@ Hex is Debuff
    
    % Hexes have an inherent 'limit' in number. Default is one,
    %    meaning a player or monster that already has a hex will lose
-   %    a random hex if another is cast on him, in order to make room.
+   %    a random hex if another is cast on him in order to make room.
    %    max number of hexes and replacement behavior can be modified in 
    %    Witchery settings.
    
