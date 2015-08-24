@@ -5406,34 +5406,34 @@ messages:
             bAttackerEmpowered, bShielded, oRod, oHex, lHexes;
 
       % Check for mana steal
-      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Barbs)
+      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Barbs);
       if lHexes <> $
       {
          foreach oHex in lHexes
          {
-            Send(oHex,@StealMana,#who=what,#what=self,
+            Send(Nth(oHex,2),@StealMana,#who=what,#what=self,
                                  #state=Nth(oHex,3));
          }
       }
 
       % Check for life steal
-      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Leeches)
+      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Leeches);
       if lHexes <> $
       {
          foreach oHex in lHexes
          {
-            Send(oHex,@StealHealth,#who=what,#what=self,
+            Send(Nth(oHex,2),@StealHealth,#who=what,#what=self,
                                  #state=Nth(oHex,3));
          }
       }
 
       % Check for vigor steal
-      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Sap)
+      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Sap);
       if lHexes <> $
       {
          foreach oHex in lHexes
          {
-            Send(oHex,@StealVigor,#who=what,#what=self,
+            Send(Nth(oHex,2),@StealVigor,#who=what,#what=self,
                                  #state=Nth(oHex,3));
          }
       }

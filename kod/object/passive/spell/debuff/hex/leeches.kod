@@ -24,6 +24,9 @@ resources:
    has_been_hexed_leeches = \
       "%s%s becomes infested with phantom leeches!"
 
+   leeched_msg = "Your strike leeches %i from %s%s!"
+   leeched_from_msg = "You shiver as %i health drains away."
+
    leeches_name_rsc = "leeches"
    leeches_icon_rsc = ienfeebl.bgf
    leeches_desc_rsc = \
@@ -61,7 +64,7 @@ classvars:
 properties:
 
    % Take and give this much health when struck
-   piBaseEffect = 1500
+   piBaseEffect = 150
 
    piFlatDuration = 25000
 
@@ -80,7 +83,7 @@ messages:
       local iStealAmount;
       
       iStealAmount = piBaseEffect * state / 100;
-      if Send(what,@GetHealth) > iStealAmount
+      if Send(what,@GetExactHealth) > iStealAmount
       {
          Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);
          Send(who,@GainHealth,#amount=iStealAmount,#precision=TRUE);

@@ -16,17 +16,19 @@ constants:
 
 resources:
 
-   black_mantle_cast_rsc = "%s%s begins moving more black_mantlely."
-   black_mantle_already_enchanted = "That poor soul is already black_mantleed."
-   black_mantle_start = "The world speeds up around you."
-   black_mantle_stop  = "The world around you black_mantles to a normal pace."
+   black_mantle_cast_rsc = \
+      "%s%s becomes shrouded in slicing whispers of darkness."
+   black_mantle_already_enchanted = "That poor soul is already black mantled."
+   black_mantle_start = "Whispering slices of darkness surround you."
+   black_mantle_stop  = "The whispering darkness around you departs."
    has_been_hexed_black_mantle = \
-      "%s%s begins moving more black_mantlely."
+      "%s%s becomes shrouded in slicing whispers of darkness!"
 
-   black_mantle_name_rsc = "black_mantle"
+   black_mantle_name_rsc = "black mantle"
    black_mantle_icon_rsc = ienfeebl.bgf
    black_mantle_desc_rsc = \
-      "black_mantles your victim considerably. "
+      "Shrouds your victim in a legion of wight spirits, who will "
+      "hamper any attempt at healing. "
       "This hex requires two orc teeth to cast."
 
    black_mantle_sound = qenfeebl.wav

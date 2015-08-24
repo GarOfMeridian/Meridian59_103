@@ -3420,6 +3420,7 @@ messages:
       
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_VULNERABILITY,#class=&Vulnerability);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_SLOW,#class=&Slow);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_BARBS,#class=&Barbs);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_LEECHES,#class=&Leeches);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_FRAILTY,#class=&Frailty);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_HUMILITY,#class=&Humility);
