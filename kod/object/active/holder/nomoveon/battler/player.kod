@@ -6424,7 +6424,7 @@ messages:
    "Have we waited long enough since the last attack/spell? Sets new "
    "valid attack time (time in msec, default 1 second)."
    {
-      local i;
+      local i, n;
 
       if ptAttackTimer <> $
       {
@@ -6438,6 +6438,12 @@ messages:
       else
       {
          i = time;
+      }
+
+      foreach n in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         i = Send(Nth(n,2),@ModifyDelay,
+                           #state=Nth(n,3),#iDelay=i);
       }
 
       if i > 0

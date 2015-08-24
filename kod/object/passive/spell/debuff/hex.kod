@@ -339,6 +339,11 @@ messages:
    {
       return amount;
    }
+   
+   ModifyDelay(iDelay=$,state=0)
+   {
+      return iDelay;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

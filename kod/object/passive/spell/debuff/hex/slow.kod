@@ -73,9 +73,9 @@ messages:
       return;
    }
    
-   ModifyPostcastDelay(who=$,what=$,iDelay=$,atype=0,aspell=0,iHexEffect=0)
+   ModifyDelay(iDelay=$,state=0)
    {
-      iDelay = iDelay * (100 + ((piBaseEffect * iHexEffect)/100)) / 100;
+      iDelay = iDelay * (100 + ((piBaseEffect * state)/100)) / 100;
 
       return iDelay;
    }
