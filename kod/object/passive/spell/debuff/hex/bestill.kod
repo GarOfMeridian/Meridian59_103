@@ -74,9 +74,9 @@ messages:
       return;
    }
 
-   ModifyDefensePower(who=$,what=$,defense_power=0)
+   ModifyDefensePower(who=$,what=$,defense_power=0,state=0)
    {
-      return defense_power * Send(who,@GetEnchantedState,#what=self) / 100;
+      return (defense_power * (100 - ((piBaseEffect * state)/100)))/100;
    }
 
 end

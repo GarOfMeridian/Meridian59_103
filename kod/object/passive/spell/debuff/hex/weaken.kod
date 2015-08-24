@@ -62,8 +62,8 @@ classvars:
 
 properties:
 
-   % Weaken outgoing melee damage by this percent
-   piBaseEffect = 8
+   % Weaken outgoing melee damage by up to this percent
+   piBaseEffect = 16
 
    piFlatDuration = 25000
 
@@ -77,7 +77,7 @@ messages:
       return;
    }
 
-   ModifyDamage(who=$,what=$,damage=$)
+   ModifyDamage(who=$,what=$,damage=$,state=0)
    {
       local oWeapon;
 
@@ -91,7 +91,7 @@ messages:
          OR (oWeapon <> $
          AND NOT IsClass(oWeapon,&RangedWeapon))
       {
-         return damage * Send(who,@GetEnchantedState,#what=self) / 100;
+         return (damage * (100 - ((piBaseEffect * state)/100)))/100;
       }
       
       return damage;

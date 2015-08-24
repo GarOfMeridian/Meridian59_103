@@ -62,7 +62,7 @@ classvars:
 properties:
 
    % Effectively reduces fire resistance by this percent base
-   piBaseEffect = 20
+   piBaseEffect = 40
 
    piFlatDuration = 18000
 

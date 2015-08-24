@@ -64,7 +64,7 @@ classvars:
 properties:
 
    % Effectively reduces shock resistance by this percent base
-   piBaseEffect = 20
+   piBaseEffect = 40
 
    piFlatDuration = 18000
 

@@ -135,7 +135,7 @@ messages:
                                       #parm3=-iHeal/100);
             Send(oTarget,@AssessDamage,#what=who,
                                        #damage=-iHeal,
-                                       #aspell=-ATCK_SPELL_HOLY,
+                                       #aspell=ATCK_SPELL_ALL+ATCK_SPELL_HOLY,
                                        #precision=TRUE);         
          }
          else
@@ -146,10 +146,10 @@ messages:
                                   #parm3=-iHeal/100);
             Send(who,@AssessDamage,#what=who,
                                    #damage=-iHeal,
-                                   #aspell=-ATCK_SPELL_HOLY,
+                                   #aspell=ATCK_SPELL_ALL+ATCK_SPELL_HOLY,
                                    #precision=TRUE);
          }
-         return;
+         propagate;
       }
       else
       {

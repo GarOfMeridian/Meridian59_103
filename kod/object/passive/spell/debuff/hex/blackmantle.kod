@@ -61,7 +61,7 @@ classvars:
 properties:
 
    % Reduces heals by this percentage minus state
-   piBaseEffect = 100
+   piBaseEffect = 120
 
    piFlatDuration = 25000
 
@@ -76,7 +76,7 @@ messages:
    }
 
    ModifyHeal(amount = 0,state=0)
-   {
+   {                 
       amount = amount * (piBaseEffect-state) / 100;
       return amount;
    }

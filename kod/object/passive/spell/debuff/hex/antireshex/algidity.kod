@@ -63,7 +63,7 @@ classvars:
 properties:
 
    % Effectively reduces cold resistance by this percent base
-   piBaseEffect = 20
+   piBaseEffect = 40
 
    piFlatDuration = 18000
 

@@ -2027,7 +2027,8 @@ messages:
       foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
       {
          iAttack = Send(Nth(i,2),@ModifyHitRoll,
-                                  #who=self,#what=what,#hit_roll=iAttack);
+                                  #who=self,#what=what,#hit_roll=iAttack,
+                                  #state=Nth(i,3));
       }
 
       return Bound(iAttack,1,2000);
@@ -2051,7 +2052,8 @@ messages:
       foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
       {
          iDefense = Send(Nth(i,2),@ModifyDefensePower,
-                                 #who=self,#what=what,#defense_power=iDefense);
+                                 #who=self,#what=what,#defense_power=iDefense,
+                                 #state=Nth(i,3));
       }
 
       return Bound(iDefense,1,2000);
@@ -2101,7 +2103,8 @@ messages:
       foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
       {
          iDamage = Send(Nth(i,2),@ModifyDamage,
-                                 #who=self,#what=what,#damage=iDamage);
+                                 #who=self,#what=what,#damage=iDamage,
+                                 #state=Nth(i,3));
       }
       
       return Bound(iDamage,0,$);

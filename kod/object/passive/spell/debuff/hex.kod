@@ -228,7 +228,7 @@ messages:
                                          #iSpellPower=iSpellPower,#what=self);
       iTargetHexResistance = Send(oTarget,@GetHexResistance);
       
-      iHexEffect = 100 + iCasterIncHexEffect - iTargetHexResistance;
+      iHexEffect = iCasterIncHexEffect - iTargetHexResistance;
       
       if iHexEffect = 0
       {
