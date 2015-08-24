@@ -59,8 +59,8 @@ classvars:
 
 properties:
 
-   % Take and give this much vigor when struck
-   piBaseEffect = 2
+   % Reduce defense by this base percentage
+   piBaseEffect = 7
 
    piFlatDuration = 25000
 
@@ -69,9 +69,14 @@ messages:
    ResetReagents()
    {
       plReagents = $;
-      plReagents = Cons([&OrcTooth,3],plReagents);
+      plReagents = Cons([&OrcTooth,2],plReagents);
 
       return;
+   }
+
+   ModifyDefensePower(who=$,what=$,defense_power=0)
+   {
+      return defense_power * Send(who,@GetEnchantedState,#what=self) / 100;
    }
 
 end

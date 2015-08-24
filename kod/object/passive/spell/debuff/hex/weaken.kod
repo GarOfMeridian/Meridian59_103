@@ -77,5 +77,19 @@ messages:
       return;
    }
 
+   ModifyDamage(who=$,what=$,damage=$)
+   {
+      local oWeapon;
+      
+      oWeapon = Send(who,@GetWeapon);
+      if oWeapon <> $
+         AND NOT IsClass(oWeapon,&RangedWeapon)
+      {
+         return damage * Send(who,@GetEnchantedState,#what=self) / 100;
+      }
+      
+      return damage;
+   }
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

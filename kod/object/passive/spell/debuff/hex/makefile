@@ -5,15 +5,7 @@
 !include $(TOPDIR)\common.mak
 
 DEPEND = ..\hex.bof
-BOFS = vulnerability.bof \
-       frailty.bof \
-       humility.bof \
-       corruption.bof \
-       slow.bof \
-       flammability.bof \
-       conductivity.bof \
-       algidity.bof \
-       corrosion.bof \
+BOFS = slow.bof \
        fester.bof \
        mute.bof \
        weaken.bof \
@@ -21,6 +13,7 @@ BOFS = vulnerability.bof \
        bestill.bof \
        becloud.bof \
        blackmantle.bof \
-       drain.bof
+       drainhex.bof \
+       antireshex.bof
 
 !include $(KODDIR)\kod.mak

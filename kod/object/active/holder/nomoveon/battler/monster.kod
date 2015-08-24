@@ -2008,7 +2008,7 @@ messages:
    GetOffense(what = $, stroke_obj=$)
    "This returns the battler's ability to-hit.  Ranges from 1 to 2000."
    {
-      local iAttack;
+      local iAttack, i;
 
       if piOffense = $
       {
@@ -2024,6 +2024,12 @@ messages:
          iAttack = iAttack * 3 / 4;
       }
 
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iOffense = Send(Nth(i,2),@ModifyHitRoll,
+                                  #who=self,#what=what,#hit_roll=iOffense);
+      }
+
       return Bound(iAttack,1,2000);
    }
 
@@ -2031,7 +2037,7 @@ messages:
    "This returns the battler's ability to avoid being hit.  Ranges from "
    "1 to 2000."
    {
-      local iDefense;
+      local iDefense, i;
 
       if piDefense = $
       {
@@ -2040,6 +2046,12 @@ messages:
       else
       {
          iDefense = piDefense;
+      }
+      
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iDefense = Send(Nth(i,2),@ModifyDefensePower,
+                                 #who=self,#what=what,#defense_power=iDefense);
       }
 
       return Bound(iDefense,1,2000);

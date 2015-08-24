@@ -19,8 +19,6 @@ resources:
 
 classvars:
 
-   viSchool = SS_WITCHERY
-
 properties:
 
    piFlatDuration = 25000

@@ -5082,6 +5082,12 @@ messages:
          Send(self,@MsgSendUser,#message_rsc=bad_line_of_sight);
          iOffense = iOffense / 2;
       }
+      
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iOffense = Send(Nth(i,2),@ModifyHitRoll,
+                                  #who=self,#what=what,#hit_roll=iOffense);
+      }
 
       return Bound(iOffense,1,2000);
    }
@@ -5141,7 +5147,13 @@ messages:
       iDefense = iDefense + Send(Send(SYS,@GetParliament),
                                  @GetFactionDefenseBonus,#who=self);
 
-      return Bound(iDefense,1,2000);
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iDefense = Send(Nth(i,2),@ModifyDefensePower,
+                                 #who=self,#what=what,#defense_power=iDefense);
+      }
+
+      return bound(iDefense,1,2000);
    }
 
    % The next three messages deal with the three defense skills.  These
