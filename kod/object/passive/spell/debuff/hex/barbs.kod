@@ -61,8 +61,8 @@ classvars:
 
 properties:
 
-   % Take and give this much health when struck
-   piBaseEffect = 3000
+   % Take and give this much mana when struck
+   piBaseEffect = 1
 
    piFlatDuration = 25000
 
@@ -71,21 +71,21 @@ messages:
    ResetReagents()
    {
       plReagents = $;
-      plReagents = Cons([&OrcTooth,3],plReagents);
+      plReagents = Cons([&OrcTooth,2],plReagents);
 
       return;
    }
    
-   StealHealth(who=$,what=$,atype=0,aspell=0,iHexEffect=0)
+   StealMana(who=$,what=$,state=0)
    {
       local iStealAmount;
       
-      iStealAmount = piBaseEffect * iHexEffect;
+      iStealAmount = piBaseEffect * state / 100;
       if Send(what,@GetMana) > iStealAmount
          AND IsClass(who,&Player)
       {
-         Send(what,@LoseMana,#amount=iStealAmount,#precision=TRUE);
-         Send(who,@GainMana,#amount=iStealAmount,#precision=TRUE);
+         Send(what,@LoseMana,#amount=iStealAmount);
+         Send(who,@GainMana,#amount=iStealAmount);
       }
 
       return;

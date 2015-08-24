@@ -61,8 +61,8 @@ classvars:
 
 properties:
 
-   % Reduce regenerations by this percentage (over 100 means degen)
-   piBaseEffect = 50
+   % This much chance to prevent communication
+   piBaseEffect = 33
 
    piFlatDuration = 25000
 
@@ -71,7 +71,7 @@ messages:
    ResetReagents()
    {
       plReagents = $;
-      plReagents = Cons([&OrcTooth,3],plReagents);
+      plReagents = Cons([&OrcTooth,2],plReagents);
 
       return;
    }

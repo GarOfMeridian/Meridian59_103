@@ -5403,7 +5403,40 @@ messages:
    {
       local i, j, iResistance, oSoldierShield, gainchance, color_rsc,
             iDuration, oSpell, oGort,iLimit, origdamage, oWeapon, shrunken,
-            bAttackerEmpowered, bShielded;
+            bAttackerEmpowered, bShielded, oRod, oHex, lHexes;
+
+      % Check for mana steal
+      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Barbs)
+      if lHexes <> $
+      {
+         foreach oHex in lHexes
+         {
+            Send(oHex,@StealMana,#who=what,#what=self,
+                                 #state=Nth(oHex,3));
+         }
+      }
+
+      % Check for life steal
+      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Leeches)
+      if lHexes <> $
+      {
+         foreach oHex in lHexes
+         {
+            Send(oHex,@StealHealth,#who=what,#what=self,
+                                 #state=Nth(oHex,3));
+         }
+      }
+
+      % Check for vigor steal
+      lHexes = Send(self,@GetEnchantmentsByClass,#enchClass=&Sap)
+      if lHexes <> $
+      {
+         foreach oHex in lHexes
+         {
+            Send(oHex,@StealVigor,#who=what,#what=self,
+                                 #state=Nth(oHex,3));
+         }
+      }
 
       if NOT precision
       {

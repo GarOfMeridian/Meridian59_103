@@ -30,7 +30,7 @@ resources:
    fester_desc_rsc = \
       "Afflicts your victim with festering rot, slowing physical and spiritual "
       "regenerations. "
-      "This hex requires two orc teeth to cast."
+      "This hex requires two one orc tooth to cast."
 
    fester_sound = qenfeebl.wav
 
@@ -50,8 +50,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 1
-   viMana = 2
-   viSpell_Exertion = 2
+   viMana = 5
+   viSpell_Exertion = 5
 
    viFlash = FLASH_BAD
 
@@ -71,7 +71,7 @@ messages:
    ResetReagents()
    {
       plReagents = $;
-      plReagents = Cons([&OrcTooth,3],plReagents);
+      plReagents = Cons([&OrcTooth,1],plReagents);
 
       return;
    }

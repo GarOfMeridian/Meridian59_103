@@ -21,7 +21,7 @@ resources:
       "That poor soul is already afflicted by bestill."
    bestill_start = "You begin responding to attacks more slowly!"
    bestill_stop  = "You feel your reflexes returning to normal."
-   has_been_hexed_sap = \
+   has_been_hexed_bestill = \
       "%s%s begins responding to attacks more slowly!"
 
    bestill_name_rsc = "bestill"
@@ -44,7 +44,7 @@ classvars:
    vrSuccess = bestill_cast_rsc
    vrInformRoom = has_been_hexed_bestill
 
-   viSpell_num = SID_HEX_SAP
+   viSpell_num = SID_HEX_BESTILL
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 3

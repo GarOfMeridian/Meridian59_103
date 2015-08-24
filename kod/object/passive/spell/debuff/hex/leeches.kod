@@ -75,11 +75,11 @@ messages:
       return;
    }
    
-   StealHealth(who=$,what=$,atype=0,aspell=0,iHexEffect=0)
+   StealHealth(who=$,what=$,state=0)
    {
       local iStealAmount;
       
-      iStealAmount = piBaseEffect * iHexEffect;
+      iStealAmount = piBaseEffect * state / 100;
       if Send(what,@GetHealth) > iStealAmount
       {
          Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);

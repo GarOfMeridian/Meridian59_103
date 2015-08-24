@@ -70,20 +70,22 @@ messages:
    ResetReagents()
    {
       plReagents = $;
-      plReagents = Cons([&OrcTooth,3],plReagents);
+      plReagents = Cons([&OrcTooth,2],plReagents);
 
       return;
    }
    
-   StealVigor(who=$,what=$,atype=0,aspell=0,iHexEffect=0)
+   StealVigor(who=$,what=$,state=0)
    {
       local iStealAmount;
       
-      iStealAmount = piBaseEffect * iHexEffect;
-      if Send(what,@GetHealth) > iStealAmount
+      iStealAmount = piBaseEffect * state / 100;
+      if IsClass(what,&Player)
+         AND IsClass(who,&Player)
+         AND Send(what,@GetVigor) > iStealAmount
       {
-         Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);
-         Send(who,@GainHealth,#amount=iStealAmount,#precision=TRUE);
+         Send(what,@AddExertion,#amount=iStealAmount);
+         Send(who,@AddExertion,#amount=-iStealAmount);
       }
 
       return;
