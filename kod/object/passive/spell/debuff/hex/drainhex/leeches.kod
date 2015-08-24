@@ -24,7 +24,7 @@ resources:
    has_been_hexed_leeches = \
       "%s%s becomes infested with phantom leeches!"
 
-   leeched_msg = "Your strike leeches %i from %s%s!"
+   leeched_msg = "Your strike leeches %i health!"
    leeched_from_msg = "You shiver as %i health drains away."
 
    leeches_name_rsc = "leeches"
@@ -85,6 +85,12 @@ messages:
       {
          Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);
          Send(who,@GainHealth,#amount=iStealAmount,#precision=TRUE);
+
+         if IsClass(who,&User)
+         {
+            Send(who,@MsgSendUser,#message_rsc=leeched_msg,
+                                  #parm1=iStealAmount);
+         }
       }
 
       return;

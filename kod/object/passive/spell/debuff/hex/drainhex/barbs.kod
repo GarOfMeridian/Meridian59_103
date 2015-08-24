@@ -34,6 +34,8 @@ resources:
 
    barbs_sound = qenfeebl.wav
 
+   barbed_msg = "Your attack fills you with %i mana!"
+
 classvars:
 
    vrName = barbs_name_rsc
@@ -83,6 +85,12 @@ messages:
       {
          Send(what,@LoseMana,#amount=iStealAmount);
          Send(who,@GainMana,#amount=iStealAmount);
+
+         if IsClass(who,&User)
+         {
+            Send(who,@MsgSendUser,#message_rsc=barbed_msg,
+                                  #parm1=iStealAmount);
+         }
       }
 
       return;
