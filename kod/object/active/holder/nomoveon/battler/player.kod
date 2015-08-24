@@ -3132,10 +3132,22 @@ messages:
 
    HealthTimer()
    {
-      local iDifference;
+      local iDifference, i;
       
       iDifference = bound(piMax_Health*100 - piHealth,-100,100);
       ptHealth = $;
+      
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iDifference = Send(Nth(i,2),@ModifyRegenAmount,
+                                 #state=Nth(i,3),#regen=iDifference);
+      }
+
+      if iDifference < 0
+         AND piHealth <= 100
+      {
+         iDifference = 0;
+      }
 
       if iDifference > 0
       {

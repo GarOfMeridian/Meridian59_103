@@ -324,6 +324,11 @@ messages:
 
       return resistance_list;
    }
+   
+   ModifyRegenAmount(regen=0)
+   {
+      return regen;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

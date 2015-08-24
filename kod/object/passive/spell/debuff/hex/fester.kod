@@ -28,9 +28,9 @@ resources:
    fester_name_rsc = "fester"
    fester_icon_rsc = ienfeebl.bgf
    fester_desc_rsc = \
-      "Afflicts your victim with festering rot, slowing physical and spiritual "
+      "Afflicts your victim with festering rot, slowing physical "
       "regenerations. "
-      "This hex requires two one orc tooth to cast."
+      "This hex requires one orc tooth to cast."
 
    fester_sound = qenfeebl.wav
 
@@ -61,7 +61,7 @@ classvars:
 
 properties:
 
-   % Reduce regenerations by this percentage (over 100 means degen)
+   % Reduce regenerations by this percentage base
    piBaseEffect = 50
 
    piFlatDuration = 25000
@@ -74,6 +74,12 @@ messages:
       plReagents = Cons([&OrcTooth,1],plReagents);
 
       return;
+   }
+
+   ModifyRegenAmount(state=0,regen=0)
+   {
+      regen = regen * (piBaseEffect-state) / 100;
+      return regen;
    }
 
 end
