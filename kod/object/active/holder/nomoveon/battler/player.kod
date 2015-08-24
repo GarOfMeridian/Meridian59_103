@@ -1496,7 +1496,7 @@ messages:
 
    AddExertion(amount = 0, SetToThreshold = FALSE)
    {
-      local iExertionAdded, iPercentReduced, iVigorLost;
+      local iExertionAdded, iPercentReduced, iVigorLost, i;
 
       % If we cannot gain vigor due to Second Wind, return out if trying
       % to take away exertion
@@ -1509,6 +1509,12 @@ messages:
 
       if iExertionAdded > 0
       {
+         foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+         {
+            iExertionAdded = Send(Nth(i,2),@ModifyExertion,
+                                    #state=Nth(i,3),#amount=iExertionAdded);
+         }
+
          % Parliament adjustment for exertion reduction.  Remove a % from
          % the amount added.
          iPercentReduced = Send(Send(SYS,@GetParliament),@GetFactionVigorBonus,#who=self);

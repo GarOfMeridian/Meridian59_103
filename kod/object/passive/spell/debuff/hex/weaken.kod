@@ -63,7 +63,7 @@ classvars:
 properties:
 
    % Weaken outgoing melee damage by up to this percent
-   piBaseEffect = 25
+   piBaseEffect = 20
 
    piFlatDuration = 25000
 

@@ -49,8 +49,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 2
-   viMana = 8
-   viSpell_Exertion = 5
+   viMana = 6
+   viSpell_Exertion = 12
 
    viFlash = FLASH_BAD
 
@@ -61,7 +61,7 @@ classvars:
 properties:
 
    % Vigor costs increase by this percent
-   piBaseEffect = 25
+   piBaseEffect = 50
 
    piFlatDuration = 80000
 
@@ -73,6 +73,11 @@ messages:
       plReagents = Cons([&OrcTooth,3],plReagents);
 
       return;
+   }
+   
+   ModifyExertion(amount=0,state=0)
+   {
+      return (amount * (100 + ((piBaseEffect*state)/100))) / 100;
    }
 
 end

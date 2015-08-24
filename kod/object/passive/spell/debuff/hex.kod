@@ -334,6 +334,11 @@ messages:
    {
       return amount;
    }
+   
+   ModifyExertion(amount=0,state=0)
+   {
+      return amount;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
