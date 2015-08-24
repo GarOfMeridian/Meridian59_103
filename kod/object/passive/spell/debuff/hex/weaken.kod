@@ -80,10 +80,16 @@ messages:
    ModifyDamage(who=$,what=$,damage=$)
    {
       local oWeapon;
-      
-      oWeapon = Send(who,@GetWeapon);
-      if oWeapon <> $
-         AND NOT IsClass(oWeapon,&RangedWeapon)
+
+      oWeapon = $;
+      if IsClass(who,&Player)
+      {
+         oWeapon = Send(who,@GetWeapon);
+      }
+
+      if IsClass(who,&Monster)
+         OR (oWeapon <> $
+         AND NOT IsClass(oWeapon,&RangedWeapon))
       {
          return damage * Send(who,@GetEnchantedState,#what=self) / 100;
       }

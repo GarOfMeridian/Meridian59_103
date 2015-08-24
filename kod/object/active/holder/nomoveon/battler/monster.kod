@@ -2026,8 +2026,8 @@ messages:
 
       foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
       {
-         iOffense = Send(Nth(i,2),@ModifyHitRoll,
-                                  #who=self,#what=what,#hit_roll=iOffense);
+         iAttack = Send(Nth(i,2),@ModifyHitRoll,
+                                  #who=self,#what=what,#hit_roll=iAttack);
       }
 
       return Bound(iAttack,1,2000);
@@ -2074,7 +2074,7 @@ messages:
    % This returns the damage done to target "what"
    GetDamage(what = $, stroke_obj=$)
    {
-      local iDamage;
+      local iDamage, i;
 
       if piMinDamage = $ and piMaxDamage = $
       {
@@ -2096,6 +2096,12 @@ messages:
       if piEnch_flags & ENCH_PALSY
       {
          iDamage = iDamage * 3 / 4 ;
+      }
+      
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iDamage = Send(Nth(i,2),@ModifyDamage,
+                                 #who=self,#what=what,#damage=iDamage);
       }
       
       return Bound(iDamage,0,$);

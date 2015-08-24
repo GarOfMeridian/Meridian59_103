@@ -5308,6 +5308,12 @@ messages:
 
       % Convert to high precision. Super dirty, will be cleaned up shortly.
       iDamageBonus = iDamageBonus*100;
+      
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&Hex)
+      {
+         iDamage = Send(Nth(i,2),@ModifyDamage,
+                                 #who=self,#what=what,#damage=iDamage);
+      }
 
       iDamage = iDamage + iDamageBonus;
 
