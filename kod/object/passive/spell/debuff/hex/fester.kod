@@ -61,7 +61,7 @@ classvars:
 
 properties:
 
-   % Reduce regenerations by this percentage base
+   % Reduce regenerations by this percentage minus state
    piBaseEffect = 50
 
    piFlatDuration = 25000

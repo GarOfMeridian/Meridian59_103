@@ -329,6 +329,11 @@ messages:
    {
       return regen;
    }
+   
+   ModifyHeal(amount=0)
+   {
+      return amount;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

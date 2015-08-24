@@ -60,9 +60,8 @@ classvars:
 
 properties:
 
-   % Reduces heals by this percentage
-   % High values can turn heals into harms
-   piBaseEffect = 50
+   % Reduces heals by this percentage minus state
+   piBaseEffect = 100
 
    piFlatDuration = 25000
 
@@ -74,6 +73,12 @@ messages:
       plReagents = Cons([&OrcTooth,2],plReagents);
 
       return;
+   }
+
+   ModifyHeal(amount = 0,state=0)
+   {
+      amount = amount * (piBaseEffect-state) / 100;
+      return amount;
    }
 
 end
