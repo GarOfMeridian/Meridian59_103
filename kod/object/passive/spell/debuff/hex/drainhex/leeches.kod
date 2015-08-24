@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Leeches is Hex
+Leeches is DrainHex
 
 constants:
 
@@ -52,8 +52,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 2
-   viMana = 14
-   viSpell_Exertion = 10
+   viMana = 15
+   viSpell_Exertion = 15
 
    viFlash = FLASH_BAD
 
@@ -63,10 +63,8 @@ classvars:
 
 properties:
 
-   % Take and give this much health when struck
-   piBaseEffect = 150
-
-   piFlatDuration = 25000
+   % Take and give this much health when struck (/100)
+   piBaseEffect = 100
 
 messages:
 
@@ -78,7 +76,7 @@ messages:
       return;
    }
    
-   StealHealth(who=$,what=$,state=0)
+   StealStat(who=$,what=$,state=0)
    {
       local iStealAmount;
       

@@ -9,8 +9,6 @@ BOFS = vulnerability.bof \
        frailty.bof \
        humility.bof \
        corruption.bof \
-       leeches.bof \
-       barbs.bof \
        slow.bof \
        flammability.bof \
        conductivity.bof \
@@ -20,9 +18,9 @@ BOFS = vulnerability.bof \
        mute.bof \
        weaken.bof \
        exhaustion.bof \
-       sap.bof \
        bestill.bof \
        becloud.bof \
-       blackmantle.bof
+       blackmantle.bof \
+       drain.bof
 
 !include $(KODDIR)\kod.mak

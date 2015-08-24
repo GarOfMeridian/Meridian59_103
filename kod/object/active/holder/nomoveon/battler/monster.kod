@@ -2119,7 +2119,14 @@ messages:
    AssessDamage(what=$,damage=$,atype=0,aspell=0,bonus=0,scalefactor=1000,
       absolute=FALSE,precision=FALSE)
    {
-      local iDamage, iResist, iPercentClass, i, each_obj, bAttackerEmpowered;
+      local iDamage, iResist, iPercentClass, i, each_obj,
+            bAttackerEmpowered;
+
+      % Check for stat steals
+      foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&DrainHex)
+      {
+         Send(Nth(i,2),@StealStat,#who=what,#what=self,#state=Nth(i,3));
+      }
 
       if NOT precision
       {

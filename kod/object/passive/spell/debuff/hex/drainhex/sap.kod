@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Sap is Hex
+Sap is DrainHex
 
 constants:
 
@@ -33,6 +33,8 @@ resources:
 
    sap_sound = qenfeebl.wav
 
+   sapped_msg = "Your attack fills you with %i vigor!"
+
 classvars:
 
    vrName = sap_name_rsc
@@ -49,8 +51,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 3
-   viMana = 18
-   viSpell_Exertion = 15
+   viMana = 5
+   viSpell_Exertion = 30
 
    viFlash = FLASH_BAD
 
@@ -60,10 +62,8 @@ classvars:
 
 properties:
 
-   % Take and give this much vigor when struck
-   piBaseEffect = 2
-
-   piFlatDuration = 25000
+   % Take and give this much vigor when struck (/10000)
+   piBaseEffect = 10000
 
 messages:
 
@@ -75,17 +75,30 @@ messages:
       return;
    }
    
-   StealVigor(who=$,what=$,state=0)
+   StealStat(who=$,what=$,state=0)
    {
       local iStealAmount;
       
       iStealAmount = piBaseEffect * state / 100;
-      if IsClass(what,&Player)
-         AND IsClass(who,&Player)
-         AND Send(what,@GetVigor) > iStealAmount
+      if IsClass(what,&Monster)
+         OR Send(what,@GetVigor)*1000 > iStealAmount
       {
-         Send(what,@AddExertion,#amount=iStealAmount);
-         Send(who,@AddExertion,#amount=-iStealAmount);
+         if IsClass(what,&Player)
+         { 
+            Send(what,@AddExertion,#amount=iStealAmount);
+         }
+
+         if IsClass(what,&Monster)
+         {
+            iStealAmount = iStealAmount / 2;
+         }
+
+         if IsClass(who,&Player)
+         {
+            Send(who,@AddExertion,#amount=-iStealAmount);
+            Send(who,@MsgSendUser,#message_rsc=sapped_msg,
+                                  #parm1=iStealAmount/10000);
+         }
       }
 
       return;

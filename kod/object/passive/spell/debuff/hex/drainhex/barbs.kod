@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Barbs is Hex
+Barbs is DrainHex
 
 constants:
 
@@ -50,8 +50,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_NEQUZON
    viSpell_level = 1
-   viMana = 0
-   viSpell_Exertion = 30
+   viMana = 30
+   viSpell_Exertion = 5
 
    viFlash = FLASH_BAD
 
@@ -64,8 +64,6 @@ properties:
    % Take and give this much mana when struck
    piBaseEffect = 1
 
-   piFlatDuration = 25000
-
 messages:
 
    ResetReagents()
@@ -76,13 +74,12 @@ messages:
       return;
    }
    
-   StealMana(who=$,what=$,state=0)
+   StealStat(who=$,what=$,state=0)
    {
       local iStealAmount;
       
       iStealAmount = piBaseEffect * state / 100;
       if Send(what,@GetMana) > iStealAmount
-         AND IsClass(who,&Player)
       {
          Send(what,@LoseMana,#amount=iStealAmount);
          Send(who,@GainMana,#amount=iStealAmount);

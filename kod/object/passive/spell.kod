@@ -469,6 +469,7 @@ messages:
       if viSchool = SS_QOR
          OR viSchool = SS_SHALILLE
          OR viSchool = SS_FAREN
+         OR viSchool = SS_WITCHERY
       {
          return Send(who,@GetMysticism);
       }
