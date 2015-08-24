@@ -1,0 +1,93 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Sap is Hex
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   sap_cast_rsc = "%s%s becomes surrounded by a draining aura."
+   sap_already_enchanted = \
+      "That poor soul is already afflicted by sap."
+   sap_start = "A draining aura surrounds you!"
+   sap_stop  = "The draining aura around you vanishes."
+   has_been_hexed_sap = \
+      "%s%s becomes surrounded by a draining aura!"
+
+   sap_name_rsc = "sap"
+   sap_icon_rsc = ienfeebl.bgf
+   sap_desc_rsc = \
+      "Surrounds your victim with a draining aura that steals vigor "
+      "and gives it to those that strike them. "
+      "This hex requires two orc teeth to cast."
+
+   sap_sound = qenfeebl.wav
+
+classvars:
+
+   vrName = sap_name_rsc
+   vrIcon = sap_icon_rsc
+   vrDesc = sap_desc_rsc
+
+   vrAlreadyEnchanted = sap_already_enchanted
+   vrEnchantment_On = sap_start
+   vrEnchantment_Off = sap_stop
+   vrSuccess = sap_cast_rsc
+   vrInformRoom = has_been_hexed_sap
+
+   viSpell_num = SID_HEX_SAP
+   viSchool = SS_WITCHERY
+   viSubSchool = SSS_WITCHERY_XAERDUN
+   viSpell_level = 3
+   viMana = 18
+   viSpell_Exertion = 15
+
+   viFlash = FLASH_BAD
+
+   vrSucceed_wav = sap_sound
+   viChance_To_Increase = 20
+   viMeditate_ratio = 40
+
+properties:
+
+   % Take and give this much vigor when struck
+   piBaseEffect = 2
+
+   piFlatDuration = 25000
+
+messages:
+
+   ResetReagents()
+   {
+      plReagents = $;
+      plReagents = Cons([&OrcTooth,3],plReagents);
+
+      return;
+   }
+   
+   StealVigor(who=$,what=$,atype=0,aspell=0,iHexEffect=0)
+   {
+      local iStealAmount;
+      
+      iStealAmount = piBaseEffect * iHexEffect;
+      if Send(what,@GetHealth) > iStealAmount
+      {
+         Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);
+         Send(who,@GainHealth,#amount=iStealAmount,#precision=TRUE);
+      }
+
+      return;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

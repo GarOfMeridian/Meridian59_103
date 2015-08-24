@@ -58,6 +58,7 @@ classvars:
 
    viSkill_num = $
    viSchool = $
+   viSubSchool = $
 
    viSkill_level = 1
 

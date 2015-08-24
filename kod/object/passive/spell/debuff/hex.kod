@@ -72,7 +72,7 @@ Hex is Debuff
    %       Arcane knowledge (skill) - you gain curse resistance.
    %
    % Level 3 Xaerdun:
-   % Devitalize - steals vigor from afflicted target when hit.
+   % Sap - steals vigor from afflicted target when hit.
    % Bestill - lowers victim's defense.
    %
    %    Level 3 Nequzon skills/spells:
@@ -109,11 +109,12 @@ Hex is Debuff
    %                         at the cost of your own health and spirit.
    %
    %    Level 6 Nequzon skills/spells:
-   %       Ostracization - your curses cannot be removed by any means,
+   %       Ostracization (skill) - your curses cannot be removed by any means,
    %                          and do not expire until the victim goes safe.
    %
    %    Level 6 Iwodach skills/spells:
-   %       Black mantle - victim may not be healed or purified by any means.
+   %       Black mantle - lowers effectiveness of heals on victim. Extremely
+   %                       high effectiveness can cause heals to harm.
    %
 
 constants:

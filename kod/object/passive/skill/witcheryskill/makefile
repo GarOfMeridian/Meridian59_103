@@ -4,10 +4,13 @@
 
 !include $(TOPDIR)\common.mak
 
-DEPEND = ..\witchery.bof
+DEPEND = ..\witcheryskill.bof
 BOFS = arcaneknowledge.bof \
        rotememorization.bof \
        efficientcasting.bof \
-       ancientpact.bof
+       ancientpact.bof \
+       unhallowedrunes.bof \
+       bloodrunes.bof \
+       ostracization.bof
 
 !include $(KODDIR)\kod.mak

@@ -19,6 +19,10 @@ BOFS = vulnerability.bof \
        fester.bof \
        mute.bof \
        weaken.bof \
-       exhaustion.bof
+       exhaustion.bof \
+       sap.bof \
+       bestill.bof \
+       becloud.bof \
+       blackmantle.bof
 
 !include $(KODDIR)\kod.mak

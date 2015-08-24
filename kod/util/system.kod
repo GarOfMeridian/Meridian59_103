@@ -3431,6 +3431,10 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_FESTER,#class=&Fester);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_MUTE,#class=&Mute);
       Send(self,@CreateOneSpellIfNew,#num=SID_HEX_WEAKEN,#class=&Weaken);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_SAP,#class=&Sap);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_BESTILL,#class=&Bestill);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_BECLOUD,#class=&Becloud);
+      Send(self,@CreateOneSpellIfNew,#num=SID_HEX_BLACK_MANTLE,#class=&BlackMantle);
 
       % Trance may be searched for frequently, leave at end of list
       Send(self,@CreateOneSpellIfNew,#num=SID_TRANCE,#class=&Trance);
@@ -3661,6 +3665,7 @@ messages:
        Send(self,@CreateOneSKillIfNew,#num=SKID_ANCIENT_PACT,#class=&AncientPact);
        Send(self,@CreateOneSKillIfNew,#num=SKID_UNHALLOWED_RUNES,#class=&UnhallowedRunes);
        Send(self,@CreateOneSKillIfNew,#num=SKID_BLOOD_RUNES,#class=&BloodRunes);
+       Send(self,@CreateOneSKillIfNew,#num=SKID_OSTRACIZATION,#class=&Ostracization);
 
 
        return;
