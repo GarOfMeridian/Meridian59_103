@@ -50,7 +50,7 @@ classvars:
    viSubSchool = SSS_WITCHERY_IWODACH
    viSpell_level = 6
    viMana = 40
-   viSpell_Exertion = 30
+   viSpell_Exertion = 20
 
    viFlash = FLASH_BAD
 

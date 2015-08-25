@@ -33,7 +33,7 @@ resources:
 
    sap_sound = qenfeebl.wav
 
-   sapped_msg = "Your attack fills you with %i vigor!"
+   sapped_msg = "Your attack drains %i vigor!"
 
 classvars:
 
@@ -63,7 +63,7 @@ classvars:
 properties:
 
    % Take and give this much vigor when struck (/10000)
-   piBaseEffect = 10000
+   piBaseEffect = 20000
 
 messages:
 

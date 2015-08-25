@@ -47,7 +47,7 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 5
-   viMana = 24
+   viMana = 30
    viSpell_Exertion = 20
 
    viFlash = FLASH_BAD
@@ -61,7 +61,7 @@ properties:
    % Increases postcast delays by this percent
    piBaseEffect = 25
 
-   piFlatDuration = 9000
+   piFlatDuration = 30000
 
 messages:
 

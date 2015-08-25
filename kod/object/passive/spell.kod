@@ -1508,9 +1508,14 @@ messages:
       {
          foreach oTarget in lTargets
          {
-            if Send(oTarget,@GetNumHexes) > Send(who,@GetCasterMaxHexes)
+            if Send(oTarget,@GetNumHexes) >Send(Send(SYS,@GetExpansionSettings,
+                             #find_class=&WitcherySettings),
+                             @GetHexesMax)
             {
-               Post(oTarget,@RemoveRandomHex,#exempt=self);
+               if Send(oTarget,@GetNumHexes) > Send(who,@GetCasterMaxHexes)
+               {
+                  Post(oTarget,@RemoveRandomHex,#exempt=self);
+               }
             }
          }
       }

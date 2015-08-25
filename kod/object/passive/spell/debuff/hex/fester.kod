@@ -50,8 +50,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 1
-   viMana = 5
-   viSpell_Exertion = 5
+   viMana = 10
+   viSpell_Exertion = 20
 
    viFlash = FLASH_BAD
 
@@ -64,7 +64,7 @@ properties:
    % Reduce regenerations by this percentage minus state
    piBaseEffect = 50
 
-   piFlatDuration = 25000
+   piFlatDuration = 120000
 
 messages:
 

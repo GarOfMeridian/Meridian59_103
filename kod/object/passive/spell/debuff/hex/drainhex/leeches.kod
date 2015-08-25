@@ -64,7 +64,7 @@ classvars:
 properties:
 
    % Take and give this much health when struck (/100)
-   piBaseEffect = 100
+   piBaseEffect = 200
 
 messages:
 
@@ -89,7 +89,7 @@ messages:
          if IsClass(who,&User)
          {
             Send(who,@MsgSendUser,#message_rsc=leeched_msg,
-                                  #parm1=iStealAmount);
+                                  #parm1=iStealAmount/100);
          }
       }
 

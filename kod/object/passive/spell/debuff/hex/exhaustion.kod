@@ -49,8 +49,8 @@ classvars:
    viSchool = SS_WITCHERY
    viSubSchool = SSS_WITCHERY_XAERDUN
    viSpell_level = 2
-   viMana = 6
-   viSpell_Exertion = 12
+   viMana = 10
+   viSpell_Exertion = 30
 
    viFlash = FLASH_BAD
 

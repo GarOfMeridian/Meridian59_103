@@ -34,7 +34,7 @@ resources:
 
    barbs_sound = qenfeebl.wav
 
-   barbed_msg = "Your attack fills you with %i mana!"
+   barbed_msg = "Your attack steals %i mana!"
 
 classvars:
 
@@ -64,7 +64,7 @@ classvars:
 properties:
 
    % Take and give this much mana when struck
-   piBaseEffect = 1
+   piBaseEffect = 2
 
 messages:
 
