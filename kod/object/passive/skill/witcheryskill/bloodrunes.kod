@@ -48,6 +48,8 @@ properties:
    
    piMaxHexesIncrease = 1
 
+   piHealthCost = 30
+
 messages:
 
    GetRequisiteStat(who=$)
@@ -56,14 +58,29 @@ messages:
       return Send(who,@GetMysticism);
    }
 
+   GetMaxHexesIncrease(who=$)
+   {
+      return piMaxHexesIncrease;
+   }
+
    DoSkill(who=$)
    {
-      local iAbility, iStat;
+      local iAbility, iStat, iHealthCost;
       
       iAbility = Send(who,@GetSkillAbility,#Skill_num=viSkill_num);
       iStat = Send(self,@GetRequisiteStat,#who=who);
 
       if bound(iAbility-6,1,93) + iStat/10 <= Random(1,100)
+      {
+         return FALSE;
+      }
+
+      iHealthCost = (piHealthCost * (100-(iAbility/2))) / 100;
+      if Send(who,@GetHealth) > iHealthCost
+      {
+         Send(who,@LoseHealth,#amount=iHealthCost);
+      }
+      else
       {
          return FALSE;
       }

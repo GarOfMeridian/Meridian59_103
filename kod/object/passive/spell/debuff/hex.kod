@@ -111,10 +111,13 @@ Hex is Debuff
    %    Level 6 Nequzon skills/spells:
    %       Ostracization (skill) - your curses cannot be removed by any means,
    %                          and do not expire until the victim goes safe.
+   %                          Curses also cannot be overwritten once cast,
+   %                          so choose wisely.
    %
    %    Level 6 Iwodach skills/spells:
    %       Black mantle - lowers effectiveness of heals on victim. Extremely
    %                       high effectiveness can cause heals to harm.
+   %                       Harms deal unholy damage.
    %
 
 constants:
@@ -224,8 +227,8 @@ messages:
    {
       local iCasterIncHexEffect, iTargetHexResistance, iHexEffect;
 
-      iCasterIncHexEffect = Send(oTarget,@GetHexIncEffect,
-                                         #iSpellPower=iSpellPower,#what=self);
+      iCasterIncHexEffect = Send(what,@GetHexIncEffect,
+                                      #iSpellPower=iSpellPower,#what=self);
       iTargetHexResistance = Send(oTarget,@GetHexResistance);
       
       iHexEffect = iCasterIncHexEffect - iTargetHexResistance;
@@ -245,6 +248,15 @@ messages:
          {
             Send(oTarget,@MsgSendUser,#message_rsc=vrEnchantment_On);
          }
+      }
+
+      if Send(what,@GetSkillAbility,#Skill_num=SKID_ANCIENT_PACT) > 0
+         AND Send(Send(SYS,@FindSkillByNum,#num=SKID_ANCIENT_PACT),
+               @DoSkill,#who=what)
+      {
+         iDuration = iDuration + Send(Send(SYS,@FindSkillByNum,
+                                      #num=SKID_ANCIENT_PACT),
+                                      @GetDurationIncrease,#who=what);
       }
 
       Send(what,@MsgSendUser,#message_rsc=vrSuccess,

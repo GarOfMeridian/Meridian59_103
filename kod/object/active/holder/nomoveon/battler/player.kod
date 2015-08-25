@@ -15000,6 +15000,59 @@ messages:
 
       propagate;
    }
+   
+   GetHexIncEffect(iSpellPower=0)
+   {
+      local iRunesEff;
+      
+      iRunesEff = 0;
+      if Send(self,@GetSkillAbility,#Skill_num=SKID_UNHALLOWED_RUNES) > 0
+         AND Send(Send(SYS,@FindSkillByNum,#num=SKID_UNHALLOWED_RUNES),
+               @DoSkill,#who=self)
+      {
+         iRunesEff = Send(Send(SYS,@FindSkillByNum,
+                                      #num=SKID_UNHALLOWED_RUNES),
+                                      @GetIncHexEffectiveness,#who=self);
+      }
+      
+      return iSpellPower + 1 + iRunesEff;
+   }
+
+   GetHexResistance()
+   {
+      local iArcaneKnowledgeRes;
+      
+      iArcaneKnowledgeRes = 0;
+      if Send(self,@GetSkillAbility,#Skill_num=SKID_ARCANE_KNOWLEDGE) > 0
+         AND Send(Send(SYS,@FindSkillByNum,#num=SKID_ARCANE_KNOWLEDGE),
+               @DoSkill,#who=self)
+      {
+         iArcaneKnowledgeRes = Send(Send(SYS,@FindSkillByNum,
+                                      #num=SKID_ARCANE_KNOWLEDGE),
+                                      @GetHexResistance,#who=self);
+      }
+      
+      return bound(piHexResistance+iArcaneKnowledgeRes,-100,100);
+   }
+
+   GetCasterMaxHexes()
+   {
+      local iHexesMax;
+      iHexesMax = Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&WitcherySettings),
+                  @GetHexesMax);
+
+      if Send(self,@GetSkillAbility,#Skill_num=SKID_BLOOD_RUNES) > 0
+         AND Send(Send(SYS,@FindSkillByNum,#num=SKID_BLOOD_RUNES),
+               @DoSkill,#who=self)
+      {
+         iHexesMax = iHexesMax + Send(Send(SYS,@FindSkillByNum,
+                                      #num=SKID_BLOOD_RUNES),
+                                      @GetMaxHexesIncrease);
+      }
+                  
+      return iHexesMax;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

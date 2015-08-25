@@ -46,7 +46,7 @@ properties:
 
    piChanceToIncrease = 100
    
-   piCostReduction = 25
+   piCostReduction = 15
 
 messages:
 
@@ -54,6 +54,21 @@ messages:
    "Varies from skill to skill and spell to spell."
    {
       return Send(who,@GetIntellect);
+   }
+
+   GetCostReduction(who=$)
+   {
+      local iAbility, iStat, iTotalReduction;
+      
+      iAbility = Send(who,@GetSkillAbility,#Skill_num=viSkill_num);
+      iStat = Send(self,@GetRequisiteStat,#who=who);
+      
+      iTotalReduction = piCostReduction;
+      
+      iTotalReduction = iTotalReduction + iStat/10 + 
+                        ((iTotalReduction * (iAbility+1))/100);
+
+      return iTotalReduction;
    }
 
    DoSkill(who=$)

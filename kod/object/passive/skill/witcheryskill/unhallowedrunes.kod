@@ -45,7 +45,7 @@ properties:
 
    piChanceToIncrease = 100
    
-   piIncHexEffectiveness = 33
+   piIncHexEffectiveness = 15
 
 messages:
 
@@ -53,6 +53,21 @@ messages:
    "Varies from skill to skill and spell to spell."
    {
       return Send(who,@GetMysticism);
+   }
+
+   GetIncHexEffectiveness(who=$)
+   {
+      local iAbility, iStat, iTotalIncrease;
+      
+      iAbility = Send(who,@GetSkillAbility,#Skill_num=viSkill_num);
+      iStat = Send(self,@GetRequisiteStat,#who=who);
+      
+      iTotalIncrease = piIncHexEffectiveness;
+      
+      iTotalIncrease = iTotalIncrease + iStat/10 + 
+                        ((iTotalIncrease * (iAbility+1))/100);
+
+      return iTotalIncrease;
    }
 
    DoSkill(who=$)

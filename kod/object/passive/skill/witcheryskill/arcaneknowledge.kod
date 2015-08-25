@@ -46,7 +46,7 @@ properties:
 
    piChanceToIncrease = 100
    
-   piHexResistance = 33
+   piHexResistance = 15
 
 messages:
 
@@ -54,6 +54,21 @@ messages:
    "Varies from skill to skill and spell to spell."
    {
       return Send(who,@GetMysticism);
+   }
+
+   GetHexResistance(who=$)
+   {
+      local iAbility, iStat, iTotalResistance;
+      
+      iAbility = Send(who,@GetSkillAbility,#Skill_num=viSkill_num);
+      iStat = Send(self,@GetRequisiteStat,#who=who);
+      
+      iTotalResistance = piHexResistance;
+      
+      iTotalResistance = iTotalResistance + iStat/10 + 
+                        ((iTotalResistance * (iAbility+1))/100);
+
+      return iTotalResistance;
    }
 
    DoSkill(who=$)
