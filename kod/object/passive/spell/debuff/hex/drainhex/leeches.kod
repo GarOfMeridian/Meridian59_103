@@ -84,7 +84,7 @@ messages:
       if Send(what,@GetExactHealth) > iStealAmount
       {
          Send(what,@LoseHealth,#amount=iStealAmount,#precision=TRUE);
-         Send(who,@GainHealth,#amount=iStealAmount,#precision=TRUE);
+         Send(who,@GainHealthNormal,#amount=iStealAmount,#precision=TRUE);
 
          if IsClass(who,&User)
          {

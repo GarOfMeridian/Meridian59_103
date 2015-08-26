@@ -84,7 +84,7 @@ messages:
       if Send(what,@GetMana) > iStealAmount
       {
          Send(what,@LoseMana,#amount=iStealAmount);
-         Send(who,@GainMana,#amount=iStealAmount);
+         Send(who,@GainMana,#amount=iStealAmount,#bRespectMax=TRUE);
 
          if IsClass(who,&User)
          {
