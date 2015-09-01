@@ -22,7 +22,12 @@ resources:
       "Surrounds the caster with a powerful field which deflects "
       "damage from extreme blows.  "
       "Requires two blue dragon scales to cast."
-   
+   gort_enchantment_rsc = \
+      "\n\nYour current %s enchantment adds 1-%i armor or reduces non-magical "
+      "damage to 15, partially magical damage to 20, and fully magical damage "
+      "to 25.  Only the better of these two effects applies.  Armor of Gort "
+      "modifies damage received before any other armor or spells."
+
    ArmorOfGort_already_enchanted_rsc = "You already have the Armor of Gort."
 
    ArmorOfGort_on_rsc = \
@@ -65,6 +70,8 @@ classvars:
    viDefensive = TRUE
    
    viResistanceType = ATCK_WEAP_ALL
+   
+   viPercentManaReserved = 20
 
 properties:
 
@@ -91,29 +98,51 @@ messages:
 
    GetStateValue(who=$,iSpellPower=0,Target=$)
    {
+      local iArmorSystem;
+
       Send(Target,@AddDefenseModifier,#what=self);
-      
-      if Send(Send(SYS,@GetSettings),@GetDirectArmorEnabled)
+
+      iArmorSystem = Send(Send(SYS,@GetExpansionSettings,
+                          #find_class=&EquipmentSettings),
+                          @GetArmorSystem);
+
+      if iArmorSystem = ARMOR_SYSTEM_CLASSIC
       {
          return iSpellPower;
       }
 
-      return Send(self,@GetResistanceStrength,#iSpellPower=iSpellPower);
+      propagate;
    }
 
    GetResistanceStrength(iSpellpower=0)
    {
+      local iArmorSystem;
+
+      iArmorSystem = Send(Send(SYS,@GetExpansionSettings,
+                          #find_class=&EquipmentSettings),
+                          @GetArmorSystem);
+
+      if iArmorSystem = ARMOR_SYSTEM_CLASSIC
+      {
+         return 0;
+      }
+
       %% Strength varies from 2 to 10
       return bound((iSpellPower+1)/10,2,10);
    }
 
    PriorityModifyDefenseDamage(who=$,what=$,damage=$,atype=0,aspell =0)
    {
-      local iSpellPower, iAbsorbed, iMax, iFinalDamage, iFinalAbsorbed;
+      local iSpellPower, iAbsorbed, iMax, iFinalDamage, iFinalAbsorbed,
+            iArmorSystem;
+
+      iArmorSystem = Send(Send(SYS,@GetExpansionSettings,
+                          #find_class=&EquipmentSettings),
+                          @GetArmorSystem);
 
       iFinalDamage = damage;
       iFinalAbsorbed = 0;
-      if Send(Send(SYS,@GetSettings),@GetDirectArmorEnabled)
+      if iArmorSystem = ARMOR_SYSTEM_CLASSIC
       {
          iSpellPower = Send(who,@GetEnchantedState,#what=self);
          iMax = 1500;
@@ -176,26 +205,17 @@ messages:
 
    EffectDesc(who=$)
    {
-      if Send(Send(SYS,@GetSettings),@GetDirectArmorEnabled)
+      local iArmorSystem;
+
+      iArmorSystem = Send(Send(SYS,@GetExpansionSettings,
+                          #find_class=&EquipmentSettings),
+                          @GetArmorSystem);
+
+      if iArmorSystem = ARMOR_SYSTEM_CLASSIC
       {
-         AppendTempString("\n\n");
-         AppendTempString("Your current ");
-         AppendTempString(Send(self,@GetName));
-         AppendTempString(" enchantment adds 1-");
-         AppendTempString(Send(who,@GetEnchantedState,#what=self)/25);
-         AppendTempString(" armor or reduces non-magical damage to 15, partially magical damage to 20, and fully magical damage to 25. ");
-         AppendTempString(" Only the better of these two effects applies. Armor of Gort modifies damage received before any other armor or spells.");
-      }
-      else
-      {
-         AppendTempString("\n\n");
-         AppendTempString("Your current ");
-         AppendTempString(Send(self,@GetName));
-         AppendTempString(" enchantment adds ");
-         AppendTempString(Send(who,@GetEnchantedState,#what=self));
-         AppendTempString("\% ");
-         AppendTempString(Send(SYS,@GetResistanceName,#type=viResistanceType));
-         AppendTempString(".");
+         AddPacket(4,gort_enchantment_rsc, 4,Send(self,@GetName),
+                   4,Send(who,@GetEnchantedState,#what=self) / 25);
+         propagate;
       }
 
       propagate;

@@ -8,6 +8,7 @@ DEPEND = ..\expansionsettings.bof
 BOFS = desertsettings.bof \
        imbuesettings.bof \
        equipmentsettings.bof \
-       witcherysettings.bof
+       witcherysettings.bof \
+       sorcerysettings.bof
 
 !include $(KODDIR)\kod.mak

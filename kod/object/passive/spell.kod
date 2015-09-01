@@ -361,6 +361,7 @@ messages:
          Send(self,@SendTimeDesc,#who=who);
 
          if piMeditate_ratio = 0
+            OR Send(who,@GetSpellAbility,#spell_num=viSpell_num) = 99
          {
             AddPacket(4,spell_nothing);
          }
@@ -705,6 +706,19 @@ messages:
             }
          }
 
+         % We've failed. Try will surge.
+         if Send(who,@GetSkillAbility,#Skill_num=SKID_WILL_SURGE) > 0
+         {
+            if Send(Send(SYS,@FindSkillByNum,#num=SKID_WILL_SURGE),
+                            @AttemptVigorSacrifice,
+                            #who=who,
+                            #oSpell=self,
+                            #iSpellPower=iSpellPower)
+            {
+               return TRUE;
+            }
+         }
+
          Send(who,@WaveSendUser,#wave_rsc=spell_fail_wav);
          Send(who,@MsgSendUser,#message_rsc=spell_insufficient_magic,
                #parm1=vrName);
@@ -785,6 +799,19 @@ messages:
                AND Send(oRing,@UseCharges,#iCharges=Send(self,@GetRingCharges))
             {
                return TRUE;
+            }
+
+            % We've failed. Let's try blood magic.
+            if Send(who,@GetSkillAbility,#Skill_num=SKID_BLOOD_MAGIC) > 0
+            {
+               if Send(Send(SYS,@FindSkillByNum,#num=SKID_BLOOD_MAGIC),
+                               @AttemptBloodSacrifice,
+                               #who=who,
+                               #oSpell=self,
+                               #iSpellPower=iSpellPower)
+               {
+                  return TRUE;
+               }
             }
 
             Send(who,@WaveSendUser,#wave_rsc=spell_fail_wav);
@@ -1141,7 +1168,7 @@ messages:
             if lFinalTargets = $
                OR length(lFinalTargets) = 0
             {
-               if Send(self,@GetNumSpellTargets) <> 1
+               if Send(self,@GetNumSpellTargets,#who=who) <> 1
                {
                   Send(who,@MsgSendUser,#message_rsc=spell_no_targets,
                        #parm1=Send(self,@GetName));
@@ -1239,7 +1266,7 @@ messages:
          % - Target not in same room
          % - Target is in an Arena and not a valid target
          % - The attacker can't attack the target
-         if (i = who AND Send(self,@GetNumSpellTargets) <> 1)
+         if (i = who AND Send(self,@GetNumSpellTargets,#who=who) <> 1)
             OR NOT IsClass(i,&Battler)
             OR (IsClass(i,&Monster)
                 AND NOT Send(i,@CanMonsterFight,#who=who,#oStroke=self))
@@ -1336,7 +1363,7 @@ messages:
       num = bound(num,5,99);
 
       if lTargets <> $
-         AND Send(self,@GetNumSpellTargets) = 1
+         AND Send(self,@GetNumSpellTargets,#who=who) = 1
          AND IsClass(first(lTargets),&Battler)
          AND NOT Send(Send(who,@GetOwner),@LineOfSight,#obj1=who,
                       #obj2=first(lTargets))
@@ -1372,6 +1399,19 @@ messages:
                return TRUE;
             }
          }
+
+         % We've failed. Let's try force spike.
+         if Send(who,@GetSkillAbility,#Skill_num=SKID_FORCE_SPIKE) > 0
+         {
+            if Send(Send(SYS,@FindSkillByNum,#num=SKID_FORCE_SPIKE),
+                            @AttemptManaSacrifice,
+                            #who=who,
+                            #oSpell=self,
+                            #iSpellPower=iSpellPower)
+            {
+               return TRUE;
+            }
+         }
          
          return FALSE;
       }
@@ -1384,7 +1424,8 @@ messages:
    "half the exertion, and no reagents."
    {
       local num, iAbility, lReagent, cReagentClass, iLists, lItems,
-            iNumNeeded, oUserObject, oRoom, iExertion, iManaCost;
+            iNumNeeded, oUserObject, oRoom, iExertion, iManaCost, 
+            iVigorReduction;
       
       oRoom = Send(who,@GetOwner);	  
       if NOT IsClass(who,&Player)
@@ -1421,6 +1462,18 @@ messages:
 
          % Spell casting requires exertion (which is in 10^-4 units)
          iExertion = viSpellExertion;
+
+         iVigorReduction = 0;
+         if Send(who,@GetSkillAbility,#Skill_num=SKID_EFFICIENCY) > 0
+         {
+            iVigorReduction =
+                Send(Send(SYS,@FindSkillByNum,#num=SKID_EFFICIENCY),
+                              @GetVigorReduction,
+                              #who=who,
+                              #oSpell=self);
+         }
+
+         iExertion = Bound(iExertion-iVigorReduction,0,$);
 
          % Hexes can be cast efficiently via skill
          if piUseHexBehavior
@@ -2166,7 +2219,7 @@ messages:
          return;
       }
         
-      if Send(self,@GetNumSpellTargets) <> 1
+      if Send(self,@GetNumSpellTargets,#who=caster) <> 1
       {
          Send(hearer,@MsgSendUser,#message_rsc=spell_gesture_third,
               #parm1=Send(caster,@GetCapDef),

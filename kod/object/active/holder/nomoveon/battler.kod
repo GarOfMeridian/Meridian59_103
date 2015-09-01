@@ -317,6 +317,20 @@ messages:
             lCurResist = Send(Nth(oEnchantment,2),@ModifyResistance,
                               #resistance_list=lCurResist);
          }
+         else
+         {
+            lCurResist = Send(Nth(oEnchantment,2),
+                                        @ModifyResistance,
+                                        #resistance_list=lCurResist);
+         }
+      }
+
+      foreach oEnchantment in Send(self,@GetReservedSpells)
+      {
+         lCurResist = Send(Nth(oEnchantment,1),
+                                     @ModifyResistance,
+                                     #resistance_list=lCurResist,
+                                     #iState=Nth(oEnchantment,3));
       }
 
       return lCurResist;
@@ -1925,6 +1939,11 @@ messages:
       return Send(Send(SYS,@GetExpansionSettings,
                   #find_class=&WitcherySettings),
                   @GetHexesMax);
+   }
+
+   GetReservedSpells()
+   {
+      return $;
    }
 
 end

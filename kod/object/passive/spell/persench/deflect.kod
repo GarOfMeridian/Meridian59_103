@@ -78,6 +78,8 @@ classvars:
    viFlash = FLASH_GOOD_SELF
 
    vrSucceed_wav = Deflect_sound
+   
+   viPercentManaReserved = 30
 
 properties:
 
