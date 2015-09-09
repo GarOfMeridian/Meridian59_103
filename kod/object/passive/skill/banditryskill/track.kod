@@ -93,9 +93,22 @@ messages:
       return;
    }
    
-   StopTracking(who=$)
+   StopTracking(who=$, oTarget=$)
    {
       local i;
+      
+      if who = $
+         AND oTarget <> $
+      {
+        foreach i in plTracking
+         {
+            if Nth(i,2) = who
+            {
+               plTracking = DelListElem(plTracking, i);
+               return;
+            }
+         }
+      }
       
       foreach i in plTracking
       {

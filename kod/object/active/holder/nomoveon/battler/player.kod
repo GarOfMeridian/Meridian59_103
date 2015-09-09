@@ -1120,6 +1120,15 @@ messages:
    {
       local i;
 
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_TRACK),
+           @StopTracking,#oTarget=self);
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),
+           @StopSneaking,#who=self);
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),
+           @StopHiding,#who=self);
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_SPY),
+           @StopSpying,#who=self);
+
       Send(self,@QuitGuild);
       foreach i in Send(SYS,@GetGuilds)
       {
@@ -12217,6 +12226,15 @@ messages:
       }
 
       poStance = $;
+
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_TRACK),
+           @StopTracking,#oTarget=self);
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_SNEAK),
+           @StopSneaking,#who=self);
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),
+           @StopHiding,#who=self);
+      Send(Send(SYS,@FindSkillByNum,#num=SKID_SPY),
+           @StopSpying,#who=self);
 
       % Reset death costs to 0.
       piDeathCost = 0;

@@ -550,6 +550,16 @@ messages:
    Delete()
    {
       Send(SYS,@SystemUserDelete,#what=self);
+      if ptSneakTimer <> $
+      {
+         DeleteTimer(ptSneakTimer);
+         ptSneakTimer = $;
+      }
+      if ptHideTimer <> $
+      {
+         DeleteTimer(ptHideTimer);
+         ptHideTimer = $;
+      }
 
       propagate;
    }

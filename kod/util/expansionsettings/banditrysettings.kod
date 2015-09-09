@@ -22,12 +22,16 @@ BanditrySettings is ExpansionSettings
 % 5: Track, Backstab, Tight Grip
 % 6: Spy, Reckless Heart
 %
+% LEVEL ONE
 % Awareness informs players of the comings and goings of others.
 %    Awareness only works on those you can attack.
 %    Awareness will not turn you outlaw when used against whites.
+%    Awareness is a utility skill given to all players for free.
+%    (because its functionality can be replicated via cheat)
 % Stab is the dagger basic stroke.
 % Light feet is a stance that reduces vigor consumption of running.
 %
+% LEVEL TWO
 % Perception tells you who is casting what on who in the room.
 %    Perception only works on casters you can attack.
 %    Perception will not turn you outlaw.
@@ -35,30 +39,38 @@ BanditrySettings is ExpansionSettings
 %    Daggers are low damage low range melee piercing weapons whose
 %    main advantage is that they work very well with backstabs
 %    and throwing daggers (throwing daggers use throw/ throwing prof).
-% Swift Hands increases offense by up to 25% for as little as 50% defense loss.
+% Swift Hands is a stance that
+%    increases offense by up to 25% for as little as 50% defense loss.
 %
+% LEVEL THREE
 % Sneak lets you enter rooms without triggering Awareness; & mobs aggro less.
 %    Requires you to walk for four seconds.
+%    You must continue walking to remain sneaking.
 % Throw is the basic stroke for throwing daggers.
 %    Throwing daggers are not your typical ranged weapon. They exist
 %    purely as ammo, and only fire if you would miss a melee swing due to
 %    being out of range. If you are in throwing range, instead
 %    of missing your swing and being forced to wait, you will throw a
 %    dagger instead for a small amount of piercing damage.
+%    Counts as a ranged attack, and will be hampered by winds/sandstorm.
 % Tumble allows you to evade a small percentage of attacks.
 %    Tumbling is at tension with the offense/defense system.
-%    You will avoid the same percentage of attacks (up to ~10%) no
+%    You will avoid the same percentage of successful attacks (up to ~10%) no
 %    matter what else you are doing.
 %    However, tumbling only operates on otherwise successful hits,
 %    so high defense shrinks the amount Tumbling is actually
 %    helping you.
 %    Players and Monsters cannot tumble while held.
 %
+% LEVEL FOUR
 % Hide allows you to eliminate your dot from the minimap.
 %    Requires you to walk for four seconds while sneaking.
+%    You must continue walking to remain sneaking and hidden.
 % Throwing Precision is throwing's proficiency.
-% Heavy Arms increases defense up to 25% at the cost of 50% offense.
+% Heavy Arms is a stance that
+%    increases defense up to 25% at the cost of 50% offense.
 %
+% LEVEL FIVE
 % Track informs you of a specific target's whereabouts when you change
 %    screens, if that target is within 3 rooms and not Hiding.
 %    You must also be able to attack your target.
@@ -67,11 +79,15 @@ BanditrySettings is ExpansionSettings
 %    anyone in guilded zones if you can't attack them,
 %    and anyone in inns or safe zones.
 %    It also does not track to / in guild halls.
+%    "Mules" will not be able to Track under pretty much
+%    any circumstances. (must be moving, not angeled, attackable etc)
 % Backstab allows you to deal a tremendous guaranteed hit on a target
-%    that has 95% or more of its health. Requires you to be sneaking
-%    and hiding.
+%    that currently has 95% or more of its health. Requires you to be sneaking
+%    and hiding. The hit can only be evaded by Tumbling, and ignores
+%    armor and resistances. (absolute damage)
 % Tight Grip allows you to resist Disarms.
 %
+% LEVEL SIX
 % Reckless Heart is a stance that increases all damage you deal by 20%,
 %    while also increasing the damage you take by 20%.
 % Spy allows you to step into rooms invisibly for a few seconds. Walls
