@@ -846,5 +846,10 @@ messages:
       return time;
    }
 
+   TryDeflect(caster=$,victim=$,oSpell=$,power=0,source=$)
+   {
+      return FALSE;
+   }
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -209,11 +209,6 @@ messages:
    % They are included here in battler so both user and mobiles can enjoy
    %  the effect.
 
-   TryDeflect()
-   {
-      return FALSE;
-   }
-
    Delete()
    {
       local i;
