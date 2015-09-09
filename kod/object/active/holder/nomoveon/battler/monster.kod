@@ -5643,7 +5643,7 @@ messages:
 
    GetAttackTime()
    {
-      local iChilled, iChilledMultiple;
+      local iChilled, iChilledMultiple, iChilledTotal;
 
       if Send(Send(SYS,@GetExpansionSettings,
                #find_class=&ElementalEffectsSettings),
