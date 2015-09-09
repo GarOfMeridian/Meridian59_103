@@ -203,6 +203,11 @@ properties:
    % Negative values mean more vulnerable to hexes, positive values resist
    piHexResistance = 0
 
+   % Elemental status effects. Each element is [value, type]
+   % Timer removes a portion of status effect every period
+   plStatusEffects = $
+   ptStatusEffectTimer = $
+
 messages:
 
    % The first lump of code here deals with resistances and immunities/etc.
@@ -249,6 +254,12 @@ messages:
          }
          plApparitionList = $;
       }
+      
+      if ptStatusEffectTimer <> $
+      {
+         DeleteTimer(ptStatusEffectTimer);
+         ptStatusEffectTimer = $;
+      }
 
       propagate;
    }
@@ -290,7 +301,8 @@ messages:
    GetCurrentResistances()
    "Spells and items can change resistances temporarily."
    {
-      local oObjectAttribute, lCurResist, oEquipment, oEnchantment;
+      local oObjectAttribute, lCurResist, oEquipment, oEnchantment,
+            iHumbled, iHumbledDivisor, i;
 
       lCurResist = Send(SYS,@ListCopy,#source=Send(self,@GetBaseResistances));
 
@@ -335,11 +347,33 @@ messages:
                                      #iState=Nth(oEnchantment,3));
       }
 
+      if Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&ElementalEffectsSettings),
+                  @GetElementalEffectsActive)
+      {
+         iHumbled = Send(self,@GetStatusEffect,#type=STATUS_HUMBLED);
+         if iHumbled > 0
+         {
+            iHumbledDivisor = Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&ElementalEffectsSettings),
+                  @GetElementalMultiple,
+                  #type = STATUS_HUMBLED);
+         
+            foreach i in lCurResist
+            {
+               if Nth(i,2) > 0
+               {
+                  SetNth(i,2,bound(Nth(i,2) - (iHumbled/iHumbledDivisor),0,$));
+               }
+            }
+         }
+      }
+
       return lCurResist;
    }
 
    GetEquippedItems()
-   "Support for items equipped by players, but also some monsters, such as troops."
+   "Support foritems equipped by players, but also some monsters, such as troops."
    {
       return $;
    }
@@ -2023,6 +2057,161 @@ messages:
       }
       
       return rTumbleSoundFour;
+   }
+
+   AddStatusEffect(value=10,type=STATUS_SHOCKED)
+   {
+      local i;
+      
+      if ptStatusEffectTimer = $
+      {
+         ptStatusEffectTimer = CreateTimer(self,@StatusEffectTimer,
+                                           Send(Send(SYS,@GetExpansionSettings,
+                                        #find_class=&ElementalEffectsSettings),
+                                               @GetStatusEffectReductionTime));
+      }
+
+      if type=STATUS_SHOCKED
+         AND IsClass(self,&Player)
+      {
+         Post(self,@DrawDefense);
+      }
+      
+      if type=STATUS_CORRODE
+         AND IsClass(self,&Player)
+      {
+         Post(self,@DrawArmor);
+      }
+      
+      if type=STATUS_HUMBLED
+         AND IsClass(self,&Player)
+      {
+         Post(self,@DrawResistances);
+      }
+      
+      foreach i in plStatusEffects
+      {
+         if Nth(i,2) = type
+         {
+            SetNth(i,1,Nth(i,1)+value);
+            return;
+         }
+      }
+
+      plStatusEffects = Cons([value,type],plStatusEffects);
+      return;
+   }
+   
+   GetStatusEffect(type=STATUS_SHOCKED)
+   {
+      local i;
+      
+      foreach i in plStatusEffects
+      {
+         if Nth(i,2) = type
+         {
+            return Nth(i,1);
+         }
+      }
+      return 0;
+   }
+   
+   ClearStatusEffect(type=STATUS_SHOCKED)
+   {
+      local i;
+      
+      foreach i in plStatusEffects
+      {
+         if Nth(i,2) = type
+         {
+            SetNth(i,1,0);
+            plStatusEffects = DelListElem(plStatusEffects,i);
+         }
+      }
+      
+      if plStatusEffects = $
+      {
+         if ptStatusEffectTimer <> $
+         {
+            DeleteTimer(ptStatusEffectTimer);
+            ptStatusEffectTimer = $;
+         }
+      }
+      
+      return;
+   }
+   
+   ClearAllStatusEffects()
+   {
+      plStatusEffects = $;
+      if ptStatusEffectTimer <> $
+      {
+         DeleteTimer(ptStatusEffectTimer);
+         ptStatusEffectTimer = $;
+      }
+      return;
+   }
+   
+   StatusEffectTimer(timer=$)
+   {
+      local i, iBurningDamage;
+      
+      ptStatusEffectTimer = $;
+      
+      foreach i in plStatusEffects
+      {
+         if Nth(i,2) = STATUS_SHOCKED
+            AND IsClass(self,&Player)
+         {
+            Post(self,@DrawDefense);
+         }
+         if Nth(i,2) = STATUS_CORRODE
+            AND IsClass(self,&Player)
+         {
+            Post(self,@DrawArmor);
+         }
+         if Nth(i,2) = STATUS_HUMBLED
+            AND IsClass(self,&Player)
+         {
+            Post(self,@DrawResistances);
+         }
+
+         if Nth(i,2) = STATUS_BURNING
+         {
+            iBurningDamage = (Nth(i,1) / Send(Send(SYS,@GetExpansionSettings,
+                                        #find_class=&ElementalEffectsSettings),
+                                               @GetElementalMultiple,
+                                               #type=STATUS_BURNING));
+            SetNth(i,1,0);
+            if iBurningDamage >= 1
+            {
+               Send(self,@AssessDamage,#what=self,
+                              #damage=iBurningDamage,
+                              #aspell=-ATCK_SPELL_FIRE);
+            }
+         }
+         else
+         {
+            SetNth(i,1,Nth(i,1) - Send(Send(SYS,@GetExpansionSettings,
+                                        #find_class=&ElementalEffectsSettings),
+                                             @GetStatusEffectReductionAmount));
+         }
+
+         if Nth(i,1) <= 0
+         {
+            plStatusEffects = DelListElem(plStatusEffects,i);
+         }
+      }
+      
+      if plStatusEffects <> $
+      {
+         ptStatusEffectTimer = CreateTimer(self,@StatusEffectTimer,
+                                           Send(Send(SYS,@GetExpansionSettings,
+                                        #find_class=&ElementalEffectsSettings),
+                                               @GetStatusEffectReductionTime));
+      }
+      
+      return;
    }
 
 end

@@ -2041,7 +2041,7 @@ messages:
    "This returns the battler's ability to avoid being hit.  Ranges from "
    "1 to 2000."
    {
-      local iDefense, i;
+      local iDefense, i, iShocked;
 
       if piDefense = $
       {
@@ -2057,6 +2057,18 @@ messages:
          iDefense = Send(Nth(i,2),@ModifyDefensePower,
                                  #who=self,#what=what,#defense_power=iDefense,
                                  #state=Nth(i,3));
+      }
+
+      if Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&ElementalEffectsSettings),
+                  @GetElementalEffectsActive)
+      {
+         % Check for Shocked status effect, which lowers defense.
+         iShocked = Send(self,@GetStatusEffect,#type=STATUS_SHOCKED);
+         iDefense = iDefense - (iShocked * Send(Send(SYS,@GetExpansionSettings,
+                                        #find_class=&ElementalEffectsSettings),
+                                                         @GetElementalMultiple,
+                                                        #type=STATUS_SHOCKED));
       }
 
       return Bound(iDefense,1,2000);
@@ -2144,7 +2156,8 @@ messages:
       absolute=FALSE,precision=FALSE)
    {
       local iDamage, iResist, iPercentClass, i, each_obj,
-            bAttackerEmpowered;
+            bAttackerEmpowered, iCorrodeReduction, iCorrode,
+            iCorrodeMultiple;
 
       % Check for stat steals
       foreach i in Send(self,@GetEnchantmentsByClass,#enchClass=&DrainHex)
@@ -2201,6 +2214,34 @@ messages:
       else
       {
          iDamage = damage;
+      }
+
+      if Send(Send(SYS,@GetExpansionSettings,
+               #find_class=&ElementalEffectsSettings),
+               @GetElementalEffectsActive)
+      {
+         iCorrode = Send(self,@GetStatusEffect,#type=STATUS_CORRODE);
+         if iCorrode > 0
+         {
+            iCorrodeMultiple = Send(Send(SYS,@GetExpansionSettings,
+               #find_class=&ElementalEffectsSettings),
+               @GetElementalMultiple,
+               #type = STATUS_CORRODE);
+        
+            iCorrodeReduction = (iCorrode/iCorrodeMultiple);
+               
+            if aspell = 0
+            {
+               iDamage = bound(iDamage + iCorrodeReduction*100,1,$);
+            }
+            else
+            {
+               if atype <> 0
+               {
+                  iDamage = bound(iDamage + iCorrodeReduction/2*100,1,$);
+               }
+            }
+         }
       }
 
       if IsClass(what,&Player)
@@ -4972,6 +5013,8 @@ messages:
    GainHealthNormal(amount = $, precision = FALSE)
    "for when holy touch is cast on a good monster"
    {
+      local iMantled, iMantledDivisor;
+
       if amount = $
       {
          return;
@@ -4980,6 +5023,21 @@ messages:
       if NOT precision
       {
          amount = amount * 100;
+      }
+
+      if Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&ElementalEffectsSettings),
+                  @GetElementalEffectsActive)
+      {
+         iMantled = Send(self,@GetStatusEffect,#type=STATUS_MANTLED);
+         if iMantled > 0
+         {
+            iMantledDivisor = Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&ElementalEffectsSettings),
+                  @GetElementalMultiple,
+                  #type = STATUS_MANTLED);
+            amount = amount - (iMantled/iMantledDivisor)*100;
+         }
       }
 
       piHit_points = Bound(piHit_points+amount,1,piMax_hit_points*100);
@@ -5585,6 +5643,27 @@ messages:
 
    GetAttackTime()
    {
+      local iChilled, iChilledMultiple;
+
+      if Send(Send(SYS,@GetExpansionSettings,
+               #find_class=&ElementalEffectsSettings),
+               @GetElementalEffectsActive)
+      {
+         iChilled = Send(self,@GetStatusEffect,#type=STATUS_CHILLED);
+         if iChilled > 0
+         {
+            iChilledMultiple = Send(Send(SYS,@GetExpansionSettings,
+               #find_class=&ElementalEffectsSettings),
+               @GetElementalMultiple,
+               #type = STATUS_CHILLED);
+ 
+            iChilledTotal = iChilled * iChilledMultiple;
+
+            return Send(self,@Fuzzy,#num=MOB_ATTACK_TIMER_WAIT)
+                + 3500-70*(3*viDifficulty+viSpeed)+iChilledTotal;
+         }
+      }
+
       return Send(self,@Fuzzy,#num=MOB_ATTACK_TIMER_WAIT)
              + 3500-70*(3*viDifficulty+viSpeed);
    }

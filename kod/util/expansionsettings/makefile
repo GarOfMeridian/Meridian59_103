@@ -10,6 +10,7 @@ BOFS = desertsettings.bof \
        equipmentsettings.bof \
        witcherysettings.bof \
        sorcerysettings.bof \
-       banditrysettings.bof
+       banditrysettings.bof \
+       elementaleffectssettings.bof
 
 !include $(KODDIR)\kod.mak

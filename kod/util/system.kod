@@ -3019,6 +3019,7 @@ messages:
       poExpansionSettings = Cons(Create(&WitcherySettings),poExpansionSettings);
       poExpansionSettings = Cons(Create(&SorcerySettings),poExpansionSettings);
       poExpansionSettings = Cons(Create(&BanditrySettings),poExpansionSettings);
+      poExpansionSettings = Cons(Create(&ElementalEffectsSettings),poExpansionSettings);
       return;
    }
 
