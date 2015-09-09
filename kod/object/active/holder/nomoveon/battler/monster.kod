@@ -2305,6 +2305,30 @@ messages:
               #target=self,#color_rsc=monster_color_blue_rsc);
       }
 
+      if Send(Send(SYS,@GetExpansionSettings,
+                  #find_class=&ElementalEffectsSettings),
+                  @GetElementalEffectsActive)
+      {
+         % Apply possible elemental status effects
+         if atype = 0
+         {
+            if aspell <> 0
+            {
+               Send(self,@ApplyElementalStatusEffects,#damage=iDamage/100,
+                         #aspell=aspell);
+            }
+         }
+         else
+         {
+            % Apply only half the effects from partially magical attacks
+            if aspell <> 0
+            {
+               Send(self,@ApplyElementalStatusEffects,#damage=(iDamage/100/2),
+                         #aspell=aspell);
+            }
+         }
+      }
+
       return iDamage;
    }
 

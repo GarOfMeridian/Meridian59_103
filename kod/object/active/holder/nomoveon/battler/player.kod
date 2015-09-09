@@ -1687,20 +1687,6 @@ messages:
       return TRUE;
    }
 
-   TryDeflect(what = $,caster=$)
-   {
-      local oDeflect;
-
-      oDeflect = Send(SYS,@FindSpellByNum,#Num=SID_DEFLECT);
-      if Send(self,@IsEnchanted,#what=oDeflect)
-      {
-         return Send(oDeflect,@TryDeflect,#caster=caster,#victim=self,
-                     #oSpell=what);
-      }
-
-      return FALSE;
-   }
-
    NewOwner(what = $)
    {
       local iBasePhaseTime;
@@ -6013,35 +5999,6 @@ messages:
       }
 
       return damage;
-   }
-
-   ApplyElementalStatusEffects(damage=1,aspell=0)
-   {
-      if aspell & ATCK_SPELL_SHOCK
-      {
-         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_SHOCKED);
-      }
-      if aspell & ATCK_SPELL_COLD
-      {
-         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_CHILLED);
-      }
-      if aspell & ATCK_SPELL_FIRE
-      {
-         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_BURNING);
-      }
-      if aspell & ATCK_SPELL_ACID
-      {
-         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_CORRODE);
-      }
-      if aspell & ATCK_SPELL_HOLY
-      {
-         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_HUMBLED);
-      }
-      if aspell & ATCK_SPELL_UNHOLY
-      {
-         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_MANTLED);
-      }
-      return;
    }
  
    % This message kicks in when damage is done to the opponent.

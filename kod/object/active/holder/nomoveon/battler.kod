@@ -2059,6 +2059,35 @@ messages:
       return rTumbleSoundFour;
    }
 
+   ApplyElementalStatusEffects(damage=1,aspell=0)
+   {
+      if aspell & ATCK_SPELL_SHOCK
+      {
+         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_SHOCKED);
+      }
+      if aspell & ATCK_SPELL_COLD
+      {
+         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_CHILLED);
+      }
+      if aspell & ATCK_SPELL_FIRE
+      {
+         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_BURNING);
+      }
+      if aspell & ATCK_SPELL_ACID
+      {
+         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_CORRODE);
+      }
+      if aspell & ATCK_SPELL_HOLY
+      {
+         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_HUMBLED);
+      }
+      if aspell & ATCK_SPELL_UNHOLY
+      {
+         Send(self,@AddStatusEffect,#value=damage,#type=STATUS_MANTLED);
+      }
+      return;
+   }
+
    AddStatusEffect(value=10,type=STATUS_SHOCKED)
    {
       local i;
@@ -2187,7 +2216,7 @@ messages:
             {
                Send(self,@AssessDamage,#what=self,
                               #damage=iBurningDamage,
-                              #aspell=-ATCK_SPELL_FIRE);
+                              #aspell=ATCK_SPELL_FIRE);
             }
          }
          else

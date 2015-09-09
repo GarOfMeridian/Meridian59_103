@@ -27,7 +27,7 @@ properties:
    piFine_col = 0
 
    % List of enchantments applied by radius spells.
-   % Each element is [song object, spellpower, caster]
+   % Each element is [song object, spellpower, caster, room]
    % Support for players, monsters, and items
    plRadiusEnchantments = $
 
