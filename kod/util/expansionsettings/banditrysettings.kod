@@ -1,0 +1,60 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BanditrySettings is ExpansionSettings
+
+% Banditry is a school of informational skills, rogue weapons, and stances.
+%   Stances are unique modifications to personal combat that make tradeoffs.
+%
+%
+
+% 1: Awareness, Stab, Light Feet
+% 2: Perception, Dagger Wielding, Swift Hands
+% 3: Sneak, Throw, Tumble
+% 4: Hide, Throwing Precision, Heavy Arms
+% 5: Track, Backstab, Tight Grip
+% 6: Spy, Reckless Heart
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+classvars:
+
+properties:
+
+   % Sorcery does not start available. It must be made active via quests 
+   %    done by players.
+   pbSorceryActive = FALSE
+   
+   % If this is set to FALSE, Sorcery school is turned off for this server.
+   pbSorceryAccessible = TRUE
+
+messages:
+
+   Constructor(server_num = $)
+   {
+      return;
+   }
+
+   GetSorceryActive()
+   {
+      return bound(pbSorceryActive,0,1);
+   }
+   
+   GetSorceryAccessible()
+   {
+      return bound(pbSorceryAccessible,0,1);
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
