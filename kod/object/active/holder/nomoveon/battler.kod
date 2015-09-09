@@ -328,11 +328,6 @@ messages:
          }
          else
          {
-            lCurResist = Send(Nth(oEnchantment,2),@ModifyResistance,
-                              #resistance_list=lCurResist);
-         }
-         else
-         {
             lCurResist = Send(Nth(oEnchantment,2),
                                         @ModifyResistance,
                                         #resistance_list=lCurResist);
