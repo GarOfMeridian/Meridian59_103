@@ -110,6 +110,7 @@ messages:
       if plSneaking <> $
          AND FindListElem(plSneaking,who) <> 0
       {
+         Send(who,@ClearAccruedSneak);
          plSneaking = DelListElem(plSneaking,who);
          Send(who,@MsgSendUser,#message_rsc=sneak_stop);
          Send(who,@ShowRemoveEnchantment,#what=self,#type=ENCHANTMENT_PLAYER);

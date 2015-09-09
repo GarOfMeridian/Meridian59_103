@@ -82,6 +82,12 @@ messages:
       {
          return FALSE;
       }
+
+      if NOT Send(who,@AllowPlayerAttack,#victim=oTarget,
+                        #report=FALSE,#actual=FALSE)
+      {
+         return FALSE;
+      }
       
       oSneak = Send(SYS,@FindSkillByNum,#num=SKID_SNEAK);
       if Send(oSneak,@IsSneaking,#who=oTarget)
@@ -153,6 +159,10 @@ messages:
                }
             }
          }
+      }
+      else
+      {
+         return FALSE;
       }
 
       propagate;

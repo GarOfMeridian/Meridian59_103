@@ -847,11 +847,13 @@ messages:
              AND Send(self,@GetSkillAbility,#skill_num=SKID_BACKSTAB) > 0
              AND Send(Send(SYS,@FindSkillByNum,#num=SKID_BACKSTAB),@TryAutomaticHit,#who=self,#what=what))
       {
-         If Send(Send(SYS,@FindSkillByNum,#num=SKID_TUMBLE),@AttemptTumble,#who=what,#what=self)
+         if Send(Send(SYS,@FindSkillByNum,#num=SKID_TUMBLE),
+            @AttemptTumble,#who=what,#what=self)
          {
             if IsClass(self,&Player)
             {
-               Send(poOwner,@SomethingWaveRoom,#what=what,#wave_rsc=Send(self,@GetTumbleSound));
+               Send(poOwner,@SomethingWaveRoom,#what=what,
+                  #wave_rsc=Send(self,@GetTumbleSound));
             }
             return FALSE;
          }
@@ -893,7 +895,8 @@ messages:
 
          iDamage = Send(what,@AssessDamage,#what=self,#damage=iDamage,
             #atype=Send(self,@GetDamageType,#stroke_obj=stroke_obj),
-            #aspell=Send(self,@GetSpellType,#stroke_obj=stroke_obj),
+            #aspell=Send(self,@GetSpellType,#stroke_obj=stroke_obj,
+               #damaging_now=TRUE),
             #scalefactor=iScalefactor,#precision=TRUE,
             #absolute=bDoingBackstab);
 

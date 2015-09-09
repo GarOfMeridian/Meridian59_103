@@ -1981,7 +1981,6 @@
    SKID_HEAVY_ARMS = 517
    SKID_RECKLESS_HEART = 518
    SKID_FOCUSED_MIND = 519
-   SKID_CHARGED_CLUTCH = 520
 
    %%% Unique spell constants
 

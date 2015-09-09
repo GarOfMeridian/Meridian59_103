@@ -114,6 +114,7 @@ messages:
       if plHiding <> $
          AND FindListElem(plHiding,who) <> 0
       {
+         Send(who,@ClearAccruedHide);
          plHiding = DelListElem(plHiding,who);
          Send(who,@MsgSendUser,#message_rsc=hide_stop);
          if Send(who,@GetOwner) <> $

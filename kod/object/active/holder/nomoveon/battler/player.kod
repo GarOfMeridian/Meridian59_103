@@ -5537,7 +5537,8 @@ messages:
          oWeapon = use_weapon;
       }
 
-      if Send(self,@GetSkillAbility,#Skill_num=SKID_CHARGED_CLUTCH) > 0
+      if poStance <> $
+         AND IsClass(poStance,&ChargedClutch)
          AND oWeapon <> $
          AND IsClass(oWeapon,&Weapon)
          AND NOT IsClass(oWeapon,&TouchAttackSpell)
@@ -5548,7 +5549,7 @@ messages:
          
          if oTouchSpell <> $
          {
-            return Send(Send(SYS,@FindSkillByNum,#num=SKID_CHARGED_CLUTCH),
+            return Send(poStance,
                         @ModifyWeaponSpellType,
                         #who=self,
                         #oWeapon=oWeapon,
@@ -5561,13 +5562,6 @@ messages:
       {
          % No weapon means we are punching, no magical damage
          return 0;
-      }
-
-      if Send(self,@GetStance) <> $
-         AND IsClass(Send(self,@GetStance),&ChargedClutch)
-         AND NOT IsClass(oWeapon,&RangedWeapon)
-      {
-         return Send(Send(self,@GetStance),@GetSpellType,#who=self);
       }
 
       return Send(oWeapon,@GetAttackSpell);
@@ -8186,8 +8180,8 @@ messages:
 
       lOldList = plSchools;
 
-      % 11 elements right now.
-      plSchools = [ 0,0,0,0,0,0,0,0,0,0,0 ];
+      % 15 elements right now.
+      plSchools = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
 
       foreach i in plSpells
       {
@@ -15621,7 +15615,10 @@ messages:
 
    ClearStance()
    {
-      Send(Send(self,@GetStance),@EndStance,#who=self);
+      if poStance <> $
+      {
+         Send(Send(self,@GetStance),@EndStance,#who=self);
+      }
       poStance = $;
       Post(self,@DrawOffense);
       Post(self,@DrawDefense);

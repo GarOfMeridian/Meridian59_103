@@ -22,8 +22,6 @@ resources:
    Dagger_desc_rsc = \
    "This elegant blade looks like it would fit snugly between a pair of shoulder blades."
 
-   dagger_ammo_name = "throwing dagger"
-
 classvars:
 
    vrName = Dagger_name_rsc

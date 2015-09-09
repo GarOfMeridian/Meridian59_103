@@ -117,9 +117,9 @@ messages:
       if weapon_used = $
          OR IsClass(weapon_used,&Dagger)
       {
-         return 8;
+         return 8*64;
       }
-      return 5;
+      return 5*64;
    }
 
    FindLikelyAmmo(who=$,report=FALSE)
@@ -241,6 +241,8 @@ messages:
       
       damage = send(self,@DamageFactors,#damage=damage,#who=who,
          #weapon_used=daggers);
+
+      damage = damage * 100;
 
       return bound(damage,1,$);
    }

@@ -62,10 +62,22 @@ messages:
       if IsClass(who,&Monster)
       {
          chance = Send(who,@GetTumbling);
+         
+         % No tumbling if you aren't moving.
+         if Send(who,@IsEnchanted,#byClass=&Hold)
+         {
+            return FALSE;
+         }
       }
 
       if IsClass(who,&Player)
       {
+         % No tumbling if you aren't moving.
+         if Send(who,@CheckPlayerFlag,#flag=PFLAG_NO_MOVE)
+         {
+            return FALSE;
+         }
+
          % This skill can be used by both players and monsters.
          iAgility = Send(who,@GetAgility);
          iAbility = Send(who,@GetSkillAbility,#skill_num=viSkill_num);

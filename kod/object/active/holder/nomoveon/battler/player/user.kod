@@ -2743,6 +2743,11 @@ messages:
          {
             return MM_NONE;
          }
+      
+         if Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding,#who=what)
+         {
+            return MM_NONE;
+         }
 
          oIllusion = Send(what,@GetIllusionForm);
 
@@ -3836,6 +3841,28 @@ messages:
          piAccruedHide = 0;
          Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@DoSkill,#who=self);
       }
+      return;
+   }
+   
+   ClearAccruedSneak()
+   {
+      if ptSneakTimer <> $
+      {
+         DeleteTimer(ptSneakTimer);
+      }
+      ptSneakTimer = $;
+      piAccruedSneak = 0;
+      return;
+   }
+   
+   ClearAccruedHide()
+   {
+      if ptHideTimer <> $
+      {
+         DeleteTimer(ptHideTimer);
+      }
+      ptHideTimer = $;
+      piAccruedHide = 0;
       return;
    }
 
@@ -9439,11 +9466,6 @@ messages:
       if NOT (piFlags & PFLAG_PKILL_ENABLE)
       {
          iFlags = (iFlags & ~MOVEON_NO);
-      }
-      
-      if Send(Send(SYS,@FindSkillByNum,#num=SKID_HIDE),@IsHiding,#who=self)
-      {
-         iFlags = (iFlags & ~BATTLER_YES);
       }
 
       return iFlags;

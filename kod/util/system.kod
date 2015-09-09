@@ -3685,7 +3685,7 @@ messages:
        Send(self,@CreateOneSKillIfNew,#num=SKID_ENERGY,#class=&Energy);
        Send(self,@CreateOneSKillIfNew,#num=SKID_EFFICIENCY,#class=&Efficiency);
        Send(self,@CreateOneSKillIfNew,#num=SKID_INTENSITY,#class=&Intensity);
-       Send(self,@CreateOneSKillIfNew,#num=SKID_LETHALITY,#class=&Lethality);+       
+       Send(self,@CreateOneSKillIfNew,#num=SKID_LETHALITY,#class=&Lethality);   
 
        Send(self,@CreateOneSKillIfNew,#num=SKID_AWARENESS,#class=&Awareness);
        Send(self,@CreateOneSKillIfNew,#num=SKID_LIGHT_FEET,#class=&LightFeet);

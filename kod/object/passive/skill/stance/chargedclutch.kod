@@ -20,7 +20,7 @@ resources:
    ChargedClutch_name_rsc = "charged clutch"
    ChargedClutch_icon_rsc = ienchant.bgf
    ChargedClutch_desc_rsc = \
-      "An advanced stance that allows a mage with charged hands to imbue "
+      "A basic stance that allows a mage with charged hands to imbue "
       "his weapon strikes with elemental energies."
    
    ChargedClutch_begin = "You send mana coursing through your hands."

@@ -81,6 +81,12 @@ messages:
          propagate;
       }
 
+      if NOT Send(who,@AllowPlayerAttack,#victim=caster,
+                        #report=FALSE,#actual=FALSE)
+      {
+         return FALSE;
+      }
+
       if chance > Random(1,100)
       {
          if caster <> who

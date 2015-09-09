@@ -143,7 +143,25 @@ messages:
    {
       local chance, iStat, iAbility, iRID, oRoom, oRoomLayerTwo,
          iRIDLayerTwo, oRoomLayerThree, iRIDLayerThree;
-      
+
+      if Send(who,@GetOwner) <> $
+         AND IsClass(Send(who,@GetOwner),&GuildHall)
+      {
+         return FALSE;
+      }
+
+      if Send(oTarget,@GetOwner) <> $
+         AND IsClass(Send(oTarget,@GetOwner),&GuildHall)
+      {
+         return FALSE;
+      }
+
+      if NOT Send(who,@AllowPlayerAttack,#victim=oTarget,
+                        #report=FALSE,#actual=FALSE)
+      {
+         return FALSE;
+      }
+
       iStat = Send(self,@GetRequisiteStat,#who=who);
       iAbility = Send(who,@GetSkillAbility,#skill_num=viSkill_num);
       
