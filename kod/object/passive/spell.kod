@@ -802,7 +802,9 @@ messages:
             }
 
             % We've failed. Let's try blood magic.
-            if Send(who,@GetSkillAbility,#Skill_num=SKID_BLOOD_MAGIC) > 0
+            if NOT IsClass(self,&MultiCastSpell)
+               AND NOT IsClass(self,&TeleportationSpell)
+               AND Send(who,@GetSkillAbility,#Skill_num=SKID_BLOOD_MAGIC) > 0
             {
                if Send(Send(SYS,@FindSkillByNum,#num=SKID_BLOOD_MAGIC),
                                @AttemptBloodSacrifice,
