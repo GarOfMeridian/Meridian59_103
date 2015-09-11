@@ -80,7 +80,7 @@ messages:
       if iArmorSystem = ARMOR_SYSTEM_PERCENTAGE
       {
          return [ [ATCK_WEAP_ALL,5],
-                  [-ATCK_SPELL_ALL,5]
+                  [-ATCK_SPELL_ALL,-5]
                 ];
       }
 
