@@ -845,5 +845,15 @@ messages:
       return time;
    }
 
+   SuccessfulCastTrigger(who=$,state=$,oSpell=$,iSpellPower=0)
+   {
+      return;
+   }
+
+   ReqCommunication(who=$,state=$)
+   {
+      return TRUE;
+   }
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

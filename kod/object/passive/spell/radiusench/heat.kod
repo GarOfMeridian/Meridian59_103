@@ -1,0 +1,164 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Heat is RadiusEnchantment
+
+constants:
+
+   include blakston.khd  
+
+resources:
+
+   include heat.lkod
+
+   heat_name_rsc = "heat"
+   heat_icon_rsc = iheat.bgf
+   heat_desc_rsc = \
+      "Fills the room with the earth magic of Faren, heating "
+      "all armor to a primordial molten state and searing the "
+      "flesh of those who wear it.  "
+      "Requires red mushroom and firesand to cast."
+
+   heat_kills_you = "You expire from burns caused by your armor."
+   heat_kills_him = "%s expires from armor-induced burns."
+
+   heat_hurts_you = \
+      "You offer a yelp of pain as your red-hot armor presses "
+      "against your skin."
+
+   Heat_cast = \
+      "You summon up Faren earth magics!"
+   Heat_starts = \
+      "%s summons up Faren earth magic!"
+   Heat_ends = "The armor-heating field dissipates."
+   Heat_caster_ends = "Your armor-heating field dissipates."
+   Heat_caster_enter = \
+      "Heat begins to radiate around you, bringing all armor to molten state."
+   Heat_enter = \
+      "Heat radiates from your armor, bringing it to a molten state."
+   Heat_leave = "The armor-heating field ceases to affect you."
+
+   heat_sound = fheat.wav
+
+classvars:
+
+   radius_ench_cast = Heat_cast
+   radius_ench_starts = Heat_starts
+   radius_ench_ends = Heat_ends
+   radius_ench_caster_ends = Heat_caster_ends
+   radius_ench_caster_enter = Heat_caster_enter
+   radius_ench_enter = Heat_enter
+   radius_ench_leave = Heat_leave
+
+   viSpell_num = SID_HEAT
+
+   vrName = heat_name_rsc
+   vrIcon = heat_icon_rsc
+   vrDesc = heat_desc_rsc
+
+   viSchool = SS_FAREN
+   viSpell_level = 3
+   viMana = 8
+   viChance_To_Increase = 35
+   viMeditate_ratio = 20
+   viPeriodicEffect = TRUE
+
+   vrSucceed_wav = heat_sound
+
+   viAffectsGuildmates = TRUE
+   viAffectsEnemies = TRUE
+
+   viCasterPersist = TRUE
+   
+properties:
+
+   piOldAreaEnchStyle = TRUE
+
+messages:
+
+   ResetReagents()
+   {
+      plReagents = $;
+      plReagents = Cons([&RedMushroom,1],plReagents);
+      plReagents = Cons([&FireSand,1],plReagents);
+
+      return;
+   }
+
+   GetDuration(iSpellPower=0)
+   {
+      return 300000;
+   }
+
+   CalculatePeriodicEffectTime(iPower=0)
+   {
+      % Ranges from 7 to 17 seconds
+      return bound(17000 - ((iPower+1)*100),7000,17000);
+   }
+
+   PeriodicEffect(lEnchanted=$,iPower=0,iRange=0,source=$)
+   {
+      local oBattler, iDamage, lRadiusState;
+      
+      % Heat applies damage periodically based on the armor worn by a battler.
+      
+      foreach oBattler in lEnchanted
+      {
+         if IsClass(Send(oBattler,@GetOwner),&GuildHall)
+            AND NOT Send(Send(oBattler,@GetOwner),@InFoyer,#who=oBattler)
+         {
+            continue;
+         }
+
+         % Only the most powerful Heat should do damage.
+         lRadiusState = Send(oBattler,@GetMostPowerfulRadiusEnchantmentState,
+                              #byClass=&Heat);
+         if lRadiusState <> $
+         {
+            if Nth(lRadiusState,3) <> source
+            {
+               continue;
+            }
+         }
+
+         if IsClass(oBattler,&User)
+         {
+            if Send(oBattler,@GetArmor) = $
+            {
+               continue;
+            }
+
+            iDamage = Send(Send(oBattler,@GetArmor),@GetHeatDamage);
+
+            % robes = no heat damage
+            if iDamage = 0
+            {
+               continue;
+            }    
+
+            Send(oBattler,@MsgSendUser,#message_rsc=heat_hurts_you);
+
+            if Send(oBattler,@AssessDamage,#report=FALSE,#what=source,
+                  #damage=iDamage,#aspell=ATCK_SPELL_FIRE) = $
+            {
+               Send(oBattler,@MsgSendUser,#message_rsc=heat_kills_you);
+               If IsClass(source,&Battler)
+               {
+                  Send(source,@KilledSomething,#what=oBattler);
+               }
+            }
+         }
+      }
+      
+      return;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

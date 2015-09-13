@@ -1447,7 +1447,7 @@ messages:
 
    CastSpell(who = $, lTargets = $, iSpellPower = 0, bItemCast=FALSE)
    {
-      local oTarget, oRoom;
+      local oTarget, oRoom, lRadiusState;
 
       if IsClass(who,&DM)
       {
@@ -1636,6 +1636,13 @@ messages:
 
       % Count that this spell was cast successfully
       Send(Send(SYS,@GetStatistics),@SpellCast,#oSpell=self,#who=who);
+
+      % Check successful cast triggers
+      foreach lRadiusState in Send(who,@GetRadiusEnchantments)
+      {
+         Post(Nth(lRadiusState,1),@SuccessfulCastTrigger,#who=who,#oSpell=self,
+               #state=lRadiusState,#iSpellPower=iSpellPower);
+      }
 
       return;
    }
