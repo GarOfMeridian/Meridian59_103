@@ -4709,6 +4709,7 @@ messages:
                }
                Send(self,@SetPlayerFlag,#flag=PFLAG_OUTLAW,#value=TRUE);
                Send(self,@EvaluatePKStatus,#dbug=TRUE);
+               Send(self,@ClearAllCombatGroupings);
             }
          }
       }
@@ -6049,7 +6050,9 @@ messages:
                   Send(self,@CheckFactionAttack,#what=what);
 
                   % Apply penalties for someone NOT holding a token
+                  % and NOT in an Enemy combat group
                   if Send(what,@FindUsing,#class=&Token) = $
+                     AND NOT Send(self,@IsInCombatGroup,#who=what)
                   {
                      if (piFlags & PFLAG_MURDERER)
                      {
@@ -6062,6 +6065,7 @@ messages:
                         Send(self,@SetPlayerFlag,#flag=PFLAG_MURDERER,#value=TRUE);
                         Send(self,@SetPlayerFlag,#flag=PFLAG_OUTLAW,#value=FALSE);
                         Send(self,@EvaluatePKStatus,#dbug=TRUE);
+                        Send(self,@ClearAllCombatGroupings);
                      }
 
                      % Does the lucky murderer win a Revenant?
@@ -15031,7 +15035,18 @@ messages:
       {
          return;
       }
-      
+
+      % This system only matters when both players are innocent.
+      % Oranges/reds can be attacked by anyone.
+      % With their safeties off, they can also attack anyone.
+      if Send(who,@CheckPlayerFlag,#flag=PFLAG_OUTLAW)
+         OR Send(who,@CheckPlayerFlag,#flag=PFLAG_MURDERER)
+         OR (piFlags & PFLAG_MURDERER)
+         OR (piFlags & PFLAG_OUTLAW)
+      {
+         return;
+      }
+
       if type=CGROUP_ENEMY
       {
          % Refresh enemy timer if they're already there
