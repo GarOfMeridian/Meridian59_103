@@ -96,6 +96,7 @@ classvars:
    viAffectsEnemies = FALSE     % Hostile, can cause outlaw status
    viAffectsInnocents = FALSE   % Unaffiliated white characters
    viAffectsNewbies = FALSE     % Angeled characters
+   viAffectsCombatAllies = FALSE% Affects those who participate alongside you
 
    viCasterPersist = FALSE      % If true, spell will 'follow' caster between rooms
 
@@ -521,6 +522,12 @@ messages:
       if IsClass(target,&User)
          AND IsClass(source,&User)
       {
+         if viAffectsCombatAllies
+             AND Send(source,@IsInCombatGroup,#who=target,#type=CGROUP_ALLY)
+         {
+            return TRUE;
+         }
+         
          oSourceGuild = Send(source,@GetGuild);
          oTargetGuild = Send(target,@GetGuild);
 

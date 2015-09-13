@@ -3558,3 +3558,7 @@
    % Survival options
    OPT_NATURAL = 1    % Rooms with natural monster spawn only
    OPT_PVP_ON = 2     % Players can fight
+
+   % Combat grouping constants
+   CGROUP_ALLY = 1
+   CGROUP_ENEMY = 2

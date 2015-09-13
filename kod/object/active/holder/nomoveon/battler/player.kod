@@ -803,6 +803,18 @@ resources:
    bad_line_of_sight = \
       "Your hindered line of sight makes a successful hit more difficult."
 
+   combat_group_add_ally = \
+      "The law recognizes the assistance of %s on your behalf."
+   combat_group_add_enemy = \
+      "The law recognizes your temporary grievance with %s!"
+   combat_group_added_ally = \
+      "The law recognizes your assistance on the behalf of %s."
+   combat_group_added_enemy = \
+      "The law recognizes that %s has a temporary grievance with you!"
+   combat_group_remove_enem = \
+      "The time for your grievance with %s has passed."
+   combat_group_removed_enem = \
+      "The grievance %s held with you has expired under the eyes of the law."
       
    pvp_notify_wav = gong.wav
 
@@ -1098,6 +1110,55 @@ properties:
    piRemainingPhaseTime = 60000 * 8
    ptCanPhaseTimer = $
 
+   % Combat allies and enemies lists
+   % These keep track of who has helped or hindered in the last ten minutes.
+   % Greatly simplifies combat rules. If you interfere, you're in the fight.
+   % Those you interfere with have initiative on you.
+   % E.g. you major heal someone who is engaged in 1v1.
+   % His opponent may strike you without going outlaw.
+   % You may NOT strike him the same way just yet.
+   %    But once he strikes you, then you are free to fight back.
+   % 
+   % Specifically:
+   %
+   % Healing or buffing a stranger makes you count as their ally.
+   %    It also adds you as an enemy to all of their current enemies.
+   % Healing or buffing an ally refreshes the ally timer.
+   % Healing or buffing an enemy makes you count as their ally AND their enemy.
+   %    This will prevent any silly gaming of the system, and only hinder you.
+   %    It's entirely possible your own guild or soldier allies will 
+   %    turn on you and purposely or accidentally kill you.
+   %
+   % Hitting a stranger makes you their enemy.
+   % Hitting a stranger or enemy also gives their enemies to you as allies.
+   %    Therefore, your beneficial AEs/REs will help others who are fighting
+   %    your current enemy. E.g. you are a Jonas soldier fighting alongside a
+   %    Jonas soldier against a Duke soldier. You are not guilded with your
+   %    Jonas partner, but hitting the Duke soldier will give you the Jonas
+   %    partner as an ally, and he will then receive ally benefits from you.
+   %    This applies mostly to Radius Enchantments (both styles).
+   % Hitting a stranger or enemy also gives their allies to you as enemies.
+   %    Therefore, you can attack someone who has healed or buffed your enemy.
+   %    E.g. a 70 hp mule heals a Duke soldier. If you, as a Jonas soldier,
+   %    hit the Duke soldier, you can then also hit the 70 hp mule.
+   %    The 70 hp mule cannot attack you, though, until you attack him.
+   %    If you don't want to get attacked by random alts, be careful of how
+   %    you apply area attacks. Players can jump in by healing your enemy,
+   %    getting hit by you, and then attacking you. (this is, however,
+   %    preferable to a system in which bystanders can heal enemies without
+   %    repercussion).
+   %
+   % Don't understand it? No problem. Keep your safety on and expect
+   %    a beatdown if you interfere with a fight - and you'll be correct.
+   %
+   % Stored as [player, timer, indirect boolean]
+   % Timer is refreshed upon any new action.
+   plAllies = $
+   plEnemies = $
+   
+   piAllyTimeOut = 600000
+   piEnemyTimeOut = 600000
+
 messages:
 
    Constructor()
@@ -1190,6 +1251,8 @@ messages:
          DeleteTimer(ptBondedItemReport);
          ptBondedItemReport = $;
       }
+
+      Send(self,@ClearAllCombatGroupings);
 
       Send(SYS,@SystemRemoveFromChampionLists,#oldchamp = self);
       Send(Send(SYS,@GetLibrary),@DeleteCompletedQuest,#who=self,#id=-1);
@@ -4161,7 +4224,7 @@ messages:
    "Will not let a person attack someone who isn't pkill_enabled."
    "Will not let a person who isn't pkill_enabled attack another person."
    {
-      local oRoom, oGuild, oVictimGuild;
+      local oRoom, oGuild, oVictimGuild, i;
 
       % Default location to check is where we are.
       oRoom = poOwner;
@@ -4465,11 +4528,60 @@ messages:
          }
       }
 
+      % Victim was previously entered into enemy combat group
+      % That means we can continue fighting WITHOUT checking
+      % status and safety! This will allow us to attack players
+      % we could not normally attack because they helped our enemies!
+      % Placement here gives all guild, room, arena etc rules priority.
+      % No funky combat where it shouldn't be happening.
+      if actual
+         AND victim <> self
+         AND Send(self,@IsInCombatGroup,#who=victim)
+      {
+         Send(victim,@AddCombatGrouping,#who=self);
+         Send(self,@AddCombatGrouping,#who=victim);
+
+         foreach i in Send(victim,@GetCombatGroup)
+         {
+            Send(self,@AddCombatGrouping,#who=i,#type=CGROUP_ALLY,
+                  #indirect=TRUE);
+         }
+         foreach i in Send(victim,@GetCombatGroup,#type=CGROUP_ALLY)
+         {
+            Send(self,@AddCombatGrouping,#who=i,#indirect=TRUE);
+         }
+
+         return TRUE;
+      }
+
       % Finally, check status and safety.
       if NOT Send(self,@CheckStatusAndSafety,#victim=victim,
                   #report=report,#actual=actual,#minion=minion)
       {
          return FALSE;
+      }
+      
+      % Successful attack without any special conditions (arena, etc)
+      % Victim has been cleared for combat by status and safety.
+      % Add self as an enemy to victim's combat groupings
+      % Add victim as an enemy to our combat groupings
+      % Add victim's enemies to our allies list
+      % Add victim's allies to our enemies list
+      if actual
+         AND victim <> self
+      {
+         Send(victim,@AddCombatGrouping,#who=self);
+         Send(self,@AddCombatGrouping,#who=victim);
+
+         foreach i in Send(victim,@GetCombatGroup)
+         {
+            Send(self,@AddCombatGrouping,#who=i,#type=CGROUP_ALLY,
+                  #indirect=TRUE);
+         }
+         foreach i in Send(victim,@GetCombatGroup,#type=CGROUP_ALLY)
+         {
+            Send(self,@AddCombatGrouping,#who=i,#indirect=TRUE);
+         }
       }
 
       % Stop any rescue attempts if the user makes an attack.
@@ -11904,6 +12016,8 @@ messages:
          }
       }
 
+      Send(self,@ClearAllCombatGroupings);
+
       % Reset death costs to 0.
       piDeathCost = 0;
 
@@ -14905,6 +15019,283 @@ messages:
       }
 
       propagate;
+   }
+
+   AddCombatGrouping(who=$,type=CGROUP_ENEMY,indirect=FALSE)
+   {
+      local lAlly, lEnemy;
+
+      if who = $
+         OR who = self
+         OR IsClass(who,&DM)
+      {
+         return;
+      }
+      
+      if type=CGROUP_ENEMY
+      {
+         % Refresh enemy timer if they're already there
+         if plEnemies <> $
+            AND Send(self,@IsInCombatGroup,#who=who)
+         {
+            foreach lEnemy in plEnemies
+            {
+               if First(lEnemy) = who
+               {
+                  if IsTimer(Nth(lEnemy,2))
+                  {
+                     DeleteTimer(Nth(lEnemy,2));
+                  }
+                  SetNth(lEnemy,2,$);
+                  SetNth(lEnemy,2,CreateTimer(self,@RemoveCombatGrouping,
+                        piEnemyTimeOut));
+                  return;
+               }
+            }
+         }
+      
+         plEnemies = Cons([who, CreateTimer(self,@RemoveCombatGrouping,
+                           piEnemyTimeOut), indirect],plEnemies);
+
+         if indirect
+         {
+            Send(self,@MsgSendUser,#message_rsc=combat_group_add_enemy,
+                  #parm1=Send(who,@GetName));
+            Send(who,@MsgSendUser,#message_rsc=combat_group_added_enemy,
+                  #parm1=Send(self,@GetName));
+
+            if Send(who,@GetOwner) = poOwner
+            {
+               Post(self,@SomethingChanged,#what=who);
+            }
+         }
+         
+         return;
+      }
+
+      if type=CGROUP_ALLY
+      {
+         % Refresh ally timer if they're already there
+         if plAllies <> $
+            AND Send(self,@IsInCombatGroup,#who=who,#type=CGROUP_ALLY)
+         {
+            foreach lAlly in plAllies
+            {
+               if First(lAlly) = who
+               {
+                  if IsTimer(Nth(lAlly,2))
+                  {
+                     DeleteTimer(Nth(lAlly,2));
+                  }
+                  SetNth(lAlly,2,$);
+                  SetNth(lAlly,2,CreateTimer(self,@RemoveCombatGrouping,
+                        piAllyTimeOut));
+                  return;
+               }
+            }
+         }
+      
+         plAllies = Cons([who, CreateTimer(self,@RemoveCombatGrouping,
+                          piAllyTimeOut), indirect],plAllies);
+         
+         if indirect
+         {
+            Send(self,@MsgSendUser,#message_rsc=combat_group_add_ally,
+                  #parm1=Send(who,@GetName));
+            Send(who,@MsgSendUser,#message_rsc=combat_group_added_ally,
+                  #parm1=Send(self,@GetName));
+
+            if Send(who,@GetOwner) = poOwner
+            {
+               Post(self,@SomethingChanged,#what=who);
+            }
+         }
+         
+         return;
+      }
+
+      return;
+   }
+   
+   RemoveCombatGrouping(who=$,timer=$)
+   {
+      local lAlly, lEnemy;
+      
+      if timer <> $
+      {
+         foreach lEnemy in plEnemies
+         {
+            if Nth(lEnemy,2) = timer
+            {
+               % Was this an indirect grievance?
+               % Only report indirects to avoid spam.
+               % Direct grievances should be obvious already.
+               if Nth(lEnemy,3) = TRUE
+               {
+                  Send(self,@MsgSendUser,#message_rsc=combat_group_remove_enem,
+                        #parm1=Send(First(lEnemy),@GetName));
+                  Send(First(lEnemy),@MsgSendUser,
+                        #message_rsc=combat_group_removed_enem,
+                        #parm1=Send(self,@GetName));
+
+                  if Send(First(lEnemy),@GetOwner) = poOwner
+                  {
+                     Post(self,@SomethingChanged,#what=First(lEnemy));
+                  }
+               }
+
+               SetNth(lEnemy,1,$);
+               SetNth(lEnemy,2,$);
+               plEnemies = DelListElem(plEnemies,lEnemy);
+
+               return;
+            }
+         }
+
+         foreach lAlly in plAllies
+         {
+            if Nth(lAlly,2) = timer
+            {
+               if Send(First(lAlly),@GetOwner) = poOwner
+               {
+                  Post(self,@SomethingChanged,#what=First(lAlly));
+               }
+               SetNth(lAlly,1,$);
+               SetNth(lAlly,2,$);
+               plAllies = DelListElem(plAllies,lAlly);
+               return;
+            }
+         }
+      }
+
+      if who <> $
+      {
+         foreach lEnemy in plEnemies
+         {
+            if First(lEnemy) = who
+            {
+               DeleteTimer(Nth(lEnemy,2));
+               SetNth(lEnemy,1,$);
+               SetNth(lEnemy,2,$);
+               plEnemies = DelListElem(plEnemies,lEnemy);
+
+               if Send(who,@GetOwner) = poOwner
+               {
+                  Post(self,@SomethingChanged,#what=who);
+               }
+
+               return;
+            }
+         }
+
+         foreach lAlly in plAllies
+         {
+            if First(lAlly) = who
+            {
+               DeleteTimer(Nth(lAlly,2));
+               SetNth(lAlly,1,$);
+               SetNth(lAlly,2,$);
+               plAllies = DelListElem(plAllies,lAlly);
+
+               if Send(who,@GetOwner) = poOwner
+               {
+                  Post(self,@SomethingChanged,#what=who);
+               }
+
+               return;
+            }
+         }
+      }
+
+      return;
+   }
+   
+   ClearAllCombatGroupings()
+   {
+      local lAlly, lEnemy;
+      
+      foreach lAlly in plAllies
+      {
+         Send(First(lAlly),@RemoveCombatGrouping,#who=self,#type=CGROUP_ALLY);
+         if IsTimer(Nth(lAlly,2))
+         {
+            DeleteTimer(Nth(lAlly,2));
+         }
+         SetNth(lAlly,1,$);
+         SetNth(lAlly,2,$);
+         plAllies = DelListElem(plAllies,lAlly);
+      }
+
+      foreach lEnemy in plEnemies
+      {
+         Send(First(lEnemy),@RemoveCombatGrouping,#who=self);
+         if IsTimer(Nth(lEnemy,2))
+         {
+            DeleteTimer(Nth(lEnemy,2));
+         }
+         SetNth(lEnemy,1,$);
+         SetNth(lEnemy,2,$);
+         plEnemies = DelListElem(plEnemies,lEnemy);
+      }
+
+      return;
+   }
+   
+   GetCombatGroup(type=CGROUP_ENEMY)
+   {
+      local lAlly, lAllies, lEnemy, lEnemies;
+
+      if type = CGROUP_ENEMY
+      {
+         lEnemies = $;
+         foreach lEnemy in plEnemies
+         {
+            lEnemies = Cons(First(lEnemy),lEnemies);
+         }
+         return lEnemies;
+      }
+
+      if type = CGROUP_ALLY
+      {
+         lAllies = $;
+
+         foreach lAlly in plAllies
+         {
+            lAllies = Cons(First(lAlly),lAllies);
+         }
+         return lAllies;
+      }
+
+      return $;
+   }
+   
+   IsInCombatGroup(who=$, type=CGROUP_ENEMY)
+   {
+      local lEnemy, lAlly;
+      
+      if type = CGROUP_ENEMY
+      {
+         foreach lEnemy in plEnemies
+         {
+            if First(lEnemy) = who
+            {
+               return TRUE;
+            }
+         }
+      }
+
+      if type = CGROUP_ALLY
+      {
+         foreach lAlly in plAllies
+         {
+            if First(lAlly) = who
+            {
+               return TRUE;
+            }
+         }
+      }
+
+      return FALSE;
    }
 
 end

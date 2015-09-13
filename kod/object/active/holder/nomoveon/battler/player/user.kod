@@ -2812,6 +2812,18 @@ messages:
                }
             }
 
+            % Draw a green halo for any friendly player
+            if Send(self,@IsInCombatGroup,#who=what,#type=CGROUP_ALLY)
+            {
+               iFlags = (iFlags | MM_PLAYER_IS_FRIEND);
+            }
+
+            % Draw a red halo for combat group enemies
+            if Send(self,@IsInCombatGroup,#who=what,#type=CGROUP_ENEMY)
+            {
+               iFlags = (iFlags | MM_PLAYER_IS_ENEMY);
+            }
+
             % Draw a red halo for any attackable player.
             if NOT IsClass(self,&DM)
                AND Send(self,@AllowPlayerAttack,#victim=what,

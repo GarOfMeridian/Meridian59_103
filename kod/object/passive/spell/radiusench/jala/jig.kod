@@ -63,6 +63,7 @@ classvars:
    viAffectsEnemies = TRUE
    viAffectsNewbies = TRUE
    viAffectsAllies = TRUE
+   viAffectsCombatAllies = TRUE
 
 properties:
 
