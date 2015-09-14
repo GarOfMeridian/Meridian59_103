@@ -460,6 +460,13 @@ resources:
    user_time_string =  \
    "The time in Meridian is %i:00.  It is the %q day of the year %i."
 
+   corpse_rummage = \
+      "You rummage through the valuables left on %s's dead body."
+   corpse_holds_nothing = \
+      "The corpse holds nothing of value."
+   corpse_too_far_away = \
+      "The corpse is too far away to search."
+
 classvars:
 
    viIndefinite = ARTICLE_NONE
@@ -4744,6 +4751,7 @@ messages:
 
       if NOT IsClass(what,&Holder)
          AND NOT IsClass(what,&ReagentBag)
+         AND NOT IsClass(what,&DeadBody)
          OR (IsClass(what,&Player)
              AND NOT (what = self OR IsClass(self,&Admin)))
       {
@@ -4770,7 +4778,17 @@ messages:
          lHolding1 = Send(what,@GetReagentBagContents);
          lHolding2 = $;
       }
-      else
+      else if IsClass(what,&DeadBody)
+      {
+         if Send(what,@GetDearlyDeparted) <> $
+         {
+            Send(self,@MsgSendUser,#message_rsc=corpse_rummage,
+                  #parm1=Send(Send(what,@GetDearlyDeparted),@GetName));
+         }
+         lHolding1 = Send(what,@GetCorpseContents);
+         lHolding2 = $;
+      }
+      else if
       {
          lHolding1 = Send(what,@GetHolderActive);
          lHolding2 = Send(what,@GetHolderPassive);
@@ -5418,6 +5436,25 @@ messages:
          {
             Send(self,@UserObjectContents,#what=what);
             return;
+         }
+
+         if IsClass(what,&DeadBody)
+         {
+            if Send(self,@SquaredDistanceTo,#what=what) <> $
+               AND Send(self,@SquaredDistanceTo,#what=what) <= 6
+            {
+               if Send(what,@GetCorpseContents) = $
+               {
+                  Send(self,@MsgSendUser,#message_rsc=corpse_holds_nothing);
+               }
+               else
+               {
+                  Send(self,@UserObjectContents,#what=what);
+                  return;
+               }
+            }
+
+            Send(self,@MsgSendUser,#message_rsc=corpse_too_far_away);
          }
 
          AddPacket(1,BP_LOOK);
