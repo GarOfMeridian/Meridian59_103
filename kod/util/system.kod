@@ -3825,6 +3825,7 @@ messages:
       Create(&AvarTreasure);
       Create(&AvarShamanTreasure);
       Create(&AvarChieftainTreasure);
+      Create(&AvarChieftainPoisonTreasure);
       Create(&LupoggKingTreasure);
       Create(&DragonflyTreasure);
 
@@ -5250,6 +5251,7 @@ messages:
       plMonsterTemplates = cons(create(&avar,#clan=AVARCLAN_PROMAGIC),plMonsterTemplates);
       plMonsterTemplates = cons(create(&avarshaman,#clan=AVARCLAN_PROMAGIC),plMonsterTemplates);
       plMonsterTemplates = cons(create(&avarchieftain,#clan=AVARCLAN_PROMAGIC),plMonsterTemplates);
+      plMonsterTemplates = cons(create(&AvarChieftainPoison),plMonsterTemplates);
       plMonsterTemplates = cons(create(&CaveOrc),plMonsterTemplates);
       plMonsterTemplates = cons(create(&OrcPitBoss),plMonsterTemplates);
       plMonsterTemplates = cons(create(&Shadowbeast),plMonsterTemplates);

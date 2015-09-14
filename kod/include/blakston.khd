@@ -1708,6 +1708,7 @@
    TID_TOUGH         = 6
    TID_VERY_TOUGH    = 7
 
+   TID_AVAR_CH_POIS  = 20
    TID_UNDEAD        = 21
    TID_SPIDER_LAIR   = 22
    TID_SPIDER_QUEEN  = 23
