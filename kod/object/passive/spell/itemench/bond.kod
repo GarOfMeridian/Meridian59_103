@@ -1,0 +1,156 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Bond is ItemEnchantment
+
+constants:
+
+   include blakston.khd
+   include protocol.khd
+
+resources:
+
+   include bond.lkod
+
+   Bond_name_rsc = "bond"
+   Bond_icon_rsc = ibond.bgf
+   Bond_desc_rsc = \
+      "Infuses an item with Shal'ille's ultimate blessing. However, the "
+      "bond requires terrific amounts of energy to form.  A heartstone of "
+      "each element and "
+      "dozens of polished seraphym and diamonds must be crushed to amplify "
+      "the caster's mystical energy. The item to be bonded must be targeted. "
+      "Once the casting is complete the item will follow its owner to hell "
+      "itself - once. Items linked to one's soul can never be given away."
+   
+   Bond_sound = sbond.wav
+
+   bond_bad_target = "You may only bond equipment to your soul."
+   bond_already_bonded = "This item is already bonded."
+   bond_must_own = "You can't bond with things you don't own!"
+
+   bond_successful_bondee = \
+      "You pour your entire spirit and body into your %s. You feel a "
+      "powerful magical bond form, linking it to your soul."
+
+classvars:
+
+   vrName = Bond_name_rsc
+   vrIcon = Bond_icon_rsc
+   vrDesc = Bond_desc_rsc
+
+   vrSucceed_wav = Bond_sound
+
+   viSpell_num = SID_BOND
+   viSchool = SS_SHALILLE
+   viSpell_level = 6
+
+   viSpellExertion = 120
+   viCast_time = 30000
+   viMana = 120
+   
+   viChance_To_Increase = 66
+   viMeditate_ratio = 0
+
+properties:                     
+
+messages:    
+
+   ResetReagents()
+   {
+      plReagents = $;
+      plReagents = Cons([&PolishedSeraphym,200],plReagents);
+      plReagents = Cons([&Diamond,200],plReagents);
+      plReagents = Cons([&SkyHeartStone,1],plReagents);
+      plReagents = Cons([&RedHeartStone,1],plReagents);
+      plReagents = Cons([&BrownHeartStone,1],plReagents);
+      plReagents = Cons([&BlueHeartStone,1],plReagents);
+
+      return;
+   }
+
+   CanPayCosts(who = $, lTargets = $, iSpellPower = 0)
+   {
+      local oTarget;
+
+      oTarget = First(lTargets);
+
+      if NOT IsClass(oTarget,&Weapon)
+         AND NOT IsClass(oTarget,&DefenseModifier)
+         AND NOT IsClass(oTarget,&AttackModifier)
+         AND NOT IsClass(oTarget,&Ring)
+         AND NOT IsClass(oTarget,&Instrument)
+         AND NOT IsClass(oTarget,&Necklace)
+         OR IsClass(oTarget,&SoldierShield)
+      {
+         Send(who,@MsgSendUser,#message_rsc=bond_bad_target);
+
+         return FALSE;
+      }
+
+      if Send(oTarget,@HasAttribute,#ItemAtt=IA_TRANSCENDANT)
+         OR Send(oTarget,@HasAttribute,#ItemAtt=IA_MADE_TRANSCENDANT)
+      {
+         Send(who,@MsgSendUser,#message_rsc=bond_already_bonded);
+
+         return FALSE;
+      }
+      
+      if Send(oTarget,@GetOwner) <> who
+      {
+         return FALSE;
+      }
+
+      propagate;
+   }
+
+   CastSpell(who = $, lTargets = $, iSpellPower = 0)
+   {
+      local oItem;
+
+      oItem = First(lTargets);
+
+      if NOT IsClass(oItem,&Weapon)
+         AND NOT IsClass(oItem,&DefenseModifier)
+         AND NOT IsClass(oItem,&AttackModifier)
+         AND NOT IsClass(oItem,&Ring)
+         AND NOT IsClass(oItem,&Instrument)
+         AND NOT IsClass(oItem,&Necklace)
+         OR IsClass(oItem,&SoldierShield)
+      {
+         Send(who,@MsgSendUser,#message_rsc=bond_bad_target);
+
+         return FALSE;
+      }
+
+      if Send(oItem,@HasAttribute,#ItemAtt=IA_TRANSCENDANT)
+         OR Send(oItem,@HasAttribute,#ItemAtt=IA_MADE_TRANSCENDANT)
+      {
+         Send(who,@MsgSendUser,#message_rsc=bond_already_bonded);
+
+         return FALSE;
+      }
+      
+      if Send(oItem,@GetOwner) <> who
+      {
+         return FALSE;
+      }
+
+      Send(Send(SYS,@FindItemAttByNum,#Num=IA_MADE_TRANSCENDANT),@AddToItem,
+           #oItem=oItem,#random_gen=FALSE,#iPower=iSpellPower/33);
+
+      Send(who,@MsgSendUser,#message_rsc=bond_successful_bondee,
+           #parm1=Send(oItem,@GetName));
+
+      propagate;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

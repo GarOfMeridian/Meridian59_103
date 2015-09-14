@@ -3426,6 +3426,7 @@ messages:
       Send(self,@CreateOneItemAttIfNew,#num=IA_DURABLE,#class=&ItemAttDurable);
       Send(self,@CreateOneItemAttIfNew,#num=WA_PUNISHER,#class=&WeapAttPunisher);
       Send(self,@CreateOneItemAttIfNew,#num=IA_TRANSCENDANT,#class=&ItemAttTranscendant);
+      Send(self,@CreateOneItemAttIfNew,#num=IA_MADE_TRANSCENDANT,#class=&ItemAttSoulBond);
       Send(self,@CreateOneItemAttIfNew,#num=IA_SELL_INFO,#class=&ItemAttSellInfo);
       Send(self,@CreateOneItemAttIfNew,#num=IA_NEW_DESCRIPTION,#class=&ItemAttNewDescription);
       Send(self,@CreateOneItemAttIfNew,#num=IA_APPEND_DESCRIPTION,#class=&ItemAttAppendDescription);

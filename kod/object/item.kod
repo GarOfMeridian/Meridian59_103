@@ -85,6 +85,16 @@ resources:
    item_stats_proc_twister = "8%% chance to disorient victim on hit\n"
    item_stats_proc_vamp = "10%% chance to gain up to 8 health on hit\n"
 
+   bond_lost_health = \
+      "A blinding flare erupts from your %s as it consumes your soul link "
+      "to remain with you. You feel a little weaker."
+   bond_burned = \
+      "A blinding flare erupts from the %s held by %s as the item burns away "
+      "a transcendent soul link to remain with its owner!"
+   nbond_burned = \
+      "A searing flare erupts from the %s held by %s as the item burns away "
+      "holy energies to remain with its owner!"
+
 classvars:
 
    vrItem_broken = item_broken_battle
@@ -1591,7 +1601,7 @@ messages:
    "Most items are dropped on death.  But, assassin's blades and a few other "
    "things are not."
    {
-      local i, oItemAtt, iNum;
+      local i, oItemAtt, iNum, oRoomOwner, oObject, oPlayer;
       
       % Check ItemAtts to be sure nothing funky is there
       foreach i in plItem_Attributes
@@ -1600,6 +1610,64 @@ messages:
          oItemAtt = Send(SYS,@FindItemAttByNum,#num=iNum);
          if NOT Send(oItemAtt,@ItemDropOnDeath)
          {
+            if IsClass(oItemAtt,&ItemAttTranscendant)
+            {
+               Send(oItemAtt,@RemoveFromItem,#oItem=self);
+               
+               if poOwner <> $
+               {
+                  oRoomOwner = Send(poOwner,@GetOwner);
+                  if oRoomOwner <> $
+                     AND IsClass(oRoomOwner,&Room)
+                  {
+                     foreach oObject in Send(oRoomOwner,@GetHolderActive)
+                     {
+                        oPlayer = Send(oRoomOwner,@HolderExtractObject,
+                                        #data=oObject);
+                        if IsClass(oPlayer,&Player)
+                           AND oPlayer <> poOwner
+                        {
+                           Send(oPlayer,@MsgSendUser,#message_rsc=nbond_burned,
+                                 #parm1=Send(self,@GetName),
+                                 #parm2=Send(poOwner,@GetName));
+                        }
+                     }
+                  }
+               }
+            }
+
+            if IsClass(oItemAtt,&ItemAttSoulBond)
+            {
+               Send(oItemAtt,@RemoveFromItem,#oItem=self);
+               
+               if poOwner <> $
+               {
+                  if IsClass(poOwner,&Player)
+                  {
+                     Send(poOwner,@MsgSendUser,#message_rsc=bond_lost_health,
+                           #parm1=Send(self,@GetName));
+                     Send(poOwner,@GainBaseMaxHealth,#amount=-1);
+                  }
+
+                  oRoomOwner = Send(poOwner,@GetOwner);
+                  if oRoomOwner <> $
+                     AND IsClass(oRoomOwner,&Room)
+                  {
+                     foreach oObject in Send(oRoomOwner,@GetHolderActive)
+                     {
+                        oPlayer = Send(oRoomOwner,@HolderExtractObject,
+                                        #data=oObject);
+                        if IsClass(oPlayer,&Player)
+                           AND oPlayer <> poOwner
+                        {
+                           Send(oPlayer,@MsgSendUser,#message_rsc=bond_burned,
+                                 #parm1=Send(self,@GetName),
+                                 #parm2=Send(poOwner,@GetName));
+                        }
+                     }
+                  }
+               }
+            }
             return FALSE;
          }
       }
@@ -2073,7 +2141,8 @@ messages:
          iNum = Send(self,@GetNumFromCompound,#compound=First(i));
          oItemAtt = Send(SYS,@FindItemAttByNum,#num=iNum);
          iModifier = iModifier + Send(oItemAtt,@ItemGetSpellModifier,
-                                      #oSpell=oSpell,#oCaster=poOwner);
+                                       #oSpell=oSpell,#oCaster=poOwner,
+                                       #lData=i);
       }
 
       foreach oObjectAttribute in plObject_attributes

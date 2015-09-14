@@ -8,7 +8,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ItemAttTranscendant is ItemAttribute
+ItemAttSoulBond is ItemAttribute
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -16,7 +16,7 @@ ItemAttTranscendant is ItemAttribute
 %
 %   Form is:
 %
-%      [IA_TRANSCENDANT]
+%      [IA_MADE_TRANSCENDANT]
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -26,18 +26,16 @@ constants:
 
 resources:
 
-   include iatransc.lkod
+   itemattsoulbond_desc = "  It glows with a soft white light."
+   itemattsoulbond_name = "soul bonded %s"
 
-   itematttranscendant_desc = "  It glows with a natural soft white light."
-   itematttranscendant_name = "transcendant %s"
-
-   transcendant_DM = "transcendant"
+   soulbond_DM = "soul bond"
 
 classvars:
 
-   viItem_Att_Num = IA_TRANSCENDANT
-   vrDesc = itematttranscendant_desc
-   vrName = itematttranscendant_name
+   viItem_Att_Num = IA_MADE_TRANSCENDANT
+   vrDesc = itemattsoulbond_desc
+   vrName = itemattsoulbond_name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -47,7 +45,7 @@ classvars:
 
 
    viDifficulty = 3
-   vrDM_Trigger = transcendant_DM
+   vrDM_Trigger = soulbond_DM
 
 properties:
 
@@ -64,6 +62,16 @@ messages:
    IsMagicalEffect()
    {
       return TRUE;
+   }
+
+   ItemReqLeaveOwner()
+   {
+      return FALSE;
+   }
+
+   ItemGetSpellModifier(oSpell=$,oCaster=$,lData=$)
+   {
+      return Send(self,@TranslatePowerFromCompound,#iCompound=First(lData));
    }
 
 end
