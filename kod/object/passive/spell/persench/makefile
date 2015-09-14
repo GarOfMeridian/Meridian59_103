@@ -8,7 +8,6 @@ DEPEND = ..\persench.bof
 BOFS = anon.bof \
        bless.bof \
        cloak.bof \
-       deflect.bof \
        denial.bof \
        detevil.bof \
        detgood.bof \

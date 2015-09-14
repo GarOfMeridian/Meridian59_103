@@ -839,6 +839,11 @@ messages:
    {
       return time;
    }
+   
+   TryDeflect(caster=$,victim=$,oSpell=$,power=0,source=$)
+   {
+      return FALSE;
+   }
 
    AdjustManaTime(time=0, lRadiusState=0)
    {
