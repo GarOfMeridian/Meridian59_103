@@ -3622,3 +3622,7 @@
    % Survival options
    OPT_NATURAL = 1    % Rooms with natural monster spawn only
    OPT_PVP_ON = 2     % Players can fight
+   
+   % Experience system
+   EXPERIENCE_SYSTEM_CLASSIC = 1
+   EXPERIENCE_SYSTEM_MODERN = 2

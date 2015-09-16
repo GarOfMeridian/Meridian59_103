@@ -243,6 +243,11 @@ properties:
 
    % Percent of mana required/used for broadcasting. Default 0 (no cost).
    piBroadcastManaPercent = 0
+   
+   % What type of experience system do we use?
+   piExperienceSystem = EXPERIENCE_SYSTEM_MODERN
+   % Do we cap modern experience at player's own max health to tightly emulate old system?
+   piCapModernExperience = TRUE
 
    % Jasper vault access
    pbJasperVault = FALSE
@@ -643,6 +648,16 @@ messages:
    GetBroadcastManaCost()
    {
       return piBroadcastManaPercent;
+   }
+   
+   GetExperienceSystem()
+   {
+      return piExperienceSystem;
+   }
+   
+   GetCapModernExperience()
+   {
+      return piCapModernExperience;
    }
 
    JasperVaultOpen()
