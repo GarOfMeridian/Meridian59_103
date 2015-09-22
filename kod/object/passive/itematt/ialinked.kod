@@ -1,0 +1,101 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ItemAttLinked is ItemAttribute
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   This item is linked to a player.
+%
+%   Form is:
+%
+%      [IA_LINKED, oPlayer]
+%
+%      oPlayer::the player to which this item is linked.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   include ialinked.lkod
+
+   ItemAttLinked_desc = ""
+   ItemAttLinked_name = "linked %s"
+
+   linked_DM = "linked"
+
+classvars:
+
+   viItem_Att_Num = IA_LINKED
+   vrDesc = ItemAttLinked_desc
+   vrName = ItemAttLinked_name
+
+   vrDM_Trigger = linked_DM
+
+properties:
+
+messages:
+
+   InitiallyIdentified(random_gen=FALSE)
+   {
+      return TRUE;
+   }
+
+   AddToItem(oItem=$,oPlayer=$,identified=FALSE)
+   {
+      local lData, iValue;
+
+      lData = $;
+
+      lData = Cons(oPlayer,lData);
+
+      iValue = Send(self,@SetCompound,#oItem=oItem,#iPower=0);
+      lData = Cons(iValue,lData);
+
+      Send(oItem,@AddAttributeSpecifics,#lItemAtt=lData);
+
+      return;
+   }
+
+   RemoveFromItem(oItem=$)
+   "This must be called.  In fact, this is what all attribute "
+   "removing things should call."
+   {
+      local lData;
+      lData = Send(oItem,@GetAttributeData,#ItemAtt = viItem_Att_num);
+      if lData <> $
+      {
+         Send(Nth(lData,2),@ClearLinkedItem);
+      }
+      Send(oItem,@RemoveAttributeSpecifics,#oItemAtt=self,#ItemAtt=viItem_Att_num);
+
+      return;
+   }
+
+   AddToTreasureTable()
+   {
+      return;
+   }
+
+   CanBeSpoofed()
+   {
+      return FALSE;
+   }
+
+   IsMagicalEffect()
+   {
+      return FALSE;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

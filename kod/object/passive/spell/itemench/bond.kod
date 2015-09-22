@@ -38,7 +38,7 @@ resources:
 
    bond_successful_bondee = \
       "You pour your entire spirit and body into your %s. You feel a "
-      "powerful magical bond form, linking it to your soul."
+      "powerful magical connection form, bonding it to your soul."
 
 classvars:
 

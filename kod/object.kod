@@ -1255,6 +1255,12 @@ messages:
       return object_lord;
    }
 
+   OwnerPenned()
+   "Called when the object's owner is penned."
+   {
+      return;
+   }
+
    OwnerKilled()
    "Called when the object's owner is killed."
    {

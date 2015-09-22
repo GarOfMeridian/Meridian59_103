@@ -1,0 +1,221 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ItemLink is ItemEnchantment
+
+constants:
+
+   include blakston.khd
+   include protocol.khd
+
+resources:
+
+   Link_name_rsc = "item link"
+   Link_icon_rsc = ilink.bgf
+   Link_desc_rsc = \
+      "Ties an item's spatial location to the caster's soul. "
+      "At various intervals, the caster will be able to sense "
+      "where the item is, so that a ruffian or thief may be "
+      "tracked down and brought to justice. A warrior may only have "
+      "one item linked at a time."
+   
+   Link_sound = slink.wav
+
+   Link_bad_target = "You may only link equipment to your soul."
+   Link_already_linked = "This item is already linked."
+   Link_must_own = "You can't link with things you don't own!"
+
+   Link_successful_linkee = \
+      "You pour your entire spirit and body into your %s. You feel a "
+      "powerful magical connection form, linking it to your soul."
+
+   link_report_room = \
+      "You sense that your %s is in %s."
+   link_report_user = \
+      "You sense that your %s is in %s's possession."
+   link_report_user_and_room = \
+      "You sense that your %s is in %s's possession in %s."
+
+classvars:
+
+   vrName = Link_name_rsc
+   vrIcon = Link_icon_rsc
+   vrDesc = Link_desc_rsc
+
+   vrSucceed_wav = Link_sound
+
+   viSpell_num = SID_ITEM_LINK
+   viSchool = SS_KRAANAN
+   viSpell_level = 6
+
+   viSpellExertion = 120
+   viCast_time = 30000
+   viMana = 120
+   
+   viChance_To_Increase = 66
+   viMeditate_ratio = 0
+
+properties:                     
+
+messages:    
+
+   ResetReagents()
+   {
+      plReagents = $;
+      plReagents = Cons([&OrcTooth,200],plReagents);
+      plReagents = Cons([&Sapphire,200],plReagents);
+
+      return;
+   }
+
+   CanPayCosts(who = $, lTargets = $, iSpellPower = 0)
+   {
+      local oTarget;
+
+      oTarget = First(lTargets);
+
+      if NOT IsClass(oTarget,&Weapon)
+         AND NOT IsClass(oTarget,&DefenseModifier)
+         AND NOT IsClass(oTarget,&AttackModifier)
+         AND NOT IsClass(oTarget,&Ring)
+         AND NOT IsClass(oTarget,&Instrument)
+         AND NOT IsClass(oTarget,&Necklace)
+         OR IsClass(oTarget,&SoldierShield)
+      {
+         Send(who,@MsgSendUser,#message_rsc=Link_bad_target);
+
+         return FALSE;
+      }
+      
+      if Send(oTarget,@GetOwner) <> who
+      {
+         return FALSE;
+      }
+
+      propagate;
+   }
+
+   CastSpell(who = $, lTargets = $, iSpellPower = 0)
+   {
+      local oItem;
+
+      oItem = First(lTargets);
+
+      if NOT IsClass(oItem,&Weapon)
+         AND NOT IsClass(oItem,&DefenseModifier)
+         AND NOT IsClass(oItem,&AttackModifier)
+         AND NOT IsClass(oItem,&Ring)
+         AND NOT IsClass(oItem,&Instrument)
+         AND NOT IsClass(oItem,&Necklace)
+         OR IsClass(oItem,&SoldierShield)
+      {
+         Send(who,@MsgSendUser,#message_rsc=Link_bad_target);
+
+         return FALSE;
+      }
+
+      if Send(oItem,@HasAttribute,#ItemAtt=IA_LINKED)
+      {
+         Send(who,@MsgSendUser,#message_rsc=Link_already_linked);
+
+         return FALSE;
+      }
+      
+      if Send(oItem,@GetOwner) <> who
+      {
+         return FALSE;
+      }
+
+      Send(who,@LinkItem,#what=oItem);
+
+      Send(who,@MsgSendUser,#message_rsc=Link_successful_linkee,
+           #parm1=Send(oItem,@GetName));
+
+      propagate;
+   }
+
+   LinkedItemReport(LinkedItem=$,LinkedPlayer=$,LinkedItemOwner=$)
+   {
+      if LinkedPlayer = $
+      {
+         return;
+      }
+
+      if LinkedItem = $
+      {
+         Send(LinkedPlayer,@ClearLinkedItem);
+         return;
+      }
+
+      % Check if the item is in its owner's inventory. No report.
+      if Send(LinkedPlayer,@IsHolding,#what=LinkedItem)
+      {
+         return;
+      }
+
+      if LinkedItemOwner = $
+      {
+         LinkedItemOwner = Send(LinkedItem,@GetOwner);
+      }
+
+      if LinkedItemOwner = $
+      {
+         Send(LinkedPlayer,@ClearLinkedItem);
+         return;
+      }
+
+      if Send(LinkedItem,@GetHits) = 0
+      {
+         Send(LinkedPlayer,@ClearLinkedItem);
+         return;
+      }
+      
+      if IsClass(LinkedItemOwner,&StorageBox)
+      {
+         LinkedItemOwner=Send(SYS,@UtilGetRoomRecurse,#what=LinkedItemOwner);
+      }
+
+      if IsClass(LinkedItemOwner,&Room)
+      {
+         Send(LinkedPlayer,@MsgSendUser,#message_rsc=link_report_room,
+               #parm1=Send(LinkedItem,@GetName),
+               #parm2=Send(LinkedItemOwner,@GetName));
+
+         return;
+      }
+
+      if IsClass(LinkedItemOwner,&SafetyDepositBox)
+      {
+         LinkedItemOwner = Send(LinkedItemOwner,@GetSafeBoxOwner);
+      }
+
+      % Carrier is offline.
+      if IsClass(LinkedItemOwner,&User)
+         AND Send(LinkedItemOwner,@GetOwner) = $
+      {
+         return;
+      }
+
+      if IsClass(LinkedItemOwner,&User)
+         AND IsClass(Send(LinkedItemOwner,@GetOwner),&Room)
+      {
+         Send(LinkedPlayer,@MsgSendUser,#message_rsc=link_report_user_and_room,
+               #parm1=Send(LinkedItem,@GetName),
+               #parm2=Send(LinkedItemOwner,@GetName),
+               #parm3=Send(Send(LinkedItemOwner,@GetOwner),@GetName));
+
+         return;
+      }
+
+      return;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

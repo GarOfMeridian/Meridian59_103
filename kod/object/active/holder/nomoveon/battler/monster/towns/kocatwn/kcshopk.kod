@@ -242,7 +242,7 @@ messages:
          }
       }
 
-      if Send(what,@HasAttribute,#ItemAtt=IA_BONDED)
+      if Send(what,@HasAttribute,#ItemAtt=IA_LINKED)
          OR Send(what,@IsItemType,#type=ITEMTYPE_SPECIAL)
       {
          return FALSE;

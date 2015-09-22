@@ -5,6 +5,7 @@
 !include $(TOPDIR)\common.mak
 
 DEPEND = ..\deleted.bof
-BOFS = palsy.bof dementia.bof firewand.bof SpecialWand.bof sickness.bof
+BOFS = palsy.bof dementia.bof firewand.bof SpecialWand.bof sickness.bof \
+       itemattbonded.bof
 
 !include $(KODDIR)\kod.mak

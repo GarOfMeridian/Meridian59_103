@@ -19,7 +19,7 @@ constants:
    include protocol.khd
 
    % Three minutes
-   BOND_REPORT_INTERVAL = 1000 * 60 * 3
+   ITEM_LINK_REPORT_INTERVAL = 1000 * 60 * 3
    
    % One minute
    DEATH_RIFT_INTERVAL = 1000 * 60
@@ -1040,8 +1040,8 @@ properties:
 
    piView = $
 
-   poBondedItem = $
-   ptBondedItemReport = $
+   poLinkedItem = $
+   ptLinkedItemReport = $
 
    piLastDeathTime = 0
 
@@ -1184,11 +1184,11 @@ messages:
 
       Send(&SwordShard,@ForgetQuester,#quester=self);
       Send(&RiijaSword,@ForgetQuester,#quester=self);
-      Send(self,@ClearBondedItem);
-      if ptBondedItemReport <> $
+      Send(self,@ClearLinkedItem);
+      if ptLinkedItemReport <> $
       {
-         DeleteTimer(ptBondedItemReport);
-         ptBondedItemReport = $;
+         DeleteTimer(ptLinkedItemReport);
+         ptLinkedItemReport = $;
       }
 
       Send(SYS,@SystemRemoveFromChampionLists,#oldchamp = self);
@@ -2770,11 +2770,11 @@ messages:
 
       Send(&SwordShard,@ForgetQuester,#quester=self);
       Send(&RiijaSword,@ForgetQuester,#quester=self);
-      Send(self,@ClearBondedItem);
-      if ptBondedItemReport <> $
+      Send(self,@ClearLinkedItem);
+      if ptLinkedItemReport <> $
       {
-         DeleteTimer(ptBondedItemReport);
-         ptBondedItemReport = $;
+         DeleteTimer(ptLinkedItemReport);
+         ptLinkedItemReport = $;
       }
 
       plSpells = $;
@@ -3023,6 +3023,8 @@ messages:
          AND Send(oDropRoom,@ReqNewHold,#what=oItem,
                   #new_row=iDropRow,#new_col=iDropCol)
       {
+         Send(oItem,@OwnerPenned,#who=self,#oRoom=oDropRoom);
+
          if Send(oItem,@DropOnDeath)
          {
             if targetGhost <> $
@@ -9458,7 +9460,7 @@ messages:
             foreach i in lItems
             {
                % Let the item know we died, in case it does something special.
-               Send(i,@OwnerKilled);
+               Send(i,@OwnerKilled,#what=what,#who=self,#oRoom=poOwner);
 
                if Send(i,@DropOnDeath)
                {
@@ -14073,77 +14075,77 @@ messages:
       return;
    }
 
-   BondItem(what=$)
+   LinkItem(what=$)
    {
       if what = $ OR NOT IsClass(what,&Item)
       {
-         Debug("Tried to bond to invalid item.");
+         Debug("Tried to link to invalid item.");
       }
 
-      if Send(what,@HasAttribute,#ItemAtt=IA_BONDED)
+      if Send(what,@HasAttribute,#ItemAtt=IA_LINKED)
       {
          %  this should only be possible through Admin fiddling
          return Send(SYS,@GetFailureRsc);
       }
 
-      if poBondedItem <> $
+      if poLinkedItem <> $
       {
-         Send(self,@ClearBondedItem);
+         Send(self,@ClearLinkedItem);
       }
 
-      poBondedItem = what;
-      Send(Send(SYS,@FindItemAttByNum,#num=IA_BONDED),@AddtoItem,
-           #oItem=poBondedItem,#oPlayer=self);
-      if ptBondedItemReport <> $
+      poLinkedItem = what;
+      Send(Send(SYS,@FindItemAttByNum,#num=IA_LINKED),@AddtoItem,
+           #oItem=poLinkedItem,#oPlayer=self);
+      if ptLinkedItemReport <> $
       {
-         DeleteTimer(ptBondedItemReport);
-         ptBondedItemReport = $;
+         DeleteTimer(ptLinkedItemReport);
+         ptLinkedItemReport = $;
       }
 
-      ptBondedItemReport = CreateTimer(self,@BondedItemReport,
-                                       BOND_REPORT_INTERVAL);
+      ptLinkedItemReport = CreateTimer(self,@LinkedItemReport,
+                                       ITEM_LINK_REPORT_INTERVAL);
 
       return;
    }
 
-   ClearBondedItem()
+   ClearLinkedItem()
    {
-      local oldBondedItem;
+      local oldLinkedItem;
 
-      if ptBondedItemReport <> $
+      if ptLinkedItemReport <> $
       {
-         DeleteTimer(ptBondedItemReport);
-         ptBondedItemReport = $;
+         DeleteTimer(ptLinkedItemReport);
+         ptLinkedItemReport = $;
       }
 
-      if poBondedItem = $
+      if poLinkedItem = $
       {
          return;
       }
 
-      oldBondedItem = poBondedItem;
-      poBondedItem = $;
-      Send(Send(SYS,@FindItemAttByNum,#num=IA_BONDED),@RemoveFromItem,
-            #oItem=oldBondedItem);
+      oldLinkedItem = poLinkedItem;
+      poLinkedItem = $;
+      Send(Send(SYS,@FindItemAttByNum,#num=IA_LINKED),@RemoveFromItem,
+            #oItem=oldLinkedItem);
 
       return;
    }
 
-   BondedItemReport()
+   LinkedItemReport()
    {
-      ptBondedItemReport = $;
-      if poBondedItem = $
+      ptLinkedItemReport = $;
+      if poLinkedItem = $
       {
-         Debug("trying to report location with no bonded item!");
+         Debug("trying to report location with no linked item!");
 
          return;
       }
 
-      ptBondedItemReport = CreateTimer(self,@BondedItemReport,
-                                       BOND_REPORT_INTERVAL);
+      ptLinkedItemReport = CreateTimer(self,@LinkedItemReport,
+                                       ITEM_LINK_REPORT_INTERVAL);
 
-      Send(Send(SYS,@FindSpellByNum,#num=SID_BOND),
-           @BondedItemReport,#BondedItem=poBondedItem,#BondedPlayer=self);
+      Send(Send(SYS,@FindSpellByNum,#num=SID_ITEM_LINK),
+           @LinkedItemReport,#LinkedItem=poLinkedItem,#LinkedPlayer=self);
 
       return;
    }

@@ -31,18 +31,18 @@ resources:
 
    soulbond_DM = "soul bond"
 
+   bond_lost_health = \
+      "A blinding flare erupts from your %s as it consumes your soul link "
+      "to remain with you. You feel a little weaker."
+   bond_burned = \
+      "A blinding flare erupts from the %s held by %s as the item burns away "
+      "a transcendent soul link to remain with its owner!"
+
 classvars:
 
    viItem_Att_Num = IA_MADE_TRANSCENDANT
    vrDesc = itemattsoulbond_desc
    vrName = itemattsoulbond_name
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%  Value Functions
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
    viDifficulty = 3
    vrDM_Trigger = soulbond_DM
@@ -64,14 +64,73 @@ messages:
       return TRUE;
    }
 
+   AddToTreasureTable()
+   {
+      %% do nothing
+      return FALSE;
+   }
+
    ItemReqLeaveOwner()
    {
+      % Artificial bonds cannot be transferred.
+      % DMs, take care not to create these on the ground.
       return FALSE;
    }
 
    ItemGetSpellModifier(oSpell=$,oCaster=$,lData=$)
    {
+      % Artificial bonds are imbued with part of the bonder's very spirit.
+      % Small bonus to general spellpower (in this case, up to 3 at 99 sp).
       return Send(self,@TranslatePowerFromCompound,#iCompound=First(lData));
+   }
+
+   OwnerPenned(oItem=$,who=$,oRoom=$)
+   {
+      Send(self,@ActivateSpecial,#oItem=oItem,#who=who,#oRoom=oRoom);
+      return;
+   }
+
+   OwnerKilled(oItem=$,who=$,oRoom=$)
+   {
+      Send(self,@ActivateSpecial,#oItem=oItem,#who=who,#oRoom=oRoom);
+      return;
+   }
+
+   ActivateSpecial(oItem=$,who=$,oRoom=$)
+   {
+      local oObject, oPlayer;
+
+      % Our owner is in the process of dying.
+      % Artificial bonds rip a piece of one's spirit away. Take a health point.
+      % Send room a message, too, so the enemy will know what has happened.
+
+      if who <> $
+         AND IsClass(who,&Player)
+      {
+         Send(who,@MsgSendUser,#message_rsc=bond_lost_health,
+               #parm1=Send(oItem,@GetName));
+         Send(who,@GainBaseMaxHealth,#amount=-1);
+
+         if oRoom <> $
+         {
+            foreach oObject in Send(oRoom,@GetHolderActive)
+            {
+               oPlayer = Send(oRoom,@HolderExtractObject,#data=oObject);
+               if IsClass(oPlayer,&Player)
+                  AND oPlayer <> who
+               {
+                  Send(oPlayer,@MsgSendUser,#message_rsc=bond_burned,
+                        #parm1=Send(oItem,@GetName),
+                        #parm2=Send(who,@GetName));
+               }
+            }
+         }
+      }
+
+      % DropOnDeath has not been checked yet in player. Post this.
+      Post(self,@RemoveFromItem,#oItem=oItem);
+
+      return;
    }
 
 end

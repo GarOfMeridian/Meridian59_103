@@ -30,8 +30,8 @@ resources:
    gift_desc_name = \
       "This is a neatly wrapped present.  A tag attached to the bow reads, "
       "'From %q with love'."
-   gift_bonded_wrapped = "You sense that your %s has been giftwrapped."
-   gift_bonded_unwrapped = \
+   gift_linked_wrapped = "You sense that your %s has been giftwrapped."
+   gift_linked_unwrapped = \
       "You sense that your gift has been unwrapped to reveal %s%s."
 
 classvars:
@@ -57,18 +57,18 @@ messages:
 
    Constructor(contents = $, giver = $)
    {
-      local oBondee;
+      local oLinkee;
 
       if contents <> $
       {
-         if Send(contents,@HasAttribute,#ItemAtt=IA_BONDED)
+         if Send(contents,@HasAttribute,#ItemAtt=IA_LINKED)
          {
-            oBondee = Nth(Send(contents,@GetAttributeData,#ItemAtt=IA_BONDED),2);
-            Send(oBondee,@ClearBondedItem);
-            Send(oBondee,@BondItem,#what=self);
-            if Send(contents,@GetOwner) <> oBondee
+            oLinkee = Nth(Send(contents,@GetAttributeData,#ItemAtt=IA_LINKED),2);
+            Send(oLinkee,@ClearLinkedItem);
+            Send(oLinkee,@LinkItem,#what=self);
+            if Send(contents,@GetOwner) <> oLinkee
             {
-               Send(oBondee,@MsgSendUser,#message_rsc=gift_bonded_wrapped,
+               Send(oLinkee,@MsgSendUser,#message_rsc=gift_linked_wrapped,
                      #parm1=Send(contents,@GetName));
             }
          }
@@ -131,7 +131,7 @@ messages:
 
    NewApplied(what = $)
    {
-      local rand, bAny, oBondee, oldOwner;
+      local rand, bAny, oLinkee, oldOwner;
 
       bAny = FALSE;
       if Length(Send(what,@GetSpellList)) < 5
@@ -185,14 +185,14 @@ messages:
       % Note that this RecalcBulkAndWeight is entirely superfluous,
       % but we'll leave it here as a safeguard against future wierdness.
       Send(oldOwner,@RecalcBulkAndWeight);
-      if Send(self,@HasAttribute,#ItemAtt=IA_BONDED)
+      if Send(self,@HasAttribute,#ItemAtt=IA_LINKED)
       {
-         oBondee = nth(Send(self,@GetAttributeData,#ItemAtt=IA_BONDED),2);
-         Send(oBondee,@ClearBondedItem);
-         Send(oBondee,@BondItem,#what=poContents);
-         if oldOwner <> oBondee
+         oLinkee = nth(Send(self,@GetAttributeData,#ItemAtt=IA_LINKED),2);
+         Send(oLinkee,@ClearLinkedItem);
+         Send(oLinkee,@LinkItem,#what=poContents);
+         if oldOwner <> oLinkee
          {
-            Send(oBondee,@MsgSendUser,#message_rsc=gift_bonded_unwrapped,
+            Send(oLinkee,@MsgSendUser,#message_rsc=gift_linked_unwrapped,
                   #parm1=Send(poContents,@GetIndef),
                   #parm2=Send(poContents,@GetName));
          }

@@ -33,18 +33,15 @@ resources:
 
    transcendant_DM = "transcendant"
 
+   transcendant_burned = \
+      "A searing flare erupts from the %s held by %s as the item burns away "
+      "holy energies to remain with its owner!"
+
 classvars:
 
    viItem_Att_Num = IA_TRANSCENDANT
    vrDesc = itematttranscendant_desc
    vrName = itematttranscendant_name
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-%%  Value Functions
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
    viDifficulty = 3
    vrDM_Trigger = transcendant_DM
@@ -64,6 +61,50 @@ messages:
    IsMagicalEffect()
    {
       return TRUE;
+   }
+   
+   OwnerPenned(oItem=$,who=$,oRoom=$)
+   {
+      Send(self,@ActivateSpecial,#oItem=oItem,#who=who,#oRoom=oRoom);
+      return;
+   }
+   
+   OwnerKilled(oItem=$,who=$,oRoom=$)
+   {
+      Send(self,@ActivateSpecial,#oItem=oItem,#who=who,#oRoom=oRoom);
+      return;
+   }
+   
+   ActivateSpecial(oItem=$,who=$,oRoom=$)
+   {
+      local oObject, oPlayer;
+
+      % Our owner is in the process of dying.
+      % Send room a message and remove self.
+      % This is a naturally occuring bond, so it does not eat a health point.
+
+      if who <> $
+         AND IsClass(who,&Player)
+      {
+         if oRoom <> $
+         {
+            foreach oObject in Send(oRoom,@GetHolderActive)
+            {
+               oPlayer = Send(oRoom,@HolderExtractObject,#data=oObject);
+               if IsClass(oPlayer,&Player)
+               {
+                  Send(oPlayer,@MsgSendUser,#message_rsc=transcendant_burned,
+                        #parm1=Send(oItem,@GetName),
+                        #parm2=Send(who,@GetName));
+               }
+            }
+         }
+      }
+
+      % DropOnDeath has not been checked yet in player. Post this.
+      Post(self,@RemoveFromItem,#oItem=oItem);
+
+      return;
    }
 
 end
