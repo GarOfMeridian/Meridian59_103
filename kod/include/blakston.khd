@@ -1787,6 +1787,7 @@
    WA_GLOWING              = 69
    WA_PURGER               = 70
    WA_SIPHON               = 71
+   WA_BLOOD_INHERITANCE    = 72
 
    %%% Herald shields
 

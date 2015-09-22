@@ -3438,6 +3438,8 @@ messages:
       Send(self,@CreateOneItemAttIfNew,#num=IA_BONDED,#class=&ItemAttBonded);
       Send(self,@CreateOneItemAttIfNew,#num=WA_GLOWING,#class=&WeapAttGlowing);
       Send(self,@CreateOneItemAttIfNew,#num=IA_MADE,#class=&ItemAttMade);
+      Send(self,@CreateOneItemAttIfNew,#num=WA_BLOOD_INHERITANCE,
+            #class=&WeapAttBloodInheritance);
 
       % Keep these last, it's called the most often
       Send(self,@CreateOneItemAttIfNew,#num=IA_PKPOINTER,#class=&ItemAttPKPointer);
