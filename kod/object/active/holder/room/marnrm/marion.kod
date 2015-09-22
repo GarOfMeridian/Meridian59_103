@@ -151,28 +151,6 @@ messages:
       return;
    }
 
-   SomethingMoved(what = $,new_row = $, new_col = $)
-   {
-      if (new_row < 32) and (new_col > 66)
-      {
-         Send(SYS,@UtilGoNearSquare,#what=what,
-              #where=Send(SYS,@FindRoomByNum,#num=RID_C4),
-              #new_row=34,#new_col=5,#new_angle=ANGLE_NORTH_EAST);
-         return;
-      }
-
-      if (new_row > 83) and (new_col > 48)
-      {
-         Send(SYS,@UtilGoNearSquare,#what=what,
-              #where=Send(SYS,@FindRoomByNum,#num=RID_C5),
-              #new_row=3,#new_col=23,#new_angle=ANGLE_SOUTH_WEST);
-              
-         return;
-      }
-
-      propagate;
-   }
-
    CreateStandardObjects()
    {
       Send(self,@NewHold,#what=Create(&MarionElder),
@@ -220,6 +198,10 @@ messages:
       plExits = Cons([ 71, 14, ROOM_LOCKED_DOOR, marion_gate_warning ],plExits);
 
       plExits = Cons([ 80, 15, RID_MAR_CRYPT1, 11, 17, ROTATE_NONE ],plExits);
+
+      plEdge_Exits = $;
+      plEdge_Exits = Cons([LEAVE_NORTH, RID_TEMPLE, 13, 26, ROTATE_NONE], plEdge_exits);
+      plEdge_Exits = Cons([LEAVE_EAST, RID_C4, 34, 5, ROTATE_NONE], plEdge_exits);
 
       propagate;
    }
