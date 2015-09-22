@@ -3335,6 +3335,7 @@ messages:
       Send(self,@CreateOneSpellIfNew,#num=SID_BOND,#class=&Bond);
       Send(self,@CreateOneSpellIfNew,#num=SID_BLOOD_INHERITANCE,#class=&BloodInheritance);
       Send(self,@CreateOneSpellIfNew,#num=SID_DEATHS_DOOR,#class=&DeathsDoor);
+      Send(self,@CreateOneSpellIfNew,#num=SID_OLD_BLOOD_INHERITANCE,#class=&OldBloodInheritance);
 
       Send(self,@CreateOneSpellIfNew,#num=SID_BREATH_OF_LIFE,#class=&BreathOfLife);
       Send(self,@CreateOneSpellIfNew,#num=SID_RESIST_ACID,#class=&ResistAcid);
