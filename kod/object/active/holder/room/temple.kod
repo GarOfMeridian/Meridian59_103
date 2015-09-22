@@ -37,6 +37,7 @@ classvars:
    viTeleport_col = 7
 
    viTerrain_type = TERRAIN_TEMPLE | TERRAIN_FOREST
+   viPermanent_flags = ROOM_NO_COMBAT
 
    viWeatherZone = WEATHER_ZONE_MARION
 
