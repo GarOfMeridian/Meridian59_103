@@ -4788,7 +4788,7 @@ messages:
          lHolding1 = Send(what,@GetCorpseContents);
          lHolding2 = $;
       }
-      else if
+      else
       {
          lHolding1 = Send(what,@GetHolderActive);
          lHolding2 = Send(what,@GetHolderPassive);
