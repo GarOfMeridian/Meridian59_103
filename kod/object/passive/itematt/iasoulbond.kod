@@ -51,6 +51,8 @@ properties:
 
    piValue_modifier = 150
    piValue_power_modifier = 0
+   
+   pbTradeable = TRUE
 
 messages:
 
@@ -72,9 +74,9 @@ messages:
 
    ItemReqLeaveOwner()
    {
-      % Artificial bonds cannot be transferred.
+      % Artificial bonds cannot be transferred if pbTradeable is FALSE.
       % DMs, take care not to create these on the ground.
-      return FALSE;
+      return pbTradeable;
    }
 
    ItemGetSpellModifier(oSpell=$,oCaster=$,lData=$)
