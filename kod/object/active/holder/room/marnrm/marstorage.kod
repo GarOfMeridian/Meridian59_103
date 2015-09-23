@@ -1,0 +1,56 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+MarionStorage is MarionRoom
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   room_name_marion_storage = "Storage Cellar"
+   room_marion_storage = marionstorage.roo
+
+   mar_music_storage = nec01.mp3
+
+classvars:
+
+   vrName = room_name_marion_storage
+   viPermanent_flags = ROOM_NO_COMBAT
+
+   viTeleport_row = 5
+   viTeleport_col = 5
+
+   viTerrain_type = TERRAIN_CITY | TERRAIN_CAVES
+
+properties:
+
+   piBaseLight = LIGHT_DARK
+   piOutside_factor = OUTDOORS_NONE
+
+   prRoom = room_marion_storage
+   piRoom_num = RID_MAR_STORAGE
+
+   prMusic = mar_music_storage
+
+messages:
+
+   CreateStandardExits()
+   {
+      plExits = $;
+      plExits = Cons([ 4, 9, RID_MARION, 67, 26, ROTATE_NONE ],plExits);
+
+      propagate;
+   }
+
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
