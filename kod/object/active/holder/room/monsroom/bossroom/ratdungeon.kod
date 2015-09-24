@@ -1,0 +1,251 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+RatDungeon is BossRoom
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   room_name_RatDungeon = "Endless Rat Warrens"
+   room_RatDungeon = ratdungeon.roo
+   RatDungeon_music = orcpit.mp3
+
+   RatDungeon_door_up_sound = doorrsup.wav
+   RatDungeon_door_down_sound = arr_metl.wav
+   
+   RatKing_Loot_Guard_msg = \
+      "The Rat King viciously defends his hard-won baubles!"
+   RatKing_Slain_msg = \
+      "As the Rat King falls, the swarms retreat into their warrens!"
+
+classvars:
+
+   vrName = room_name_RatDungeon
+
+   viTeleport_row = 14
+   viTeleport_col = 20
+
+   viTerrain_type = TERRAIN_CAVES | TERRAIN_LAIR
+
+   % 20 seconds
+   viBossResetTime = 20000
+
+properties:
+
+   prRoom = room_RatDungeon
+   piRoom_num = RID_RAT_DUNGEON
+
+   piBaseLight = (LIGHT_VERY_DARK + LIGHT_MIN)/2
+   piOutside_factor = 0
+
+   prMusic = RatDungeon_music
+
+   piGen_time = 3000
+   piGen_percent = 100
+
+   piInit_count_min = 7
+   piInit_count_max = 15
+
+   piMonster_count_max = 70
+
+messages:
+
+   Constructor()
+   {
+      plMonsters = [ [&GiantRat, 100] ];
+      plGenerators = [ [4,38], [5,35], [6,37],
+                       [8,27], [8,30], [8,29],
+                       [18,29], [17,28], [16,28],
+                       [19,22], [18,21], [19,20],
+                       [6,19], [4,19], [5,19],
+                       [2,8], [2,11], [2,10],
+                       [38,15], [36,18], [32,18], [31,14],
+                       [24,16], [28,21], [24,22], [31,27], [27,30]
+                     ];
+
+      propagate;
+   }
+
+   SetupBossTemplates()
+   {
+      plBossTemplate = [ [&GiantRatKing, 36, 41] ];
+      plHenchmenTemplate = [ [&GiantRatSoldier, 33, 40],
+                             [&GiantRatSoldier, 32, 40],
+                             [&GiantRatSoldier, 29, 37],
+                             [&GiantRatSoldier, 27, 39],
+                             [&GiantRatSoldier, 29, 41],
+                             [&GiantRatSoldier, 35, 37],
+                             [&GiantRatSoldier, 37, 39],
+                             [&GiantRatSoldier, 37, 40] ];
+
+      plBossTreasureTemplate = [ [&Gauntlet, 33, 40, 0, 0],
+                                 [&FineLute, 29, 37, 0, 0],
+                                 [&ScaleArmor, 27, 39, 0, 0],
+                                 [&Axe, 35, 37, 0, 0] ,
+                                 [&HealWand, 36, 41, 0, 0]
+                               ];
+
+
+      return;
+   }
+
+   CreateStandardObjects()
+   {
+      local lSkulls;
+
+      lSkulls = [ [13, 13, 15, 36, 30, 26, 32],
+                  [36, 18, 3, 8, 42, 37, 36] ];
+
+      Send(self,@CreateObjFromList,#lObjlist=lSkulls,
+            #oObjectClassName=&Skull);
+            
+      return;
+   }
+
+
+   CreateStandardExits()
+   {
+      propagate;
+   }
+
+%%%%%%%%%%%%%%%%%%%%%
+% Monster death code%
+%%%%%%%%%%%%%%%%%%%%%
+%
+
+   BossKilledTrigger()
+   {
+      local i, each_obj;
+
+      Send(self,@SomethingWaveRoom,#wave_rsc=RatDungeon_door_up_sound);
+      Send(self,@SetSector,#sector=1,
+            #animation=ANIMATE_FLOOR_LIFT,
+            #height=770,#speed=20);
+      Send(self,@SetSector,#sector=2,
+            #animation=ANIMATE_FLOOR_LIFT,
+            #height=770,#speed=20);
+      Send(self,@SetSector,#sector=3,
+            #animation=ANIMATE_FLOOR_LIFT,
+            #height=770,#speed=20);
+      
+      pbGenerateMonsters = FALSE;
+      
+      foreach i in plActive
+      {
+         each_obj = Send(self,@HolderExtractObject,#data=i);
+         if IsClass(each_obj,&GiantRat)
+            OR IsClass(each_obj,&GiantRatSoldier)
+         {
+            Send(each_obj,@Delete);
+         }
+         
+         if IsClass(each_obj,&Player)
+         {
+            Send(each_obj,@MsgSendUser,#message_rsc=RatKing_Slain_msg);
+         }
+      }
+            
+      propagate;
+   }
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% end Monster death code%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Boss resetting code %
+%%%%%%%%%%%%%%%%%%%%%%%
+%
+   ResetBoss()
+   {
+      Send(self,@SetSector,#sector=1,
+            #animation=ANIMATE_FLOOR_LIFT,
+            #height=670,#speed=0);
+      Send(self,@SetSector,#sector=2,
+            #animation=ANIMATE_FLOOR_LIFT,
+            #height=570,#speed=0);
+      Send(self,@SetSector,#sector=3,
+            #animation=ANIMATE_FLOOR_LIFT,
+            #height=100,#speed=0);
+      
+      pbGenerateMonsters = TRUE;
+
+      propagate;
+   }
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% End Boss resetting code %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   ReqLeaveHold(what = $)
+   {
+      local i;
+
+      if plBossTreasure <> $
+      {
+         foreach i in plBossTreasure
+         {
+            if what = i
+            {
+               return FALSE;
+            }
+         }
+      }
+
+      return;
+   }
+
+%%%%%%%%%%%%%%%%%%%%%%
+% Logon safeguarding %
+%%%%%%%%%%%%%%%%%%%%%%
+
+   NewHold(what = $)
+   "Prevents anyone from logging on into a special zone"
+   {
+      local i, each_obj;
+
+      if IsClass(what,&User) AND (Send(what,@GetOwner) = $)
+         AND NOT IsClass(what,&DM)
+      {
+         Post(self,@Teleport,#what=what);
+      }
+
+      if IsClass(what,&GiantRat)
+      {
+         foreach i in plActive
+         {
+            each_obj = Send(self,@HolderExtractObject,#data=i);
+            if IsClass(each_obj,&Player)
+               AND Random(1,3) = 1
+            {
+               Post(what,@TargetSwitch,#what=each_obj,#iHatred=100);
+               Post(what,@EnterStateChase,#target=each_obj,#actnow=True);
+               propagate;
+            }
+         }
+      }
+
+      propagate;
+   }
+
+   Delete()
+   {
+
+      propagate;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

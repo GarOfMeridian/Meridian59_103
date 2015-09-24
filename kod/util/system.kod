@@ -2617,6 +2617,8 @@ messages:
       Send(self,@CreateOneRoomIfNew,#num=RID_DESERTRIVER2,#class=&DesertRiver2);
       Send(self,@CreateOneRoomIfNew,#num=RID_DESERTBRIDGE,#class=&DesertBridge);
 
+      Send(self,@CreateOneRoomIfNew,#num=RID_RAT_DUNGEON,#class=&RatDungeon);
+
 
       if poRentableRoomMaintenance <> $  % After a clean build, for example.
       {
