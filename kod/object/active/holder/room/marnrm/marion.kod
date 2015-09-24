@@ -63,6 +63,7 @@ resources:
       "More than that, I would not have done."
 
    marion_gate_warning = "This gate was put in place to keep citizens safe from the dangers of the crypt."
+   marion_barn_rsc = "The barn is locked."
 
 classvars:
 
@@ -198,10 +199,16 @@ messages:
       plExits = Cons([ 71, 13, ROOM_LOCKED_DOOR, marion_gate_warning ],plExits);
       plExits = Cons([ 71, 14, ROOM_LOCKED_DOOR, marion_gate_warning ],plExits);
 
+      % Empty buildings
+      plExits = Cons([ 15, 22, ROOM_LOCKED_DOOR, marion_barn_rsc ],plExits);
+      plExits = Cons([ 15, 23, ROOM_LOCKED_DOOR, marion_barn_rsc ],plExits);
+      plExits = Cons([ 16, 22, ROOM_LOCKED_DOOR, marion_barn_rsc ],plExits);
+      plExits = Cons([ 16, 23, ROOM_LOCKED_DOOR, marion_barn_rsc ],plExits);
+
       plExits = Cons([ 80, 15, RID_MAR_CRYPT1, 11, 17, ROTATE_NONE ],plExits);
 
       plEdge_Exits = $;
-      plEdge_Exits = Cons([LEAVE_NORTH, RID_TEMPLE, 13, 26, ROTATE_NONE], plEdge_exits);
+      plEdge_Exits = Cons([LEAVE_NORTH, RID_TEMPLE, 26, 29, ROTATE_NONE], plEdge_exits);
       plEdge_Exits = Cons([LEAVE_EAST, RID_C4, 34, 5, ROTATE_NONE], plEdge_exits);
 
       propagate;
@@ -215,6 +222,20 @@ messages:
       propagate;
    }
 
+   SomethingTryGo(what = $,row = $,col = $)
+   {
+      if row >= 66
+         AND row <= 68
+         AND col >= 26
+         AND col <= 27
+      {
+         Send(SYS,@UtilGoNearSquare,#what=what,
+               #where=Send(SYS,@FindRoomByNum,#num=RID_MAR_STORAGE),
+               #new_row=5,#new_col=8,#fine_row=11,#fine_col=50,
+               #new_angle=Send(what,@GetAngle));
+      }
+      propagate;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

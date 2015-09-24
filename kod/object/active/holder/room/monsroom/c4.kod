@@ -76,7 +76,17 @@ messages:
       {
          Send(SYS,@UtilGoNearSquare,#what=what,
                #where=Send(SYS,@FindRoomByNum,#num=RID_MARION),
-               #new_row=18,#new_col = 75 , #fine_row = 0,
+               #new_row=4,#new_col = 85,#fine_row=58,#fine_col=23,
+               #new_angle=Send(what,@GetAngle));
+
+         return;
+      }
+
+      if (new_row < 18) and (new_col < 13)
+      {
+         Send(SYS,@UtilGoNearSquare,#what=what,
+               #where=Send(SYS,@FindRoomByNum,#num=RID_TEMPLE),
+               #new_row=6,#new_col = 32,
                #new_angle=Send(what,@GetAngle));
 
          return;
