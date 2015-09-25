@@ -192,7 +192,14 @@ properties:
    
    % Reputation hashtable for monster territory/influence system
    phReputation = $
-   
+
+   % Wall elements that rotate around the battler
+   % Stored of the form:
+   % [element, teleport timer, next teleport type]
+   plElementalShield = $
+   % Governs duration of the elemental shield itself
+   ptElementalShieldTimer = $
+
 messages:
 
    % The first lump of code here deals with resistances and immunities/etc.
@@ -244,6 +251,8 @@ messages:
          }
          plApparitionList = $;
       }
+      
+      Send(self,@CancelElementalShield);
 
       propagate;
    }
@@ -1772,6 +1781,112 @@ messages:
       
       return;
    }
+
+   StartElementalShield(cClass=&WallOfFire, Duration=30000, iMaxDamage=1,
+                        Illusionary=FALSE, num_objects = 4)
+   {
+      local oElement, object_countdown, oRoom;
+
+      oRoom = Send(self,@GetOwner);
+
+      if num_objects <= 0
+         OR oRoom = $
+         OR NOT IsClass(oRoom,&Room)
+      {
+         return;
+      }
+
+      Send(self,@CancelElementalShield);
+      object_countdown = num_objects;
+      
+      while object_countdown > 0
+      {
+         oElement = Create(cClass,#MaxDamage=iMaxDamage,#Caster=self,
+                          #Duration=Duration,#Illusionary=Illusionary);
+
+         Send(oRoom,@NewHold,#what=oElement,#new_row=piRow,#new_col=piCol,
+               #fine_row=piFine_row,#fine_col=piFine_col);
+         
+         debug("room", oRoom);
+         plElementalShield = Cons([oElement,
+                                   CreateTimer(self,@IncrementElementalShield,
+                                   200),Bound((16/num_objects)*
+                                   (num_objects-object_countdown)+9,9,24)],
+                                   plElementalShield);
+         
+         object_countdown--;
+      }
+      
+      ptElementalShieldTimer = CreateTimer(self,@EndElementalShield,Duration);
+
+      return;
+   }
    
+   IncrementElementalShield(timer=$)
+   {
+      local i, iNextTeleType, oRoom;
+      
+      oRoom = Send(self,@GetOwner);
+
+      foreach i in plElementalShield
+      {
+         if Nth(i,2) = timer
+         {
+            SetNth(i,2,$);
+            if oRoom <> $
+            {
+               iNextTeleType = Nth(i,3);
+               Send(oRoom,@IntraTeleport,#what=Nth(i,1),#type=iNextTeleType,
+                     #target=self);
+            }
+            SetNth(i,2,CreateTimer(self,@IncrementElementalShield,500));
+            if iNextTeleType >= 24
+            {
+               iNextTeleType = 9;
+            }
+            else
+            {
+               iNextTeleType++;
+            }
+            SetNth(i,3,iNextTeleType);
+         }
+      }
+
+      return;
+   }
+   
+   CancelElementalShield()
+   {
+      if ptElementalShieldTimer <> $
+      {
+         DeleteTimer(ptElementalShieldTimer);
+      }
+
+      Send(self,@EndElementalShield);
+      return;
+   }
+   
+   EndElementalShield(timer=$)
+   {
+      local i;
+
+      ptElementalShieldTimer = $;
+
+      foreach i in plElementalShield
+      {
+         Send(First(i),@Delete);
+         if IsTimer(Nth(i,2))
+         {
+            DeleteTimer(Nth(i,2));
+         }
+         SetNth(i,1,$);
+         SetNth(i,2,$);
+         SetNth(i,3,$);
+         plElementalShield = DelListElem(plElementalShield,i);
+      }
+
+      return;
+   }
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
