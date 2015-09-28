@@ -1,0 +1,117 @@
+% Meridian 59, Copyright 1994-2012 Andrew Kirmse and Chris Kirmse.
+% All rights reserved.
+%
+% This software is distributed under a license that is described in
+% the LICENSE file that accompanies it.
+%
+% Meridian is a registered trademark.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ElementalDungeon is MonsterRoom
+
+constants:
+
+   include blakston.khd
+
+resources:
+
+   room_name_elementaldungeon = "Elemental Dungeon"
+   room_elementaldungeon = elementaldungeon.roo
+   elementaldungeon_music = cave.mp3
+
+classvars:
+
+   vrName = room_name_elementaldungeon
+
+   viTeleport_row = 2
+   viTeleport_col = 2
+
+
+properties:
+
+   prRoom = room_elementaldungeon
+   piRoom_num = RID_ELEMENTAL_DUNGEON
+
+   piBaseLight = LIGHT_MIN
+   piOutside_factor = 0
+
+   prMusic = elementaldungeon_music
+
+   piGen_time = 30000
+   piGen_percent = 80
+
+   piInit_count_min = 4
+   piInit_count_max = 6
+
+   piMonster_count_max = 25
+   
+   ptBurnTimer = $
+
+messages:
+
+   Constructed()
+   {
+      propagate;
+   }
+   
+   FirstUserEntered()
+   {
+      Send(self,@StartBurnTimer);
+      Post(self,@LowerEntryway);
+      propagate;
+   }
+   
+   LastUserLeft()
+   {
+      Send(self,@CancelBurnTimer);
+      propagate;
+   }
+   
+   StartBurnTimer()
+   {
+      if ptBurnTimer = $
+      {
+         ptBurnTimer = CreateTimer(self,@BurnThoseInLava,500);
+      }
+      return;
+   }
+   
+   CancelBurnTimer()
+   {
+      if ptBurnTimer <> $
+      {
+         DeleteTimer(ptBurnTimer);
+      }
+      ptBurnTimer = $;
+      return;
+   }
+   
+   BurnThoseInLava(timer=$)
+   {
+      local i, each_obj;
+      ptBurnTimer = $;
+      
+      foreach i in plActive
+      {
+         each_obj = Send(self,@HolderExtractObject,#data=i);
+         if IsClass(each_obj,&Player)
+            AND Send(each_obj,@GetHeightAtObject) < 90
+            AND
+         {
+         }   
+      }
+      
+      Send(self,@StartBurnTimer);
+      return;
+   }
+
+   LowerEntryway()
+   {
+      Send(self,@SetSector,#sector=1,#animation=ANIMATE_FLOOR_LIFT,
+           #height=506,#speed=50);
+      return;
+   }
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
