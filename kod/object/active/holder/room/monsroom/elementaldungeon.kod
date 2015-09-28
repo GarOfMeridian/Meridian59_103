@@ -89,17 +89,24 @@ messages:
    
    BurnThoseInLava(timer=$)
    {
-      local i, each_obj;
+      local i, each_obj, iDamage;
       ptBurnTimer = $;
       
       foreach i in plActive
       {
          each_obj = Send(self,@HolderExtractObject,#data=i);
          if IsClass(each_obj,&Player)
-            AND Send(each_obj,@GetHeightAtObject) < 90
-            AND
+            AND Send(each_obj,@GetHeightAtObject) = 500
+            AND Send(each_obj,@GetRow) < 50
+            AND Send(each_obj,@GetCol) < 82
          {
-         }   
+            iDamage = Send(each_obj,@AssessDamage,#report=TRUE,#what=each_obj,
+                            #aspell=ATCK_SPELL_FIRE,#damage=Random(1,5));
+            if iDamage = $
+            {
+               Send(each_obj,@KilledSomething,#what=each_obj);
+            }
+         }
       }
       
       Send(self,@StartBurnTimer);
