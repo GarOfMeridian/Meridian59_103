@@ -46,7 +46,7 @@ properties:
 
    piMonster_count_max = 25
    
-   ptBurnTimer = $
+   ptDamageTimer = $
 
 messages:
 
@@ -57,40 +57,52 @@ messages:
    
    FirstUserEntered()
    {
-      Send(self,@StartBurnTimer);
+      Send(self,@StartDamageTimer);
       Post(self,@LowerEntryway);
       propagate;
    }
    
    LastUserLeft()
    {
-      Send(self,@CancelBurnTimer);
+      Send(self,@CancelDamageTimer);
       propagate;
    }
    
-   StartBurnTimer()
+   StartDamageTimer()
    {
-      if ptBurnTimer = $
+      if ptDamageTimer = $
       {
-         ptBurnTimer = CreateTimer(self,@BurnThoseInLava,500);
+         ptDamageTimer = CreateTimer(self,@DealElementalDamage,500);
       }
       return;
    }
    
-   CancelBurnTimer()
+   CancelDamageTimer()
    {
-      if ptBurnTimer <> $
+      if ptDamageTimer <> $
       {
-         DeleteTimer(ptBurnTimer);
+         DeleteTimer(ptDamageTimer);
       }
-      ptBurnTimer = $;
+      ptDamageTimer = $;
       return;
    }
    
-   BurnThoseInLava(timer=$)
+   DealElementalDamage(timer=$)
+   {
+      ptDamageTimer = $;
+
+      Send(self,@BurnInFire);
+      Send(self,@FreezeInWater);
+      Send(self,@ShockInAir);
+      Send(self,@ShakeInEarth);
+      
+      Send(self,@StartDamageTimer);
+      return;
+   }
+   
+   BurnInFire()
    {
       local i, each_obj, iDamage;
-      ptBurnTimer = $;
       
       foreach i in plActive
       {
@@ -108,8 +120,71 @@ messages:
             }
          }
       }
+
+      return;
+   }
+
+   FreezeInWater()
+   {
+      local i, each_obj, iDamage;
+
+      % 474 deep
+      % 461 super deep
       
-      Send(self,@StartBurnTimer);
+      foreach i in plActive
+      {
+         each_obj = Send(self,@HolderExtractObject,#data=i);
+         if IsClass(each_obj,&Player)
+            AND Send(each_obj,@GetHeightAtObject) = 474
+         {
+            iDamage = Send(each_obj,@AssessDamage,#report=TRUE,#what=each_obj,
+                            #aspell=ATCK_SPELL_COLD,#damage=Random(1,5));
+            if iDamage = $
+            {
+               Send(each_obj,@KilledSomething,#what=each_obj);
+            }
+         }
+         else if IsClass(each_obj,&Player)
+            AND Send(each_obj,@GetHeightAtObject) = 461
+         {
+            iDamage = Send(each_obj,@AssessDamage,#report=TRUE,#what=each_obj,
+                            #aspell=ATCK_SPELL_COLD,#damage=Random(5,10));
+            if iDamage = $
+            {
+               Send(each_obj,@KilledSomething,#what=each_obj);
+            }
+         }
+      }
+      return;
+   }
+   
+   ShockInAir()
+   {
+      local i, each_obj, iDamage;
+      
+      foreach i in plActive
+      {
+         each_obj = Send(self,@HolderExtractObject,#data=i);
+         if IsClass(each_obj,&Player)
+            AND Send(each_obj,@GetHeightAtObject) = 500
+            AND Send(each_obj,@GetRow) < 50
+            AND Send(each_obj,@GetCol) > 176
+            AND Random(1,10) = 1
+         {
+            iDamage = Send(each_obj,@AssessDamage,#report=TRUE,#what=each_obj,
+                            #aspell=ATCK_SPELL_SHOCK,#damage=Random(5,20));
+            if iDamage = $
+            {
+               Send(each_obj,@KilledSomething,#what=each_obj);
+            }
+         }
+      }
+   
+      return;
+   }
+   
+   ShakeInEarth()
+   {
       return;
    }
 
